@@ -6,15 +6,15 @@ public class Curriculum {
     private int id;
     private Course course;
     private Semester semester;
-    private Subject mainSubject;
-    private Subject secondarySubject;
+    private Subject subject;
+    private String requiredSubject;
 
-    public Curriculum(int id, Course course, Semester semester, Subject mainSubject, Subject secondarySubject) {
+    public Curriculum(int id, Course course, Semester semester, Subject subject, String requiredSubject) {
         this.id = id;
         this.course = course;
         this.semester = semester;
-        this.mainSubject = mainSubject;
-        this.secondarySubject = secondarySubject;
+        this.subject = subject;
+        this.requiredSubject = requiredSubject;
     }
 
     public Curriculum() {
@@ -44,20 +44,20 @@ public class Curriculum {
         this.semester = semester;
     }
 
-    public Subject getMainSubject() {
-        return mainSubject;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public void setMainSubject(Subject mainSubject) {
-        this.mainSubject = mainSubject;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
-    public Subject getSecondarySubject() {
-        return secondarySubject;
+    public String getRequiredSubject() {
+        return requiredSubject;
     }
 
-    public void setSecondarySubject(Subject secondarySubject) {
-        this.secondarySubject = secondarySubject;
+    public void setRequiredSubject(String requiredSubject) {
+        this.requiredSubject = requiredSubject;
     }
 
     @Override

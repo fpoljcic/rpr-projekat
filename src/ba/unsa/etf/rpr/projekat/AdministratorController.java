@@ -1,14 +1,13 @@
 package ba.unsa.etf.rpr.projekat;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -52,8 +51,10 @@ public class AdministratorController {
     public TableColumn<Curriculum, Integer> curriculumIdCol;
     public TableColumn<Curriculum, Course> curriculumCourseCol;
     public TableColumn<Curriculum, Semester> curriculumSemesterCol;
-    public TableColumn<Curriculum, Subject> curriculumMainSubjectCol;
-    public TableColumn<Curriculum, Subject> curriculumSecondarySubjectCol;
+    public TableColumn<Curriculum, Subject> curriculumSubjectCol;
+    public TableColumn<Curriculum, String> curriculumRequiredSubjectCol;
+    public TabPane tabPane;
+    public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField;
     private Login login;
     private BazaDAO dataBase;
     private Subject selectedSubject;
@@ -61,6 +62,7 @@ public class AdministratorController {
     private Student selectedStudent;
     private Course selectedCourse;
     private Curriculum selectedCurriculum;
+    private Tab currentTab;
 
 
     public AdministratorController(Login login) {
@@ -119,14 +121,33 @@ public class AdministratorController {
         curriculumIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         curriculumCourseCol.setCellValueFactory(new PropertyValueFactory<>("course"));
         curriculumSemesterCol.setCellValueFactory(new PropertyValueFactory<>("semester"));
-        curriculumMainSubjectCol.setCellValueFactory(new PropertyValueFactory<>("mainSubject"));
-        curriculumSecondarySubjectCol.setCellValueFactory(new PropertyValueFactory<>("secondarySubject"));
+        curriculumSubjectCol.setCellValueFactory(new PropertyValueFactory<>("subject"));
+        curriculumRequiredSubjectCol.setCellValueFactory(new PropertyValueFactory<>("requiredSubject"));
     }
 
     private void setSelectedItems() {
         subjectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+                Thread thread = new Thread(() -> {
+                    try {
+                        String noSubjectStudent = String.valueOf(dataBase.getNoStudentsOnSubject(newValue));
+                        String avgSubjectGrade = String.valueOf(dataBase.getAvgSubjectGrade(newValue));
+                        String noSubjectGraded = String.valueOf(dataBase.getNoSubjectGraded(newValue));
+                        String noSubjectNotGraded = String.valueOf(dataBase.getNoSubjectNotGraded(newValue));
+                        Float percentSubjectPassed = dataBase.getPercentSubjectPassed(newValue);
+                        Platform.runLater(() -> {
+                            noSubjectStudentField.setText(noSubjectStudent);
+                            avgSubjectGradeField.setText(avgSubjectGrade);
+                            noSubjectGradedField.setText(noSubjectGraded);
+                            noSubjectNotGradedField.setText(noSubjectNotGraded);
+                            percentSubjectPassedField.setText(percentSubjectPassed + " %");
+                        });
+                    } catch (SQLException error) {
+                        showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+                    }
+                });
+                thread.start();
             }
         });
         professorTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -163,6 +184,13 @@ public class AdministratorController {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
         }
         setSelectedItems();
+        currentTab = tabPane.getSelectionModel().getSelectedItem();
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                currentTab = newValue;
+            }
+        });
+
     }
 
     private void editSubject(Subject subject) {
@@ -171,7 +199,10 @@ public class AdministratorController {
             loader.setController(new AddSubjectController(subject));
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
-            secondaryStage.setTitle("Dodaj predmet");
+            if (subject == null)
+                secondaryStage.setTitle("Dodaj predmet");
+            else
+                secondaryStage.setTitle("Ažuriraj predmet");
             secondaryStage.getIcons().add(new Image("/img/subject.png"));
             secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
@@ -223,5 +254,108 @@ public class AdministratorController {
 
     public void addCurriculum(ActionEvent actionEvent) {
 
+    }
+
+    public void closeClick(ActionEvent actionEvent) {
+        BazaDAO.removeInstance();
+        Platform.exit();
+    }
+
+
+    public void logOutClick(ActionEvent actionEvent) {
+        BazaDAO.removeInstance();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Prijava");
+            loginStage.getIcons().add(new Image("/img/login.png"));
+            loginStage.setResizable(false);
+            loginStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            Stage currentStage = (Stage) tabPane.getScene().getWindow();
+            currentStage.close();
+            loginStage.show();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public void addClick(ActionEvent actionEvent) {
+        switch (currentTab.getText()) {
+            case "Predmeti":
+                addSubject(null);
+                break;
+            case "Profesori":
+                addProfessor(null);
+                break;
+            case "Studenti":
+                addStudent(null);
+                break;
+            case "Smjerovi":
+                addCourse(null);
+                break;
+            case "Programi":
+                addCurriculum(null);
+                break;
+        }
+    }
+
+    public void updateClick(ActionEvent actionEvent) {
+        switch (currentTab.getText()) {
+            case "Predmeti":
+                updateSubject(null);
+                break;
+                /*
+            case "Profesori":
+                updateProfessor(null);
+                break;
+            case "Studenti":
+                updateStudent(null);
+                break;
+            case "Smjerovi":
+                updateCourse(null);
+                break;
+            case "Programi":
+                updateCurriculum(null);
+                break;
+                */
+        }
+    }
+
+    public void deleteClick(ActionEvent actionEvent) {
+        switch (currentTab.getText()) {
+            case "Predmeti":
+                deleteSubject(null);
+                break;
+                /*
+            case "Profesori":
+                deleteProfessor(null);
+                break;
+            case "Studenti":
+                deleteStudent(null);
+                break;
+            case "Smjerovi":
+                deleteCourse(null);
+                break;
+            case "Programi":
+                deleteCurriculum(null);
+                break;
+                */
+        }
+    }
+
+    public void aboutClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/about.fxml"));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("O meni");
+            secondaryStage.getIcons().add(new Image("/img/about.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

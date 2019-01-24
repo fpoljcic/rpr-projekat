@@ -12,6 +12,7 @@ public class BazaDAO {
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt;
     private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt;
+    private PreparedStatement getNoStudentsOnSubjectStmt, getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
     private Connection conn;
 
     public static BazaDAO getInstance() {
@@ -55,7 +56,7 @@ public class BazaDAO {
             updateProfessorStmt = conn.prepareStatement("UPDATE FP18120.PROFESSOR SET TITLE=? WHERE ID=?");
             updateStudentStmt = conn.prepareStatement("UPDATE FP18120.STUDENT SET BIRTH_DATE=?, SEMESTER_ID=?, COURSE_ID=? WHERE ID=?");
             updateCourseStmt = conn.prepareStatement("UPDATE FP18120.COURSE SET NAME=? WHERE ID=?");
-            updateCurriculumStmt = conn.prepareStatement("UPDATE FP18120.CURRICULUM SET COURSE_ID=?, SEMESTER_ID=?, MAIN_SUBJECT_ID=?, SECONDARY_SUBJECT_ID=? WHERE ID=?");
+            updateCurriculumStmt = conn.prepareStatement("UPDATE FP18120.CURRICULUM SET COURSE_ID=?, SEMESTER_ID=?, SUBJECT_ID=?, REQUIRED_SUBJECT=? WHERE ID=?");
 
             deleteSubjectStmt = conn.prepareStatement("DELETE FROM FP18120.SUBJECT WHERE ID=?");
             deletePersonStmt = conn.prepareStatement("DELETE FROM FP18120.PERSON WHERE ID=?");
@@ -69,6 +70,11 @@ public class BazaDAO {
             allStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE PERSON.ID=STUDENT.ID");
             allCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE");
             allCurriculumStmt = conn.prepareStatement("SELECT * FROM FP18120.CURRICULUM");
+
+            getNoStudentsOnSubjectStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE WHERE SCORE IS NULL AND SUBJECT_ID=?");
+            getavgSubjectGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.GRADE WHERE SCORE IS NOT NULL AND SUBJECT_ID=?");
+            getNoSubjectGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE WHERE SCORE IS NOT NULL AND SUBJECT_ID=?");
+            getNoSubjectNotGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE WHERE SCORE IS NULL AND SUBJECT_ID=?");
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa konektovanjem na bazu: " + error.getMessage(), Alert.AlertType.ERROR);
         }
@@ -248,8 +254,8 @@ public class BazaDAO {
             curriculum.setId(resultSet.getInt(1));
             curriculum.setCourse(getCourse(resultSet.getInt(2)));
             curriculum.setSemester(getSemester(resultSet.getInt(3)));
-            curriculum.setMainSubject(getSubject(resultSet.getInt(4)));
-            curriculum.setSecondarySubject(getSubject(resultSet.getInt(5)));
+            curriculum.setSubject(getSubject(resultSet.getInt(4)));
+            curriculum.setRequiredSubject(resultSet.getString(5));
             curriculums.add(curriculum);
         }
         return curriculums;
@@ -295,8 +301,8 @@ public class BazaDAO {
     public void addCurriculum(Curriculum curriculum) throws SQLException {
         addCurriculumStmt.setInt(1, curriculum.getCourse().getId());
         addCurriculumStmt.setInt(2, curriculum.getSemester().getId());
-        addCurriculumStmt.setInt(3, curriculum.getMainSubject().getId());
-        addCurriculumStmt.setInt(4, curriculum.getSecondarySubject().getId());
+        addCurriculumStmt.setInt(3, curriculum.getSubject().getId());
+        addCurriculumStmt.setString(4, curriculum.getRequiredSubject());
         addCurriculumStmt.executeUpdate();
     }
 
@@ -345,8 +351,8 @@ public class BazaDAO {
     public void updateCurriculum(Curriculum curriculum) throws SQLException {
         updateCurriculumStmt.setInt(1, curriculum.getCourse().getId());
         updateCurriculumStmt.setInt(2, curriculum.getSemester().getId());
-        updateCurriculumStmt.setInt(3, curriculum.getMainSubject().getId());
-        updateCurriculumStmt.setInt(4, curriculum.getSecondarySubject().getId());
+        updateCurriculumStmt.setInt(3, curriculum.getSubject().getId());
+        updateCurriculumStmt.setString(4, curriculum.getRequiredSubject());
         updateCurriculumStmt.executeUpdate();
     }
 
@@ -378,5 +384,39 @@ public class BazaDAO {
     public void deleteCurriculum(Curriculum curriculum) throws SQLException {
         deleteCurriculumStmt.setInt(1, curriculum.getId());
         deleteCurriculumStmt.executeUpdate();
+    }
+
+    public float getAvgSubjectGrade(Subject subject) throws SQLException {
+        float average = 0;
+        getavgSubjectGradeStmt.setInt(1, subject.getId());
+        var resultSet = getavgSubjectGradeStmt.executeQuery();
+        while (resultSet.next())
+            average = resultSet.getFloat(1);
+        return average;
+    }
+
+    public float getPercentSubjectPassed (Subject subject) throws SQLException {
+        return Math.round(getNoSubjectGraded(subject) * 10000f / (getNoSubjectGraded(subject) + getNoSubjectNotGraded(subject))) / 100f;
+    }
+
+    public int getNoStudentsOnSubject(Subject subject) throws SQLException {
+        return getCountInfo(subject, getNoStudentsOnSubjectStmt);
+    }
+
+    public int getNoSubjectGraded(Subject subject) throws SQLException {
+        return getCountInfo(subject, getNoSubjectGradedStmt);
+    }
+
+    public int getNoSubjectNotGraded(Subject subject) throws SQLException {
+        return getCountInfo(subject, getNoSubjectNotGradedStmt);
+    }
+
+    private int getCountInfo(Subject subject, PreparedStatement getNoSubjectNotGradedStmt) throws SQLException {
+        int no = 0;
+        getNoSubjectNotGradedStmt.setInt(1, subject.getId());
+        var resultSet = getNoSubjectNotGradedStmt.executeQuery();
+        while (resultSet.next())
+            no = resultSet.getInt(1);
+        return no;
     }
 }

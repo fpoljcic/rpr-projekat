@@ -10,6 +10,8 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -33,8 +35,8 @@ public class LoginController {
         studentRadioBtn.setToggleGroup(toggleGroup);
         professorRadioBtn.setToggleGroup(toggleGroup);
         adminRadioBtn.setToggleGroup(toggleGroup);
-        studentRadioBtn.setSelected(true);
-        selectedUser = studentRadioBtn.getText();
+        adminRadioBtn.setSelected(true);
+        selectedUser = adminRadioBtn.getText();
         studentRadioBtn.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue)
                 selectedUser = studentRadioBtn.getText();
@@ -66,7 +68,7 @@ public class LoginController {
             showAlert("Greška", "Unesite šifru", Alert.AlertType.ERROR);
             return;
         }
-        login = dataBase.getLogin(usernameField.getText(), passwordField.getText(), selectedUser);
+        login = dataBase.getLogin(usernameField.getText().trim(), passwordField.getText().trim(), selectedUser);
         if (login == null) {
             showAlert("Greška", "Ne postoji korisnik sa datim podacima", Alert.AlertType.ERROR);
             return;
@@ -107,5 +109,10 @@ public class LoginController {
             System.out.println(error.getMessage());
             return null;
         }
+    }
+
+    public void keyEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER)
+            loginClick(null);
     }
 }
