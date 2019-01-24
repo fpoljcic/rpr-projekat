@@ -1,5 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
+import java.util.Objects;
+
 public class Grade {
     private int id;
     private Student student;
@@ -56,5 +58,18 @@ public class Grade {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Grade grade = (Grade) o;
+        return id == grade.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

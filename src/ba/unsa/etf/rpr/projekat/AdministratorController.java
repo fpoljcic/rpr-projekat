@@ -3,11 +3,22 @@ package ba.unsa.etf.rpr.projekat;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
+
+import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class AdministratorController {
     public TableView<Subject> subjectTable;
@@ -45,6 +56,11 @@ public class AdministratorController {
     public TableColumn<Curriculum, Subject> curriculumSecondarySubjectCol;
     private Login login;
     private BazaDAO dataBase;
+    private Subject selectedSubject;
+    private Professor selectedProfessor;
+    private Student selectedStudent;
+    private Course selectedCourse;
+    private Curriculum selectedCurriculum;
 
 
     public AdministratorController(Login login) {
@@ -52,7 +68,14 @@ public class AdministratorController {
         dataBase = BazaDAO.getInstance();
     }
 
-    private void fillSubjects() {
+    private void showAlert(String title, String headerText, Alert.AlertType type) {
+        Alert error = new Alert(type);
+        error.setTitle(title);
+        error.setHeaderText(headerText);
+        error.show();
+    }
+
+    private void fillSubjects() throws SQLException {
         subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects()));
         subjectIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         subjectNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -61,7 +84,7 @@ public class AdministratorController {
         subjectProfessorCol.setCellValueFactory(new PropertyValueFactory<>("professor"));
     }
 
-    private void fillProfessors() {
+    private void fillProfessors() throws SQLException {
         professorTable.setItems(FXCollections.observableArrayList(dataBase.professors()));
         professorIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         professorFirstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -72,7 +95,7 @@ public class AdministratorController {
         professorTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
     }
 
-    private void fillStudents() {
+    private void fillStudents() throws SQLException {
         studentTable.setItems(FXCollections.observableArrayList(dataBase.students()));
         studentIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         studentFirstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -85,13 +108,13 @@ public class AdministratorController {
         studentCourseCol.setCellValueFactory(new PropertyValueFactory<>("course"));
     }
 
-    private void fillCourses() {
+    private void fillCourses() throws SQLException {
         courseTable.setItems(FXCollections.observableArrayList(dataBase.courses()));
         courseIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         courseNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
     }
 
-    private void fillCurriculums() {
+    private void fillCurriculums() throws SQLException {
         curriculumTable.setItems(FXCollections.observableArrayList(dataBase.curriculums()));
         curriculumIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         curriculumCourseCol.setCellValueFactory(new PropertyValueFactory<>("course"));
@@ -100,17 +123,90 @@ public class AdministratorController {
         curriculumSecondarySubjectCol.setCellValueFactory(new PropertyValueFactory<>("secondarySubject"));
     }
 
+    private void setSelectedItems() {
+        subjectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+            }
+        });
+        professorTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedProfessor = professorTable.getSelectionModel().getSelectedItem();
+            }
+        });
+        studentTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedStudent = studentTable.getSelectionModel().getSelectedItem();
+            }
+        });
+        courseTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedCourse = courseTable.getSelectionModel().getSelectedItem();
+            }
+        });
+        curriculumTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedCurriculum = curriculumTable.getSelectionModel().getSelectedItem();
+            }
+        });
+    }
+
     @FXML
     public void initialize() {
-        fillSubjects();
-        fillProfessors();
-        fillStudents();
-        fillCourses();
-        fillCurriculums();
+        try {
+            fillSubjects();
+            fillProfessors();
+            fillStudents();
+            fillCourses();
+            fillCurriculums();
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+        setSelectedItems();
+    }
+
+    private void editSubject(Subject subject) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addSubject.fxml"));
+            loader.setController(new AddSubjectController(subject));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("Dodaj predmet");
+            secondaryStage.getIcons().add(new Image("/img/subject.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects()));
+        } catch (IOException | SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     public void addSubject(ActionEvent actionEvent) {
+        editSubject(null);
+    }
 
+    public void updateSubject(ActionEvent actionEvent) {
+        if (selectedSubject == null) {
+            showAlert("Greška", "Prvo odaberite predmet", Alert.AlertType.ERROR);
+            return;
+        }
+        editSubject(selectedSubject);
+    }
+
+    public void deleteSubject(ActionEvent actionEvent) {
+        if (selectedSubject == null) {
+            showAlert("Greška", "Prvo odaberite predmet", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            dataBase.deleteSubject(selectedSubject);
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return;
+        }
+        showAlert("Uspjeh", "Uspješno izbrisan predmet", Alert.AlertType.INFORMATION);
     }
 
     public void addProfessor(ActionEvent actionEvent) {

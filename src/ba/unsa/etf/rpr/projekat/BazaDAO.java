@@ -9,6 +9,8 @@ public class BazaDAO {
     private static BazaDAO instance = null;
     private PreparedStatement getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt;
+    private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt;
+    private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt;
     private Connection conn;
 
@@ -48,6 +50,19 @@ public class BazaDAO {
             addCourseStmt = conn.prepareStatement("INSERT INTO FP18120.COURSE VALUES (FP18120.COURSE_SEQ.NEXTVAL, ?)");
             addCurriculumStmt = conn.prepareStatement("INSERT INTO FP18120.CURRICULUM VALUES (FP18120.CURRICULUM_SEQ.NEXTVAL, ?, ?, ?, ?)");
 
+            updateSubjectStmt = conn.prepareStatement("UPDATE FP18120.SUBJECT SET NAME=?, CODE=?, ECTS=?, PROFESSOR_ID=? WHERE ID=?");
+            updatePersonStmt = conn.prepareStatement("UPDATE FP18120.PERSON SET FIRST_NAME=?, LAST_NAME=?, JMBG=?, ADDRESS=?, EMAIL=?, LOGIN_ID=? WHERE ID=?");
+            updateProfessorStmt = conn.prepareStatement("UPDATE FP18120.PROFESSOR SET TITLE=? WHERE ID=?");
+            updateStudentStmt = conn.prepareStatement("UPDATE FP18120.STUDENT SET BIRTH_DATE=?, SEMESTER_ID=?, COURSE_ID=? WHERE ID=?");
+            updateCourseStmt = conn.prepareStatement("UPDATE FP18120.COURSE SET NAME=? WHERE ID=?");
+            updateCurriculumStmt = conn.prepareStatement("UPDATE FP18120.CURRICULUM SET COURSE_ID=?, SEMESTER_ID=?, MAIN_SUBJECT_ID=?, SECONDARY_SUBJECT_ID=? WHERE ID=?");
+
+            deleteSubjectStmt = conn.prepareStatement("DELETE FROM FP18120.SUBJECT WHERE ID=?");
+            deletePersonStmt = conn.prepareStatement("DELETE FROM FP18120.PERSON WHERE ID=?");
+            deleteProfessorStmt = conn.prepareStatement("DELETE FROM FP18120.PROFESSOR WHERE ID=?");
+            deleteStudentStmt = conn.prepareStatement("DELETE FROM FP18120.STUDENT WHERE ID=?");
+            deleteCourseStmt = conn.prepareStatement("DELETE FROM FP18120.COURSE WHERE ID=?");
+            deleteCurriculumStmt = conn.prepareStatement("DELETE FROM FP18120.CURRICULUM WHERE ID=?");
 
             allSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT");
             allProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PERSON.ID=PROFESSOR.ID");
@@ -108,42 +123,34 @@ public class BazaDAO {
         return professor;
     }
 
-    public ArrayList<Subject> subjects () {
+    public ArrayList<Subject> subjects () throws SQLException {
         ArrayList<Subject> subjects = new ArrayList<>();
-        try {
-            var resultSet = allSubjectStmt.executeQuery();
-            while (resultSet.next()) {
-                Subject subject = new Subject();
-                subject.setId(resultSet.getInt(1));
-                subject.setName(resultSet.getString(2));
-                subject.setCode(resultSet.getString(3));
-                subject.setEcts(resultSet.getInt(4));
-                subject.setProfessor(getProfessor(resultSet.getInt(5)));
-                subjects.add(subject);
-            }
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+        var resultSet = allSubjectStmt.executeQuery();
+        while (resultSet.next()) {
+            Subject subject = new Subject();
+            subject.setId(resultSet.getInt(1));
+            subject.setName(resultSet.getString(2));
+            subject.setCode(resultSet.getString(3));
+            subject.setEcts(resultSet.getInt(4));
+            subject.setProfessor(getProfessor(resultSet.getInt(5)));
+            subjects.add(subject);
         }
         return subjects;
     }
 
-    public ArrayList<Professor> professors () {
+    public ArrayList<Professor> professors () throws SQLException {
         ArrayList<Professor> professors = new ArrayList<>();
-        try {
-            var resultSet = allProfessorStmt.executeQuery();
-            while (resultSet.next()) {
-                Professor professor = new Professor();
-                professor.setId(resultSet.getInt(1));
-                professor.setFirstName(resultSet.getString(2));
-                professor.setLastName(resultSet.getString(3));
-                professor.setJmbg(resultSet.getString(4));
-                professor.setAddress(resultSet.getString(5));
-                professor.setEmail(resultSet.getString(6));
-                professor.setTitle(resultSet.getString(9));
-                professors.add(professor);
-            }
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+        var resultSet = allProfessorStmt.executeQuery();
+        while (resultSet.next()) {
+            Professor professor = new Professor();
+            professor.setId(resultSet.getInt(1));
+            professor.setFirstName(resultSet.getString(2));
+            professor.setLastName(resultSet.getString(3));
+            professor.setJmbg(resultSet.getString(4));
+            professor.setAddress(resultSet.getString(5));
+            professor.setEmail(resultSet.getString(6));
+            professor.setTitle(resultSet.getString(9));
+            professors.add(professor);
         }
         return professors;
     }
@@ -182,41 +189,33 @@ public class BazaDAO {
         return semester;
     }
 
-    public ArrayList<Student> students () {
+    public ArrayList<Student> students () throws SQLException {
         ArrayList<Student> students = new ArrayList<>();
-        try {
-            var resultSet = allStudentStmt.executeQuery();
-            while (resultSet.next()) {
-                Student student = new Student();
-                student.setId(resultSet.getInt(1));
-                student.setFirstName(resultSet.getString(2));
-                student.setLastName(resultSet.getString(3));
-                student.setJmbg(resultSet.getString(4));
-                student.setAddress(resultSet.getString(5));
-                student.setEmail(resultSet.getString(6));
-                student.setBirthDate(resultSet.getDate(9).toLocalDate());
-                student.setSemester(getSemester(resultSet.getInt(10)));
-                student.setCourse(getCourse(resultSet.getInt(11)));
-                students.add(student);
-            }
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+        var resultSet = allStudentStmt.executeQuery();
+        while (resultSet.next()) {
+            Student student = new Student();
+            student.setId(resultSet.getInt(1));
+            student.setFirstName(resultSet.getString(2));
+            student.setLastName(resultSet.getString(3));
+            student.setJmbg(resultSet.getString(4));
+            student.setAddress(resultSet.getString(5));
+            student.setEmail(resultSet.getString(6));
+            student.setBirthDate(resultSet.getDate(9).toLocalDate());
+            student.setSemester(getSemester(resultSet.getInt(10)));
+            student.setCourse(getCourse(resultSet.getInt(11)));
+            students.add(student);
         }
         return students;
     }
 
-    public ArrayList<Course> courses () {
+    public ArrayList<Course> courses () throws SQLException {
         ArrayList<Course> courses = new ArrayList<>();
-        try {
-            var resultSet = allCourseStmt.executeQuery();
-            while (resultSet.next()) {
-                Course course = new Course();
-                course.setId(resultSet.getInt(1));
-                course.setName(resultSet.getString(2));
-                courses.add(course);
-            }
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+        var resultSet = allCourseStmt.executeQuery();
+        while (resultSet.next()) {
+            Course course = new Course();
+            course.setId(resultSet.getInt(1));
+            course.setName(resultSet.getString(2));
+            courses.add(course);
         }
         return courses;
     }
@@ -241,91 +240,143 @@ public class BazaDAO {
     }
 
 
-    public ArrayList<Curriculum> curriculums () {
+    public ArrayList<Curriculum> curriculums () throws SQLException {
         ArrayList<Curriculum> curriculums = new ArrayList<>();
-        try {
-            var resultSet = allCurriculumStmt.executeQuery();
-            while (resultSet.next()) {
-                Curriculum curriculum = new Curriculum();
-                curriculum.setId(resultSet.getInt(1));
-                curriculum.setCourse(getCourse(resultSet.getInt(2)));
-                curriculum.setSemester(getSemester(resultSet.getInt(3)));
-                curriculum.setMainSubject(getSubject(resultSet.getInt(4)));
-                curriculum.setSecondarySubject(getSubject(resultSet.getInt(5)));
-                curriculums.add(curriculum);
-            }
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+        var resultSet = allCurriculumStmt.executeQuery();
+        while (resultSet.next()) {
+            Curriculum curriculum = new Curriculum();
+            curriculum.setId(resultSet.getInt(1));
+            curriculum.setCourse(getCourse(resultSet.getInt(2)));
+            curriculum.setSemester(getSemester(resultSet.getInt(3)));
+            curriculum.setMainSubject(getSubject(resultSet.getInt(4)));
+            curriculum.setSecondarySubject(getSubject(resultSet.getInt(5)));
+            curriculums.add(curriculum);
         }
         return curriculums;
     }
 
-    public void addSubject(Subject subject) {
-        try {
-            addSubjectStmt.setInt(1, subject.getId());
-            addSubjectStmt.setString(2, subject.getName());
-            addSubjectStmt.setString(3, subject.getCode());
-            addSubjectStmt.setInt(4, subject.getEcts());
-            addSubjectStmt.setInt(5, subject.getProfessor().getId());
-            addSubjectStmt.executeUpdate();
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem pri dodavanju: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+    public void addSubject(Subject subject) throws SQLException {
+        addSubjectStmt.setString(1, subject.getName());
+        addSubjectStmt.setString(2, subject.getCode());
+        addSubjectStmt.setInt(3, subject.getEcts());
+        addSubjectStmt.setInt(4, subject.getProfessor().getId());
+        addSubjectStmt.executeUpdate();
     }
 
-    public void addProfessor(Professor professor) {
-        try {
-            addPerson(professor);
-            addProfessorStmt.setString(1, professor.getTitle());
-            addProfessorStmt.executeUpdate();
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem pri dodavanju: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+    public void addProfessor(Professor professor) throws SQLException {
+        addPerson(professor);
+        addProfessorStmt.setString(1, professor.getTitle());
+        addProfessorStmt.executeUpdate();
     }
 
     public void addPerson(Person person) throws SQLException {
-        addPersonStmt.setInt(1, person.getId());
-        addPersonStmt.setString(2, person.getFirstName());
-        addPersonStmt.setString(3, person.getLastName());
-        addPersonStmt.setString(4, person.getJmbg());
-        addPersonStmt.setString(5, person.getAddress());
-        addPersonStmt.setString(6, person.getEmail());
-        addPersonStmt.setInt(7, person.getLogin().getId());
+        addPersonStmt.setString(1, person.getFirstName());
+        addPersonStmt.setString(2, person.getLastName());
+        addPersonStmt.setString(3, person.getJmbg());
+        addPersonStmt.setString(4, person.getAddress());
+        addPersonStmt.setString(5, person.getEmail());
+        addPersonStmt.setInt(6, person.getLogin().getId());
         addPersonStmt.executeUpdate();
     }
 
-    public void addStudent(Student student) {
-        try {
-            addPerson(student);
-            addStudentStmt.setDate(1, Date.valueOf(student.getBirthDate()));
-            addStudentStmt.setInt(2, student.getSemester().getId());
-            addStudentStmt.setInt(3, student.getCourse().getId());
-            addStudentStmt.executeUpdate();
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem pri dodavanju: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+    public void addStudent(Student student) throws SQLException {
+        addPerson(student);
+        addStudentStmt.setDate(1, Date.valueOf(student.getBirthDate()));
+        addStudentStmt.setInt(2, student.getSemester().getId());
+        addStudentStmt.setInt(3, student.getCourse().getId());
+        addStudentStmt.executeUpdate();
     }
 
-    public void addCourse(Course course) {
-        try {
-            addCourseStmt.setInt(1, course.getId());
-            addCourseStmt.setString(2, course.getName());
-            addCourseStmt.executeUpdate();
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem pri dodavanju: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+    public void addCourse(Course course) throws SQLException {
+        addCourseStmt.setString(1, course.getName());
+        addCourseStmt.executeUpdate();
     }
 
-    public void addCurriculum(Curriculum curriculum) {
-        try {
-            addCurriculumStmt.setInt(1, curriculum.getId());
-            addCurriculumStmt.setInt(2, curriculum.getCourse().getId());
-            addCurriculumStmt.setInt(3, curriculum.getSemester().getId());
-            addCurriculumStmt.setInt(4, curriculum.getMainSubject().getId());
-            addCurriculumStmt.setInt(5, curriculum.getSecondarySubject().getId());
-            addCurriculumStmt.executeUpdate();
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem pri dodavanju: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+    public void addCurriculum(Curriculum curriculum) throws SQLException {
+        addCurriculumStmt.setInt(1, curriculum.getCourse().getId());
+        addCurriculumStmt.setInt(2, curriculum.getSemester().getId());
+        addCurriculumStmt.setInt(3, curriculum.getMainSubject().getId());
+        addCurriculumStmt.setInt(4, curriculum.getSecondarySubject().getId());
+        addCurriculumStmt.executeUpdate();
+    }
+
+    public void updateSubject(Subject subject) throws SQLException {
+        updateSubjectStmt.setString(1, subject.getName());
+        updateSubjectStmt.setString(2, subject.getCode());
+        updateSubjectStmt.setInt(3, subject.getEcts());
+        updateSubjectStmt.setInt(4, subject.getProfessor().getId());
+        updateSubjectStmt.setInt(5, subject.getId());
+        updateSubjectStmt.executeUpdate();
+    }
+
+    public void updatePerson(Person person) throws SQLException {
+        updatePersonStmt.setString(1, person.getFirstName());
+        updatePersonStmt.setString(2, person.getLastName());
+        updatePersonStmt.setString(3, person.getJmbg());
+        updatePersonStmt.setString(4, person.getAddress());
+        updatePersonStmt.setString(5, person.getEmail());
+        updatePersonStmt.setInt(6, person.getLogin().getId());
+        updatePersonStmt.setInt(7, person.getId());
+        updatePersonStmt.executeUpdate();
+    }
+
+    public void updateProfessor(Professor professor) throws SQLException {
+        updatePerson(professor);
+        updateProfessorStmt.setString(1, professor.getTitle());
+        updateProfessorStmt.setInt(2, professor.getId());
+        updateProfessorStmt.executeUpdate();
+    }
+
+    public void updateStudent(Student student) throws SQLException {
+        updatePerson(student);
+        updateStudentStmt.setDate(1, Date.valueOf(student.getBirthDate()));
+        updateStudentStmt.setInt(2, student.getSemester().getId());
+        updateStudentStmt.setInt(3, student.getCourse().getId());
+        updateStudentStmt.setInt(4, student.getId());
+        updateStudentStmt.executeUpdate();
+    }
+
+    public void updateCourse(Course course) throws SQLException {
+        updateCourseStmt.setString(1, course.getName());
+        updateCourseStmt.setInt(2, course.getId());
+        updateCourseStmt.executeUpdate();
+    }
+
+    public void updateCurriculum(Curriculum curriculum) throws SQLException {
+        updateCurriculumStmt.setInt(1, curriculum.getCourse().getId());
+        updateCurriculumStmt.setInt(2, curriculum.getSemester().getId());
+        updateCurriculumStmt.setInt(3, curriculum.getMainSubject().getId());
+        updateCurriculumStmt.setInt(4, curriculum.getSecondarySubject().getId());
+        updateCurriculumStmt.executeUpdate();
+    }
+
+    public void deleteSubject(Subject subject) throws SQLException {
+        deleteSubjectStmt.setInt(1, subject.getId());
+        deleteSubjectStmt.executeUpdate();
+    }
+
+    public void deletePerson(Person person) throws SQLException {
+        deleteSubjectStmt.setInt(1, person.getId());
+        deleteSubjectStmt.executeUpdate();
+    }
+
+    public void deleteProfessor(Professor professor) throws SQLException {
+        deleteProfessorStmt.setInt(1, professor.getId());
+        deleteProfessorStmt.executeUpdate();
+    }
+
+    public void deleteStudent(Student student) throws SQLException {
+        deleteStudentStmt.setInt(1, student.getId());
+        deleteStudentStmt.executeUpdate();
+    }
+
+    public void deleteCourse(Course course) throws SQLException {
+        deleteCourseStmt.setInt(1, course.getId());
+        deleteCourseStmt.executeUpdate();
+    }
+
+    public void deleteCurriculum(Curriculum curriculum) throws SQLException {
+        deleteCurriculumStmt.setInt(1, curriculum.getId());
+        deleteCurriculumStmt.executeUpdate();
     }
 }

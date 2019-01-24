@@ -1,5 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
+import java.util.Objects;
+
 public class Curriculum {
     private int id;
     private Course course;
@@ -56,5 +58,18 @@ public class Curriculum {
 
     public void setSecondarySubject(Subject secondarySubject) {
         this.secondarySubject = secondarySubject;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Curriculum that = (Curriculum) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,5 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
+import java.util.Objects;
+
 public class Semester {
     private int id;
     private int no;
@@ -51,5 +53,18 @@ public class Semester {
     @Override
     public String toString() {
         return no + ". semestar - " + cycleNo + ". ciklus studija";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Semester semester = (Semester) o;
+        return id == semester.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

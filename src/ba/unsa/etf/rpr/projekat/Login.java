@@ -1,6 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Login {
     private int id;
@@ -58,5 +59,18 @@ public class Login {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Login login = (Login) o;
+        return id == login.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

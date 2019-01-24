@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
-public class ControllerLogin {
+public class LoginController {
     public TextField passwordField;
     public TextField usernameField;
     public RadioButton studentRadioBtn;
