@@ -25,6 +25,7 @@ public class ControllerLogin {
     private String selectedUser;
     private LoginDAO loginDb;
     private ToggleGroup toggleGroup;
+    private Login login;
 
     @FXML
     public void initialize() {
@@ -65,12 +66,11 @@ public class ControllerLogin {
             showAlert("Greška", "Unesite šifru", Alert.AlertType.ERROR);
             return;
         }
-        Integer id = loginDb.getUserId(usernameField.getText(), passwordField.getText(), selectedUser);
-        if (id == null) {
+        login = loginDb.getLogin(usernameField.getText(), passwordField.getText(), selectedUser);
+        if (login == null) {
             showAlert("Greška", "Ne postoji korisnik sa datim podacima", Alert.AlertType.ERROR);
             return;
         }
-        System.out.println(id);
         RadioButton selectedToggle = (RadioButton) toggleGroup.getSelectedToggle();
         Stage mainStage = getNewStage(selectedToggle.getText());
         if (mainStage == null) {
@@ -84,7 +84,21 @@ public class ControllerLogin {
 
     private Stage getNewStage(String stageName) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/" + stageName.toLowerCase() + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + stageName.toLowerCase() + ".fxml"));
+            /*
+            switch (stageName) {
+                case "Administrator":
+                    loader.setController(new AdministratorController(login));
+                    break;
+                case "Student":
+                    loader.setController(new StudentController(login));
+                    break;
+                case "Professor":
+                    loader.setController(new ProfessorController(login));
+                    break;
+            }
+            */
+            Parent root = loader.load();
             Stage mainStage = new Stage();
             mainStage.setTitle(stageName);
             mainStage.getIcons().add(new Image("/img/" + stageName.toLowerCase() + ".png"));

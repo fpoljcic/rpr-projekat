@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class LoginDAO {
     private static LoginDAO instance = null;
-    private PreparedStatement getIdStatement;
+    private PreparedStatement getLoginStmt;
     private Connection conn;
 
     public static LoginDAO getInstance() {
@@ -34,7 +34,7 @@ public class LoginDAO {
             return;
         }
         try {
-            getIdStatement = conn.prepareStatement("SELECT ID FROM FP18120.LOGIN WHERE USERNAME=? AND PASSWORD=? AND USER_TYPE=?");
+            getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE USERNAME=? AND PASSWORD=? AND USER_TYPE=?");
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa konektovanjem na bazu: " + error.getMessage(), Alert.AlertType.ERROR);
         }
@@ -47,19 +47,24 @@ public class LoginDAO {
         error.show();
     }
 
-    public Integer getUserId(String username, String password, String user_type) {
-        Integer id = null;
+    public Login getLogin(String username, String password, String user_type) {
+        Login login = null;
         try {
-            getIdStatement.setString(1, username);
-            getIdStatement.setString(2, password);
-            getIdStatement.setString(3, user_type);
-            getIdStatement = conn.prepareStatement("SELECT ID FROM FP18120.LOGIN WHERE USERNAME='test' AND PASSWORD='test' AND USER_TYPE='Administrator'");
-            var resultSet = getIdStatement.executeQuery();
-            while (resultSet.next())
-                id = resultSet.getInt(1);
+            getLoginStmt.setString(1, username);
+            getLoginStmt.setString(2, password);
+            getLoginStmt.setString(3, user_type);
+            var resultSet = getLoginStmt.executeQuery();
+            while (resultSet.next()) {
+                login = new Login();
+                login.setId(resultSet.getInt(1));
+                login.setUsername(resultSet.getString(2));
+                login.setPassword(resultSet.getString(3));
+                login.setDateCreated(resultSet.getDate(4).toLocalDate());
+                login.setUserType(resultSet.getString(5));
+            }
         } catch (SQLException ignored) {
             return null;
         }
-        return id;
+        return login;
     }
 }
