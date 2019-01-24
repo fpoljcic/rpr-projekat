@@ -23,7 +23,7 @@ public class ControllerLogin {
     public RadioButton professorRadioBtn;
     public RadioButton adminRadioBtn;
     private String selectedUser;
-    private LoginDAO loginDb;
+    private BazaDAO dataBase;
     private ToggleGroup toggleGroup;
     private Login login;
 
@@ -47,7 +47,7 @@ public class ControllerLogin {
             if (newValue)
                 selectedUser = adminRadioBtn.getText();
         });
-        loginDb = LoginDAO.getInstance();
+        dataBase = BazaDAO.getInstance();
     }
 
     private void showAlert(String title, String headerText, Alert.AlertType type) {
@@ -66,7 +66,7 @@ public class ControllerLogin {
             showAlert("Greška", "Unesite šifru", Alert.AlertType.ERROR);
             return;
         }
-        login = loginDb.getLogin(usernameField.getText(), passwordField.getText(), selectedUser);
+        login = dataBase.getLogin(usernameField.getText(), passwordField.getText(), selectedUser);
         if (login == null) {
             showAlert("Greška", "Ne postoji korisnik sa datim podacima", Alert.AlertType.ERROR);
             return;
@@ -85,7 +85,6 @@ public class ControllerLogin {
     private Stage getNewStage(String stageName) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + stageName.toLowerCase() + ".fxml"));
-            /*
             switch (stageName) {
                 case "Administrator":
                     loader.setController(new AdministratorController(login));
@@ -97,7 +96,6 @@ public class ControllerLogin {
                     loader.setController(new ProfessorController(login));
                     break;
             }
-            */
             Parent root = loader.load();
             Stage mainStage = new Stage();
             mainStage.setTitle(stageName);
@@ -106,6 +104,7 @@ public class ControllerLogin {
             mainStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             return mainStage;
         } catch (IOException error) {
+            System.out.println(error.getMessage());
             return null;
         }
     }

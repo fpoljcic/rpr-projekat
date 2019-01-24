@@ -47,4 +47,9 @@ public class Semester {
     public void setEcts(int ects) {
         this.ects = ects;
     }
+
+    @Override
+    public String toString() {
+        return no + ". semestar - " + cycleNo + ". ciklus studija";
+    }
 }

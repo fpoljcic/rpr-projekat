@@ -68,8 +68,41 @@ CREATE TABLE curriculum (
     secondary_subject_id      INTEGER REFERENCES subject(id)
 );
 
+CREATE SEQUENCE subject_seq
+INCREMENT BY 1
+START WITH 1;
+
+CREATE SEQUENCE person_seq
+INCREMENT BY 1
+START WITH 1;
+
+CREATE SEQUENCE grade_seq
+INCREMENT BY 1
+START WITH 1;
+
+CREATE SEQUENCE course_seq
+INCREMENT BY 1
+START WITH 1;
+
+CREATE SEQUENCE semester_seq
+INCREMENT BY 1
+START WITH 1;
+
+CREATE SEQUENCE curriculum_seq
+INCREMENT BY 1
+START WITH 1;
+
 INSERT INTO login VALUES(1, 'test', 'test', SYSDATE, 'Administrator');
-INSERT INTO person VALUES(1, 'Faris', 'Poljcic', '2107998170067', 'Adresa 123', 'fpoljcic1@etf.unsa.ba', 1);    
+INSERT INTO login VALUES(2, 'test2', 'test', SYSDATE, 'Administrator');
+
+INSERT INTO person VALUES(1, 'Faris', 'Poljcic', '2107998170067', 'Adresa 123', 'fpoljcic1@etf.unsa.ba', 1);
+INSERT INTO person VALUES(2, 'Test', 'PlsWork', '2107998170057', 'Asssdresa 123', 'kkkkk@etf.unsa.ba', 2); 
+
+INSERT INTO student VALUES(1, TO_DATE('21-07-1998', 'dd-mm-yyyy'), NULL, NULL);   
+INSERT INTO professor VALUES(2, 'Vanredni prof');
+
+INSERT INTO subject VALUES(1, 'Tjelesno', 'TJE', 5, 2);
+
 
 
 SELECT ID FROM FP18120.LOGIN WHERE USERNAME='test' AND PASSWORD='test' AND USER_TYPE='Administrator';

@@ -58,4 +58,9 @@ public class Subject {
     public void setProfessor(Professor professor) {
         this.professor = professor;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

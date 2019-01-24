@@ -1,14 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ba.unsa.etf.rpr.projekat.AdministratorController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane prefHeight="480.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"        >
+    <!--                  fx:controller="ba.unsa.etf.rpr.projekat.AdministratorController"                     !-->
+   <center>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Predmeti">
+            <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <right>
+                        <Button mnemonicParsing="false" onAction="#addSubject" text="Dodaj predmet" BorderPane.alignment="TOP_CENTER">
+                           <BorderPane.margin>
+                              <Insets left="5.0" />
+                           </BorderPane.margin></Button>
+                     </right>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <center>
+                        <TableView fx:id="subjectTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="subjectIdCol" prefWidth="62.0" text="Id" />
+                              <TableColumn fx:id="subjectNameCol" prefWidth="188.0" text="Naziv" />
+                              <TableColumn fx:id="subjectCodeCol" minWidth="0.0" prefWidth="84.0" text="Šifra" />
+                              <TableColumn fx:id="subjectEctsCol" prefWidth="83.0" text="Ects" />
+                              <TableColumn fx:id="subjectProfessorCol" prefWidth="90.0" text="Profesor" />
+                           </columns>
+                        </TableView>
+                     </center>
+                  </BorderPane>
+            </content>
+          </Tab>
+          <Tab text="Profesori">
+            <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <right>
+                        <Button mnemonicParsing="false" onAction="#addProfessor" text="Dodaj profesora" BorderPane.alignment="TOP_CENTER">
+                           <BorderPane.margin>
+                              <Insets left="5.0" />
+                           </BorderPane.margin>
+                        </Button>
+                     </right>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <center>
+                        <TableView fx:id="professorTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <columns>
+                            <TableColumn fx:id="professorIdCol" prefWidth="62.0" text="Id" />
+                            <TableColumn fx:id="professorFirstNameCol" prefWidth="44.0" text="Ime" />
+                              <TableColumn fx:id="professorLastNameCol" minWidth="0.0" prefWidth="82.0" text="Prezime" />
+                              <TableColumn fx:id="professorJmbgCol" prefWidth="99.0" text="Jmbg" />
+                              <TableColumn fx:id="professorAdressCol" prefWidth="74.0" text="Adresa" />
+                              <TableColumn fx:id="professorEmailCol" prefWidth="74.0" text="Email" />
+                              <TableColumn fx:id="professorTitleCol" prefWidth="111.0" text="Titula" />
+                          </columns>
+                        </TableView>
+                     </center>
+                  </BorderPane>
+            </content>
+          </Tab>
+            <Tab text="Studenti">
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <right>
+                        <Button mnemonicParsing="false" onAction="#addStudent" text="Dodaj studenta" BorderPane.alignment="TOP_CENTER">
+                           <BorderPane.margin>
+                              <Insets left="5.0" />
+                           </BorderPane.margin>
+                        </Button>
+                     </right>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <center>
+                        <TableView fx:id="studentTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="studentIdCol" prefWidth="62.0" text="Id" />
+                              <TableColumn fx:id="studentFirstNameCol" prefWidth="44.0" text="Ime" />
+                              <TableColumn fx:id="studentLastNameCol" minWidth="0.0" prefWidth="64.0" text="Prezime" />
+                              <TableColumn fx:id="studentJmbgCol" prefWidth="46.0" text="Jmbg" />
+                              <TableColumn fx:id="studentAdressCol" prefWidth="53.0" text="Adresa" />
+                              <TableColumn fx:id="studentEmailCol" prefWidth="53.0" text="Email" />
+                              <TableColumn fx:id="studentBirthDateCol" prefWidth="130.0" text="Datum rođenja" />
+                              <TableColumn fx:id="studentSemesterCol" prefWidth="64.0" text="Semestar" />
+                              <TableColumn fx:id="studentCourseCol" prefWidth="91.0" text="Smjer" />
+                           </columns>
+                        </TableView>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
+            <Tab text="Smjerovi">
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <TableView fx:id="courseTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="courseIdCol" prefWidth="62.0" text="Id" />
+                              <TableColumn fx:id="courseNameCol" prefWidth="188.0" text="Naziv" />
+                           </columns>
+                        </TableView>
+                     </center>
+                     <right>
+                        <Button mnemonicParsing="false" onAction="#addCourse" text="Dodaj smjer" BorderPane.alignment="TOP_CENTER">
+                           <BorderPane.margin>
+                              <Insets left="5.0" />
+                           </BorderPane.margin>
+                        </Button>
+                     </right>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </BorderPane>
+               </content>
+            </Tab>
+            <Tab text="Programi">
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <TableView fx:id="curriculumTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn fx:id="curriculumIdCol" prefWidth="62.0" text="Id" />
+                              <TableColumn fx:id="curriculumCourseCol" prefWidth="188.0" text="Smjer" />
+                              <TableColumn fx:id="curriculumSemesterCol" minWidth="0.0" prefWidth="84.0" text="Semestar" />
+                              <TableColumn fx:id="curriculumMainSubjectCol" prefWidth="120.0" text="Obavezni predmet" />
+                              <TableColumn fx:id="curriculumSecondarySubjectCol" prefWidth="143.0" text="Izborni predmet" />
+                           </columns>
+                        </TableView>
+                     </center>
+                     <right>
+                        <Button mnemonicParsing="false" onAction="#addCurriculum" text="Dodaj program" BorderPane.alignment="TOP_CENTER">
+                           <BorderPane.margin>
+                              <Insets left="5.0" />
+                           </BorderPane.margin>
+                        </Button>
+                     </right>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </BorderPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
