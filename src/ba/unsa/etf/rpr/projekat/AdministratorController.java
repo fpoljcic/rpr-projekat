@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -30,6 +32,7 @@ public class AdministratorController {
     public TableColumn<Subject, String> subjectCodeCol;
     public TableColumn<Subject, Integer> subjectEctsCol;
     public TableColumn<Subject, Professor> subjectProfessorCol;
+    public TableColumn<Subject, Subject> subjectReqSubjectCol;
     public TableColumn<Professor, Integer> professorIdCol;
     public TableColumn<Professor, String> professorFirstNameCol;
     public TableColumn<Professor, String> professorLastNameCol;
@@ -46,6 +49,7 @@ public class AdministratorController {
     public TableColumn<Student, LocalDate> studentBirthDateCol;
     public TableColumn<Student, Semester> studentSemesterCol;
     public TableColumn<Student, Course> studentCourseCol;
+    public TableColumn<Student, LocalDate> studentPauseDateCol;
     public TableColumn<Course, Integer> courseIdCol;
     public TableColumn<Course, String> courseNameCol;
     public TableColumn<Curriculum, Integer> curriculumIdCol;
@@ -54,7 +58,7 @@ public class AdministratorController {
     public TableColumn<Curriculum, Subject> curriculumSubjectCol;
     public TableColumn<Curriculum, String> curriculumRequiredSubjectCol;
     public TabPane tabPane;
-    public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField;
+    public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField, lastLoginDateField;
     private Login login;
     private BazaDAO dataBase;
     private Subject selectedSubject;
@@ -84,6 +88,7 @@ public class AdministratorController {
         subjectCodeCol.setCellValueFactory(new PropertyValueFactory<>("code"));
         subjectEctsCol.setCellValueFactory(new PropertyValueFactory<>("ects"));
         subjectProfessorCol.setCellValueFactory(new PropertyValueFactory<>("professor"));
+        subjectReqSubjectCol.setCellValueFactory(new PropertyValueFactory<>("reqSubject"));
     }
 
     private void fillProfessors() throws SQLException {
@@ -108,6 +113,7 @@ public class AdministratorController {
         studentBirthDateCol.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
         studentSemesterCol.setCellValueFactory(new PropertyValueFactory<>("semester"));
         studentCourseCol.setCellValueFactory(new PropertyValueFactory<>("course"));
+        studentPauseDateCol.setCellValueFactory(new PropertyValueFactory<>("pauseDate"));
     }
 
     private void fillCourses() throws SQLException {
@@ -144,7 +150,7 @@ public class AdministratorController {
                             percentSubjectPassedField.setText(percentSubjectPassed + " %");
                         });
                     } catch (SQLException error) {
-                        showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+                        Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
                     }
                 });
                 thread.start();
@@ -184,6 +190,7 @@ public class AdministratorController {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
         }
         setSelectedItems();
+        lastLoginDateField.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd. MM. yyyy HH:mm")));
         currentTab = tabPane.getSelectionModel().getSelectedItem();
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -232,7 +239,14 @@ public class AdministratorController {
             return;
         }
         try {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite izbrisati predmet '" + selectedSubject + "'?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
             dataBase.deleteSubject(selectedSubject);
+            subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects()));
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
@@ -240,7 +254,40 @@ public class AdministratorController {
         showAlert("Uspjeh", "Uspješno izbrisan predmet", Alert.AlertType.INFORMATION);
     }
 
+    private void editProfessor(Professor professor) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
+            loader.setController(new AddPersonController(selectedProfessor));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            if (professor == null)
+                secondaryStage.setTitle("Dodaj profesora");
+            else
+                secondaryStage.setTitle("Ažuriraj profesora");
+            secondaryStage.getIcons().add(new Image("/img/professor.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            professorTable.setItems(FXCollections.observableArrayList(dataBase.professors()));
+        } catch (IOException | SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     public void addProfessor(ActionEvent actionEvent) {
+        editProfessor(null);
+    }
+
+    public void updateProfessor(ActionEvent actionEvent) {
+        if (selectedProfessor == null) {
+            showAlert("Greška", "Prvo odaberite profesora", Alert.AlertType.ERROR);
+            return;
+        }
+        editProfessor(selectedProfessor);
+    }
+
+    public void deleteProfessor(ActionEvent actionEvent) {
 
     }
 
@@ -304,10 +351,10 @@ public class AdministratorController {
             case "Predmeti":
                 updateSubject(null);
                 break;
-                /*
             case "Profesori":
                 updateProfessor(null);
                 break;
+                /*
             case "Studenti":
                 updateStudent(null);
                 break;

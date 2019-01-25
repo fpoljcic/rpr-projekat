@@ -7,11 +7,12 @@
 --END;
 
 CREATE TABLE login (
-    id             INTEGER PRIMARY KEY,
-    username       VARCHAR(50) NOT NULL UNIQUE,
-    password       VARCHAR(100) NOT NULL,
-    date_created   DATE,
-    user_type      VARCHAR(30)
+    id                INTEGER PRIMARY KEY,
+    username          VARCHAR(50) NOT NULL UNIQUE,
+    password          VARCHAR(100) NOT NULL,
+    date_created      DATE,
+    user_type         VARCHAR(30),
+    last_login_date   DATE
 );
 
 CREATE TABLE person (
@@ -45,7 +46,8 @@ CREATE TABLE student (
     semester_id   INTEGER
         REFERENCES semester ( id ),
     course_id     INTEGER
-        REFERENCES course ( id )
+        REFERENCES course ( id ),
+    pause_date    DATE
 );
 
 CREATE TABLE professor (
@@ -61,22 +63,27 @@ CREATE TABLE administrator (
 );
 
 CREATE TABLE subject (
-    id             INTEGER PRIMARY KEY,
-    name           VARCHAR(50) NOT NULL,
-    code           VARCHAR(20) NOT NULL,
-    ects           INTEGER NOT NULL,
-    professor_id   INTEGER
-        REFERENCES professor ( id )
+    id               INTEGER PRIMARY KEY,
+    name             VARCHAR(50) NOT NULL,
+    code             VARCHAR(20) NOT NULL,
+    ects             INTEGER NOT NULL,
+    professor_id     INTEGER
+        REFERENCES professor ( id ),
+    req_subject_id   INTEGER
+        REFERENCES subject ( id )
 );
 
 CREATE TABLE grade (
-    id           INTEGER PRIMARY KEY,
-    student_id   INTEGER
+    id             INTEGER PRIMARY KEY,
+    student_id     INTEGER
         REFERENCES student ( id ),
-    subject_id   INTEGER
+    subject_id     INTEGER
         REFERENCES subject ( id ),
-    points       FLOAT NOT NULL,
-    score        INTEGER
+    points         FLOAT NOT NULL,
+    score          INTEGER,
+    grade_date     DATE,
+    professor_id   INTEGER
+        REFERENCES professor ( id )
 );
 
 CREATE TABLE curriculum (
@@ -118,13 +125,13 @@ CREATE SEQUENCE curriculum_seq
 START WITH 1
 INCREMENT BY 1;
 
-INSERT INTO login VALUES(login_seq.nextval, 'a', 'a', SYSDATE, 'Administrator');
-INSERT INTO login VALUES(login_seq.nextval, 'fpoljcic1', 'test', SYSDATE, 'Administrator');
-INSERT INTO login VALUES(login_seq.nextval, 'fsisic1', 'test', SYSDATE, 'Student');
-INSERT INTO login VALUES(login_seq.nextval, 'vljubovic2', 'test', SYSDATE, 'Profesor');
-INSERT INTO login VALUES(login_seq.nextval, 'zjuric', 'test', SYSDATE, 'Profesor');
-INSERT INTO login VALUES(login_seq.nextval, 'bpoljcic', 'test', SYSDATE, 'Student');
-INSERT INTO login VALUES(login_seq.nextval, 'apoljcic', 'test', SYSDATE, 'Student');
+INSERT INTO login VALUES(login_seq.nextval, 'a', 'a', SYSDATE, 'Administrator', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fpoljcic1', 'test', SYSDATE, 'Administrator', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fsisic1', 'test', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'vljubovic2', 'test', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'zjuric', 'test', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'bpoljcic', 'test', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'apoljcic', 'test', SYSDATE, 'Student', NULL);
 
 INSERT INTO person VALUES(person_seq.nextval, 'Test', 'Test', '2107998170067', 'Adresa', 'test@mail.ba', 1);
 INSERT INTO person VALUES(person_seq.nextval, 'Faris', 'Poljcic', '2207995170057', 'Tome Medje 3', 'fpoljcic1@etf.unsa.ba', 2);
@@ -153,22 +160,22 @@ INSERT INTO student VALUES(3, TO_DATE('01-07-1998', 'dd-mm-yyyy'), 1, 1);
 INSERT INTO professor VALUES(4, 'Vanredni prof');
 INSERT INTO professor VALUES(5, 'Redovni prof');
 INSERT INTO student VALUES(6, TO_DATE('21-01-1997', 'dd-mm-yyyy'), 2, 1); 
-INSERT INTO student VALUES(7, TO_DATE('10-01-1999', 'dd-mm-yyyy'), 1, 1);  
+INSERT INTO student VALUES(7, TO_DATE('10-01-1999', 'dd-mm-yyyy'), 1, SYSDATE);  
 
-INSERT INTO subject VALUES(subject_seq.nextval, 'Razvoj programskih rjesenja', 'RPR', 10, 4);
-INSERT INTO subject VALUES(subject_seq.nextval, 'Diskretna matematika', 'DM', 8, 5);
-INSERT INTO subject VALUES(subject_seq.nextval, 'Inzenjerska matematika 1', 'IM1', 8, 4);
-INSERT INTO subject VALUES(subject_seq.nextval, 'Operativni sistemi', 'OS', 7, 5);
-INSERT INTO subject VALUES(subject_seq.nextval, 'Osnove elektrotehnike', 'OE', 9, 5);
+INSERT INTO subject VALUES(subject_seq.nextval, 'Razvoj programskih rjesenja', 'RPR', 10, 4, NULL);
+INSERT INTO subject VALUES(subject_seq.nextval, 'Diskretna matematika', 'DM', 8, 5, NULL);
+INSERT INTO subject VALUES(subject_seq.nextval, 'Inzenjerska matematika 1', 'IM1', 8, 4, NULL);
+INSERT INTO subject VALUES(subject_seq.nextval, 'Operativni sistemi', 'OS', 7, 5, NULL);
+INSERT INTO subject VALUES(subject_seq.nextval, 'Osnove elektrotehnike', 'OE', 9, 5, 1);
 
-INSERT INTO grade VALUES(grade_seq.nextval, 3, 1, 83.34, 9);
-INSERT INTO grade VALUES(grade_seq.nextval, 3, 2, 92.3, NULL);
-INSERT INTO grade VALUES(grade_seq.nextval, 3, 5, 35, 9);
-INSERT INTO grade VALUES(grade_seq.nextval, 6, 1, 52.5, NULL);
-INSERT INTO grade VALUES(grade_seq.nextval, 6, 4, 60, 6);
-INSERT INTO grade VALUES(grade_seq.nextval, 7, 1, 10, NULL);
-INSERT INTO grade VALUES(grade_seq.nextval, 7, 5, 99, 10);
-INSERT INTO grade VALUES(grade_seq.nextval, 7, 3, 63.1, NULL);
+INSERT INTO grade VALUES(grade_seq.nextval, 3, 1, 83.34, 9, SYSDATE, 4);
+INSERT INTO grade VALUES(grade_seq.nextval, 3, 2, 92.3, NULL, NULL, NULL);
+INSERT INTO grade VALUES(grade_seq.nextval, 3, 5, 35, 9, SYSDATE, 5);
+INSERT INTO grade VALUES(grade_seq.nextval, 6, 1, 52.5, NULL, NULL, NULL);
+INSERT INTO grade VALUES(grade_seq.nextval, 6, 4, 60, 6, SYSDATE, 5);
+INSERT INTO grade VALUES(grade_seq.nextval, 7, 1, 10, NULL, NULL, NULL);
+INSERT INTO grade VALUES(grade_seq.nextval, 7, 5, 99, 10, SYSDATE, 5);
+INSERT INTO grade VALUES(grade_seq.nextval, 7, 3, 63.1, NULL, NULL, NULL);
 
 INSERT INTO curriculum VALUES(curriculum_seq.nextval, 1, 1, 1, 'Da');
 INSERT INTO curriculum VALUES(curriculum_seq.nextval, 1, 1, 2, 'Da');

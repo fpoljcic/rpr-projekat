@@ -1,5 +1,6 @@
 package ba.unsa.etf.rpr.projekat;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Grade {
@@ -8,13 +9,17 @@ public class Grade {
     private Subject subject;
     private float points;
     private int score;
+    private LocalDate gradeDate;
+    private Professor professor;
 
-    public Grade(int id, Student student, Subject subject, float points, int score) {
+    public Grade(int id, Student student, Subject subject, float points, int score, LocalDate gradeDate, Professor professor) {
         this.id = id;
         this.student = student;
         this.subject = subject;
         this.points = points;
         this.score = score;
+        this.gradeDate = gradeDate;
+        this.professor = professor;
     }
 
     public Grade() {
@@ -58,6 +63,22 @@ public class Grade {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public LocalDate getGradeDate() {
+        return gradeDate;
+    }
+
+    public void setGradeDate(LocalDate gradeDate) {
+        this.gradeDate = gradeDate;
+    }
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 
     @Override

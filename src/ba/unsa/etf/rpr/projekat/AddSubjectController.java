@@ -1,5 +1,6 @@
 package ba.unsa.etf.rpr.projekat;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ public class AddSubjectController {
     public TextField codeField;
     public ChoiceBox<Professor> professorChoiceBox;
     public Spinner<Integer> ectsSpinner;
+    public ChoiceBox<Subject> reqSubjectChoiceBox;
     private boolean[] validField;
     private BazaDAO dataBase;
     private Subject subject;
@@ -40,11 +42,19 @@ public class AddSubjectController {
 
     @FXML
     public void initialize() {
-        try {
-            professorChoiceBox.setItems(FXCollections.observableArrayList(dataBase.professors()));
-        } catch (SQLException error) {
-            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+        Thread thread = new Thread(() -> {
+            try {
+                var professors = FXCollections.observableArrayList(dataBase.professors());
+                var subjects = FXCollections.observableArrayList(dataBase.subjects());
+                Platform.runLater(() -> {
+                    professorChoiceBox.setItems(professors);
+                    reqSubjectChoiceBox.setItems(subjects);
+                });
+            } catch (SQLException error) {
+                showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
+        thread.start();
         ectsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1, 1));
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -75,6 +85,7 @@ public class AddSubjectController {
             codeField.setText(subject.getCode());
             ectsSpinner.getValueFactory().setValue(subject.getEcts());
             professorChoiceBox.setValue(subject.getProfessor());
+            reqSubjectChoiceBox.setValue(subject.getReqSubject());
         }
     }
 
@@ -105,6 +116,7 @@ public class AddSubjectController {
         subject.setCode(codeField.getText());
         subject.setEcts(ectsSpinner.getValue());
         subject.setProfessor(professorChoiceBox.getValue());
+        subject.setReqSubject(reqSubjectChoiceBox.getValue());
         dataBase.updateSubject(subject);
         showAlert("Uspjeh", "Uspješno ažuriran predmet", Alert.AlertType.INFORMATION);
     }
@@ -120,8 +132,7 @@ public class AddSubjectController {
                 showAlert("Greška", "Problem pri dodavanju: " + error.getMessage(), Alert.AlertType.ERROR);
                 return;
             }
-        }
-        else {
+        } else {
             try {
                 updateSubject();
             } catch (SQLException error) {

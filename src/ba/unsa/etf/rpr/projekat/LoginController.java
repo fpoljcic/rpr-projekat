@@ -15,6 +15,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -60,6 +62,7 @@ public class LoginController {
     }
 
     public void loginClick(ActionEvent actionEvent) {
+
         if (usernameField.getText().isEmpty()) {
             showAlert("Greška", "Unesite korisničko ime", Alert.AlertType.ERROR);
             return;
@@ -77,6 +80,13 @@ public class LoginController {
         Stage mainStage = getNewStage(selectedToggle.getText());
         if (mainStage == null) {
             showAlert("Greška", "Nepoznata greška", Alert.AlertType.ERROR);
+            return;
+        }
+        login.setLastLoginDate(LocalDate.now());
+        try {
+            dataBase.updateLogin(login);
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
         Stage currentStage = (Stage) usernameField.getScene().getWindow();
@@ -105,8 +115,7 @@ public class LoginController {
             mainStage.setResizable(false);
             mainStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             return mainStage;
-        } catch (IOException error) {
-            System.out.println(error.getMessage());
+        } catch (IOException ignored) {
             return null;
         }
     }

@@ -8,7 +8,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.File;
 
 public class AboutController {
 
@@ -22,7 +21,7 @@ public class AboutController {
         //Image image = new Image(file.toURI().toString());
         //imageView.setImage(image);
         imageView.setImage(new Image("/img/about.png"));
-        aboutText.setText("Naziv: Biblioteka\nAutor: Faris Poljčić");
+        aboutText.setText("Naziv: E-index\nAutor: Faris Poljčić");
     }
 
     public void buttonOkClick(ActionEvent actionEvent) {

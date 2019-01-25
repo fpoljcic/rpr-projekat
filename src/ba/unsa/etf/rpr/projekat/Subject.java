@@ -8,14 +8,16 @@ public class Subject {
     private String code;
     private int ects;
     private Professor professor;
+    private Subject reqSubject;
 
 
-    public Subject(int id, String name, String code, int ects, Professor professor) {
+    public Subject(int id, String name, String code, int ects, Professor professor, Subject reqSubject) {
         this.id = id;
         this.name = name;
         this.code = code;
         this.ects = ects;
         this.professor = professor;
+        this.reqSubject = reqSubject;
     }
 
     public Subject() {
@@ -59,6 +61,14 @@ public class Subject {
 
     public void setProfessor(Professor professor) {
         this.professor = professor;
+    }
+
+    public Subject getReqSubject() {
+        return reqSubject;
+    }
+
+    public void setReqSubject(Subject reqSubject) {
+        this.reqSubject = reqSubject;
     }
 
     @Override

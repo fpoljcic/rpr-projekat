@@ -9,13 +9,15 @@ public class Login {
     private String password;
     private LocalDate dateCreated;
     private String userType;
+    private LocalDate lastLoginDate;
 
-    public Login(int id, String username, String password, LocalDate dateCreated, String userType) {
+    public Login(int id, String username, String password, LocalDate dateCreated, String userType, LocalDate lastLoginDate) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.dateCreated = dateCreated;
         this.userType = userType;
+        this.lastLoginDate = lastLoginDate;
     }
 
     public Login() {
@@ -59,6 +61,14 @@ public class Login {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public LocalDate getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(LocalDate lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
     }
 
     @Override
