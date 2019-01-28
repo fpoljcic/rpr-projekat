@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
@@ -25,16 +24,16 @@ public class AddPersonController {
     public ChoiceBox<Semester> semesterChoiceBox;
     public ChoiceBox<Course> courseChoiceBox;
     public TextField titleField;
-    public GridPane professorGridPane;
-    public GridPane studentGridPane;
-    private boolean[] validField;
+    public Label birthDateLabel;
+    public Label semesterLabel;
+    public Label courseLabel;
+    public Label studentLabel;
+    public Label professorLabel;
+    public Label titleLabel;
     private BazaDAO dataBase;
     private Person person;
 
     public AddPersonController(Person person) {
-        validField = new boolean[8];
-        if (person instanceof Administrator)
-            validField[7] = true;
         dataBase = BazaDAO.getInstance();
         this.person = person;
     }
@@ -50,6 +49,22 @@ public class AddPersonController {
             textField.getStyleClass().removeAll("validField", "blankField");
             textField.getStyleClass().add("invalidField");
         }
+    }
+
+    private void disableStudent() {
+        studentLabel.setDisable(true);
+        birthDateLabel.setDisable(true);
+        birthDatePicker.setDisable(true);
+        semesterLabel.setDisable(true);
+        semesterChoiceBox.setDisable(true);
+        courseLabel.setDisable(true);
+        courseChoiceBox.setDisable(true);
+    }
+
+    private void disableProfessor() {
+        professorLabel.setDisable(true);
+        titleLabel.setDisable(true);
+        titleField.setDisable(true);
     }
 
     @FXML
@@ -72,21 +87,9 @@ public class AddPersonController {
             }
         });
         thread.start();
-        firstNameField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.length() <= 3 || newValue.length() >= 50) {
-                    addColor(firstNameField, false);
-                    validField[0] = false;
-                } else {
-                    addColor(firstNameField, true);
-                    validField[0] = true;
-                }
-            }
-        });
 
         if (person != null) {
             usernameField.setText(person.getLogin().getUsername());
-            userTypeChoiceBox.setValue(person.getClass().getName());
 
             firstNameField.setText(person.getFirstName());
             lastNameField.setText(person.getLastName());
@@ -95,12 +98,21 @@ public class AddPersonController {
             emailField.setText(person.getEmail());
 
             if (person instanceof Administrator) {
-                studentGridPane.setDisable(true);
-                professorGridPane.setDisable(true);
-            } else if (person instanceof Professor)
-                studentGridPane.setDisable(true);
-            else if (person instanceof Student)
-                professorGridPane.setDisable(true);
+                disableStudent();
+                disableProfessor();
+                userTypeChoiceBox.setValue("Administrator");
+            } else if (person instanceof Professor) {
+                disableStudent();
+                titleField.setText(((Professor) person).getTitle());
+                userTypeChoiceBox.setValue("Profesor");
+            }
+            else if (person instanceof Student) {
+                disableProfessor();
+                birthDatePicker.setValue(((Student) person).getBirthDate());
+                semesterChoiceBox.setValue(((Student) person).getSemester());
+                courseChoiceBox.setValue(((Student) person).getCourse());
+                userTypeChoiceBox.setValue("Student");
+            }
         }
     }
 
@@ -173,8 +185,122 @@ public class AddPersonController {
         showAlert("Uspjeh", "Uspješno ažurirana osoba", Alert.AlertType.INFORMATION);
     }
 
+    private String getJmbgString() {
+        return jmbgField.getText();
+    }
+
+    private int getJmbgDay() {
+        return Integer.parseInt(getJmbgString().substring(0, 2));
+    }
+
+    private int getJmbgMonth() {
+        return Integer.parseInt(getJmbgString().substring(2, 4));
+    }
+
+    private int getJmbgYear() {
+        int godina = Integer.parseInt(getJmbgString().substring(4, 7));
+        if (godina >= 900)
+            godina += 1000;
+        else
+            godina += 2000;
+        return godina;
+    }
+
+    private boolean validJmbg() {
+        if (getJmbgString().length() != 13 || !getJmbgString().matches("[0-9]+"))
+            return false;
+        int[] duzinaMjeseci = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int dan = getJmbgDay();
+        int mjesec = getJmbgMonth();
+        int godina = getJmbgYear();
+        if (mjesec <= 0 || mjesec > 12)
+            return false;
+        if (godina % 400 == 0 || (godina % 100 != 0 && godina % 4 == 0))
+            duzinaMjeseci[1] = 29;
+        return  ((dan > 0 && dan <= duzinaMjeseci[mjesec - 1]));
+    }
+
+    private String getEmailString() {
+        return emailField.getText();
+    }
+
+
+    private boolean validEmail() {
+        // Prepisano sa StackOverflow
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(getEmailString());
+        return m.matches();
+    }
+
+    private boolean validBasicInfo() {
+        if (firstNameField.getText().isEmpty() || !firstNameField.getText().matches("[a-zA-Z]+") || firstNameField.getText().length() < 2 || firstNameField.getText().length() > 50) {
+            addColor(firstNameField, false);
+            return false;
+        }
+        addColor(firstNameField, true);
+        if (lastNameField.getText().isEmpty() || !lastNameField.getText().matches("[a-zA-Z]+") || lastNameField.getText().length() < 2 || lastNameField.getText().length() > 55) {
+            addColor(lastNameField, false);
+            return false;
+        }
+        addColor(lastNameField, true);
+        if (!validJmbg()) {
+            addColor(jmbgField, false);
+            return false;
+        }
+        addColor(jmbgField, true);
+        if (addressField.getText().isEmpty() || addressField.getText().length() < 2 || addressField.getText().length() > 60) {
+            addColor(addressField, false);
+            return false;
+        }
+        addColor(addressField, true);
+        if (!validEmail()) {
+            addColor(emailField, false);
+            return false;
+        }
+        addColor(emailField, true);
+        return true;
+    }
+
+    private boolean validLoginInfo() {
+        if (usernameField.getText().isEmpty() || usernameField.getText().length() > 50) {
+            addColor(usernameField, false);
+            return false;
+        }
+        addColor(usernameField, true);
+        if (passwordField.getText().isEmpty() || passwordField.getText().length() > 100) {
+            addColor(passwordField, false);
+            return false;
+        }
+        addColor(passwordField, true);
+        return true;
+    }
+
+    private boolean validStudentInfo() {
+        if (birthDatePicker.isDisabled())
+            return true;
+        LocalDate birthDateValue = birthDatePicker.getValue();
+        if (birthDateValue == null || birthDateValue.isAfter(LocalDate.now()) || birthDateValue.getDayOfMonth() != getJmbgDay() || birthDateValue.getMonthValue() != getJmbgMonth() || birthDateValue.getYear() != getJmbgYear()) {
+            addColor(birthDatePicker.getEditor(), false);
+            return false;
+        }
+        addColor(birthDatePicker.getEditor(), true);
+        return true;
+    }
+
+    private boolean validProfessorInfo() {
+        if (titleField.isDisabled())
+            return true;
+        if (titleField.getText().isEmpty() || !titleField.getText().matches("[a-zA-Z]+") || titleField.getText().length() < 2 || titleField.getText().length() > 60) {
+            addColor(titleField, false);
+            return false;
+        }
+        addColor(titleField, true);
+        return true;
+    }
+
     public void okClick(ActionEvent actionEvent) {
-        if (!validField[0] || !validField[1] || !validField[2] || !validField[3] || !validField[4] || !validField[5] || !validField[6] || !validField[7])
+        if (!validBasicInfo() || !validLoginInfo() || !validStudentInfo() || !validProfessorInfo())
             return;
         if (this.person == null) {
             try {

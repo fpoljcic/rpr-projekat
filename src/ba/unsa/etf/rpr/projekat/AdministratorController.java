@@ -221,7 +221,23 @@ public class AdministratorController {
         }
     }
 
+    private void clearSelectedSubject() {
+        subjectTable.getSelectionModel().clearSelection();
+        selectedSubject = null;
+    }
+
+    private void clearSelectedProfessor() {
+        professorTable.getSelectionModel().clearSelection();
+        selectedProfessor = null;
+    }
+
+    private void clearSelectedStudent() {
+        studentTable.getSelectionModel().clearSelection();
+        selectedStudent = null;
+    }
+
     public void addSubject(ActionEvent actionEvent) {
+        clearSelectedSubject();
         editSubject(null);
     }
 
@@ -231,6 +247,7 @@ public class AdministratorController {
             return;
         }
         editSubject(selectedSubject);
+        clearSelectedSubject();
     }
 
     public void deleteSubject(ActionEvent actionEvent) {
@@ -249,9 +266,11 @@ public class AdministratorController {
             subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects()));
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            clearSelectedSubject();
             return;
         }
         showAlert("Uspjeh", "Uspješno izbrisan predmet", Alert.AlertType.INFORMATION);
+        clearSelectedSubject();
     }
 
     private void editProfessor(Professor professor) {
@@ -276,7 +295,8 @@ public class AdministratorController {
     }
 
     public void addProfessor(ActionEvent actionEvent) {
-        editProfessor(null);
+        clearSelectedProfessor();
+        editProfessor(selectedProfessor);
     }
 
     public void updateProfessor(ActionEvent actionEvent) {
@@ -285,15 +305,91 @@ public class AdministratorController {
             return;
         }
         editProfessor(selectedProfessor);
+        clearSelectedProfessor();
     }
 
     public void deleteProfessor(ActionEvent actionEvent) {
+        if (selectedProfessor == null) {
+            showAlert("Greška", "Prvo odaberite profesora", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite izbrisati profesora '" + selectedProfessor + "'?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
+            dataBase.deleteProfessor(selectedProfessor);
+            professorTable.setItems(FXCollections.observableArrayList(dataBase.professors()));
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            clearSelectedProfessor();
+            return;
+        }
+        showAlert("Uspjeh", "Uspješno izbrisan profesor", Alert.AlertType.INFORMATION);
+        clearSelectedProfessor();
+    }
 
+    private void editStudent(Student student) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
+            loader.setController(new AddPersonController(selectedStudent));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            if (student == null)
+                secondaryStage.setTitle("Dodaj studenta");
+            else
+                secondaryStage.setTitle("Ažuriraj studenta");
+            secondaryStage.getIcons().add(new Image("/img/student.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            studentTable.setItems(FXCollections.observableArrayList(dataBase.students()));
+        } catch (IOException | SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     public void addStudent(ActionEvent actionEvent) {
-
+        clearSelectedStudent();
+        editStudent(selectedStudent);
     }
+
+    public void updateStudent(ActionEvent actionEvent) {
+        if (selectedStudent == null) {
+            showAlert("Greška", "Prvo odaberite studenta", Alert.AlertType.ERROR);
+            return;
+        }
+        editStudent(selectedStudent);
+        clearSelectedStudent();
+    }
+
+    public void deleteStudent(ActionEvent actionEvent) {
+        if (selectedStudent == null) {
+            showAlert("Greška", "Prvo odaberite studenta", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite izbrisati studenta '" + selectedStudent + "'?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
+            dataBase.deleteStudent(selectedStudent);
+            studentTable.setItems(FXCollections.observableArrayList(dataBase.students()));
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            clearSelectedProfessor();
+            return;
+        }
+        showAlert("Uspjeh", "Uspješno izbrisan student", Alert.AlertType.INFORMATION);
+        clearSelectedStudent();
+    }
+
+
 
     public void addCourse(ActionEvent actionEvent) {
 
@@ -307,7 +403,6 @@ public class AdministratorController {
         BazaDAO.removeInstance();
         Platform.exit();
     }
-
 
     public void logOutClick(ActionEvent actionEvent) {
         BazaDAO.removeInstance();
@@ -354,10 +449,10 @@ public class AdministratorController {
             case "Profesori":
                 updateProfessor(null);
                 break;
-                /*
             case "Studenti":
                 updateStudent(null);
                 break;
+                /*
             case "Smjerovi":
                 updateCourse(null);
                 break;
@@ -373,13 +468,14 @@ public class AdministratorController {
             case "Predmeti":
                 deleteSubject(null);
                 break;
-                /*
             case "Profesori":
                 deleteProfessor(null);
                 break;
+
             case "Studenti":
                 deleteStudent(null);
                 break;
+                /*
             case "Smjerovi":
                 deleteCourse(null);
                 break;

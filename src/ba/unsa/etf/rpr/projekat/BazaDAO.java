@@ -3,12 +3,11 @@ package ba.unsa.etf.rpr.projekat;
 import javafx.scene.control.Alert;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class BazaDAO {
     private static BazaDAO instance = null;
-    private PreparedStatement getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt;
+    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt;
     private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt;
@@ -38,7 +37,9 @@ public class BazaDAO {
             return;
         }
         try {
-            getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE USERNAME=? AND PASSWORD=? AND USER_TYPE=?");
+            fetchLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE USERNAME=? AND PASSWORD=? AND USER_TYPE=?");
+
+            getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE ID=?");
             getProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PROFESSOR.ID=? AND PERSON.ID=PROFESSOR.ID");
             getStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE STUDENT.ID=? AND PERSON.ID=STUDENT.ID");
             getCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE WHERE ID=?");
@@ -92,13 +93,9 @@ public class BazaDAO {
         error.show();
     }
 
-    public Login getLogin(String username, String password, String user_type) {
+    private Login getLoginInfo(ResultSet resultSet) {
         Login login = null;
         try {
-            getLoginStmt.setString(1, username);
-            getLoginStmt.setString(2, password);
-            getLoginStmt.setString(3, user_type);
-            var resultSet = getLoginStmt.executeQuery();
             while (resultSet.next()) {
                 login = new Login();
                 login.setId(resultSet.getInt(1));
@@ -108,6 +105,32 @@ public class BazaDAO {
                 login.setUserType(resultSet.getString(5));
                 login.setLastLoginDate((resultSet.getDate(6) == null) ? null : (resultSet.getDate(6).toLocalDate()));
             }
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return login;
+    }
+
+    public Login getLogin(String username, String password, String user_type) {
+        Login login;
+        try {
+            fetchLoginStmt.setString(1, username);
+            fetchLoginStmt.setString(2, password);
+            fetchLoginStmt.setString(3, user_type);
+            var resultSet = fetchLoginStmt.executeQuery();
+            login = getLoginInfo(resultSet);
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return login;
+    }
+
+    public Login getLogin(int id) {
+        Login login;
+        try {
+            getLoginStmt.setInt(1, id);
+            var resultSet = getLoginStmt.executeQuery();
+            login = getLoginInfo(resultSet);
         } catch (SQLException ignored) {
             return null;
         }
@@ -127,6 +150,7 @@ public class BazaDAO {
                 professor.setJmbg(resultSet.getString(4));
                 professor.setAddress(resultSet.getString(5));
                 professor.setEmail(resultSet.getString(6));
+                professor.setLogin(getLogin(resultSet.getInt(7)));
                 professor.setTitle(resultSet.getString(9));
             }
         } catch (SQLException ignored) {
@@ -189,21 +213,36 @@ public class BazaDAO {
         return semester;
     }
 
+    public Student getStudent(int id) {
+        Student student = null;
+        try {
+            getStudentStmt.setInt(1, id);
+            var resultSet = getStudentStmt.executeQuery();
+            while (resultSet.next()) {
+                student = new Student();
+                student.setId(resultSet.getInt(1));
+                student.setFirstName(resultSet.getString(2));
+                student.setLastName(resultSet.getString(3));
+                student.setJmbg(resultSet.getString(4));
+                student.setAddress(resultSet.getString(5));
+                student.setEmail(resultSet.getString(6));
+                student.setLogin(getLogin(resultSet.getInt(7)));
+                student.setBirthDate(resultSet.getDate(9).toLocalDate());
+                student.setSemester(getSemester(resultSet.getInt(10)));
+                student.setCourse(getCourse(resultSet.getInt(11)));
+                student.setPauseDate((resultSet.getDate(12) == null) ? null : (resultSet.getDate(12).toLocalDate()));
+            }
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return student;
+    }
+
     public ArrayList<Student> students () throws SQLException {
         ArrayList<Student> students = new ArrayList<>();
         var resultSet = allStudentStmt.executeQuery();
         while (resultSet.next()) {
-            Student student = new Student();
-            student.setId(resultSet.getInt(1));
-            student.setFirstName(resultSet.getString(2));
-            student.setLastName(resultSet.getString(3));
-            student.setJmbg(resultSet.getString(4));
-            student.setAddress(resultSet.getString(5));
-            student.setEmail(resultSet.getString(6));
-            student.setBirthDate(resultSet.getDate(9).toLocalDate());
-            student.setSemester(getSemester(resultSet.getInt(10)));
-            student.setCourse(getCourse(resultSet.getInt(11)));
-            student.setPauseDate((resultSet.getDate(12) == null) ? null : (resultSet.getDate(12).toLocalDate()));
+            Student student = getStudent(resultSet.getInt(1));
             students.add(student);
         }
         return students;

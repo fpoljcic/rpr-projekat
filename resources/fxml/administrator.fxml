@@ -180,11 +180,21 @@
                      <right>
                         <VBox prefHeight="416.0" prefWidth="130.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#addStudent" prefHeight="25.0" prefWidth="140.0" text="Dodaj studenta">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Button>
+                               <Button mnemonicParsing="false" onAction="#addStudent" prefHeight="25.0" prefWidth="161.0" text="Dodaj studenta">
+                                   <VBox.margin>
+                                       <Insets bottom="10.0" left="5.0" />
+                                   </VBox.margin>
+                               </Button>
+                               <Button mnemonicParsing="false" onAction="#updateStudent" prefHeight="25.0" prefWidth="161.0" text="Ažuriraj studenta">
+                                   <VBox.margin>
+                                       <Insets bottom="10.0" left="5.0" />
+                                   </VBox.margin>
+                               </Button>
+                               <Button mnemonicParsing="false" onAction="#deleteStudent" prefHeight="25.0" prefWidth="161.0" text="Izbriši studenta">
+                                   <VBox.margin>
+                                       <Insets bottom="10.0" left="5.0" />
+                                   </VBox.margin>
+                               </Button>
                            </children>
                         </VBox>
                      </right>

@@ -18,7 +18,7 @@ CREATE TABLE login (
 CREATE TABLE person (
     id           INTEGER PRIMARY KEY,
     first_name   VARCHAR(50) NOT NULL,
-    last_name    VARCHAR(50) NOT NULL,
+    last_name    VARCHAR(55) NOT NULL,
     jmbg         VARCHAR(30) NOT NULL UNIQUE,
     address      VARCHAR(60),
     email        VARCHAR(100),
