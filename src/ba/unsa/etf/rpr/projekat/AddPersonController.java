@@ -1,6 +1,8 @@
 package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,10 +34,12 @@ public class AddPersonController {
     public Label titleLabel;
     private BazaDAO dataBase;
     private Person person;
+    private String userType;
 
-    public AddPersonController(Person person) {
+    public AddPersonController(Person person, String userType) {
         dataBase = BazaDAO.getInstance();
         this.person = person;
+        this.userType = userType;
     }
 
     private void addColor(TextField textField, boolean valid) {
@@ -69,16 +73,12 @@ public class AddPersonController {
 
     @FXML
     public void initialize() {
+        userTypeChoiceBox.setValue(userType);
         Thread thread = new Thread(() -> {
             try {
-                ArrayList<String> userTypes = new ArrayList<>();
-                userTypes.add("Administrator");
-                userTypes.add("Student");
-                userTypes.add("Profesor");
                 var semesters = FXCollections.observableArrayList(dataBase.semesters());
                 var courses = FXCollections.observableArrayList(dataBase.courses());
                 Platform.runLater(() -> {
-                    userTypeChoiceBox.setItems(FXCollections.observableArrayList(userTypes));
                     semesterChoiceBox.setItems(semesters);
                     courseChoiceBox.setItems(courses);
                 });
@@ -87,6 +87,19 @@ public class AddPersonController {
             }
         });
         thread.start();
+
+        switch (userType) {
+            case "Administrator":
+                disableStudent();
+                disableProfessor();
+                break;
+            case "Student":
+                disableProfessor();
+                break;
+            case "Profesor":
+                disableStudent();
+                break;
+        }
 
         if (person != null) {
             usernameField.setText(person.getLogin().getUsername());
@@ -97,21 +110,12 @@ public class AddPersonController {
             addressField.setText(person.getAddress());
             emailField.setText(person.getEmail());
 
-            if (person instanceof Administrator) {
-                disableStudent();
-                disableProfessor();
-                userTypeChoiceBox.setValue("Administrator");
-            } else if (person instanceof Professor) {
-                disableStudent();
+            if (person instanceof Professor)
                 titleField.setText(((Professor) person).getTitle());
-                userTypeChoiceBox.setValue("Profesor");
-            }
             else if (person instanceof Student) {
-                disableProfessor();
                 birthDatePicker.setValue(((Student) person).getBirthDate());
                 semesterChoiceBox.setValue(((Student) person).getSemester());
                 courseChoiceBox.setValue(((Student) person).getCourse());
-                userTypeChoiceBox.setValue("Student");
             }
         }
     }
@@ -158,8 +162,7 @@ public class AddPersonController {
         else if (person instanceof Professor) {
             ((Professor) person).setTitle(titleField.getText());
             dataBase.addProfessor((Professor) person);
-        }
-        else {
+        } else {
             ((Student) person).setBirthDate(birthDatePicker.getValue());
             ((Student) person).setSemester(semesterChoiceBox.getValue());
             ((Student) person).setCourse(courseChoiceBox.getValue());
@@ -175,8 +178,7 @@ public class AddPersonController {
         else if (person instanceof Professor) {
             ((Professor) person).setTitle(titleField.getText());
             dataBase.updateProfessor((Professor) person);
-        }
-        else {
+        } else {
             ((Student) person).setBirthDate(birthDatePicker.getValue());
             ((Student) person).setSemester(semesterChoiceBox.getValue());
             ((Student) person).setCourse(courseChoiceBox.getValue());
@@ -217,7 +219,7 @@ public class AddPersonController {
             return false;
         if (godina % 400 == 0 || (godina % 100 != 0 && godina % 4 == 0))
             duzinaMjeseci[1] = 29;
-        return  ((dan > 0 && dan <= duzinaMjeseci[mjesec - 1]));
+        return ((dan > 0 && dan <= duzinaMjeseci[mjesec - 1]));
     }
 
     private String getEmailString() {

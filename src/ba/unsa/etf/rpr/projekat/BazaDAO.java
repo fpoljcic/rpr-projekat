@@ -7,12 +7,14 @@ import java.util.ArrayList;
 
 public class BazaDAO {
     private static BazaDAO instance = null;
-    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt;
+    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getGradeStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt;
     private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt;
+    private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement getNoStudentsOnSubjectStmt, getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
+    private PreparedStatement getNoStudentsOnProfessorStmt, getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
     private Connection conn;
 
     public static BazaDAO getInstance() {
@@ -42,9 +44,11 @@ public class BazaDAO {
             getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE ID=?");
             getProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PROFESSOR.ID=? AND PERSON.ID=PROFESSOR.ID");
             getStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE STUDENT.ID=? AND PERSON.ID=STUDENT.ID");
+            getStudentLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE LOGIN_ID=? AND PERSON.ID=STUDENT.ID");
             getCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE WHERE ID=?");
             getSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER WHERE ID=?");
             getSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT WHERE ID=?");
+            getGradeStmt = conn.prepareStatement("SELECT * FROM FP18120.GRADE WHERE ID=?");
 
             addSubjectStmt = conn.prepareStatement("INSERT INTO FP18120.SUBJECT VALUES (FP18120.SUBJECT_SEQ.NEXTVAL, ?, ?, ?, ?, ?)");
             addPersonStmt = conn.prepareStatement("INSERT INTO FP18120.PERSON VALUES (FP18120.PERSON_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?)");
@@ -77,10 +81,18 @@ public class BazaDAO {
             allCurriculumStmt = conn.prepareStatement("SELECT * FROM FP18120.CURRICULUM");
             allSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER");
 
+            allSubjectStudentStmt = conn.prepareStatement("SELECT SUBJECT.ID, GRADE.ID FROM FP18120.SUBJECT, FP18120.GRADE, FP18120.STUDENT WHERE SUBJECT.ID = SUBJECT_ID AND STUDENT.ID = STUDENT_ID AND SCORE IS NULL AND STUDENT.ID=?");
+            allSubjectPassedStudentStmt = conn.prepareStatement("SELECT SUBJECT.ID, GRADE.ID FROM FP18120.SUBJECT, FP18120.GRADE, FP18120.STUDENT WHERE SUBJECT.ID = SUBJECT_ID AND STUDENT.ID = STUDENT_ID AND SCORE IS NOT NULL AND STUDENT.ID=?");
+
             getNoStudentsOnSubjectStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getavgSubjectGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NOT NULL AND SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoSubjectGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NOT NULL AND SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoSubjectNotGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NULL AND SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
+
+            getNoStudentsOnProfessorStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
+            getavgProfessorGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SCORE IS NOT NULL AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
+            getNoProfessorGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SCORE IS NOT NULL AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
+            getNoProfessorNotGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SCORE IS NULL AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa konektovanjem na bazu: " + error.getMessage(), Alert.AlertType.ERROR);
         }
@@ -159,17 +171,8 @@ public class BazaDAO {
         return professor;
     }
 
-    public ArrayList<Subject> subjects () throws SQLException {
-        ArrayList<Subject> subjects = new ArrayList<>();
-        var resultSet = allSubjectStmt.executeQuery();
-        while (resultSet.next()) {
-            Subject subject = getSubject(resultSet.getInt(1));
-            subjects.add(subject);
-        }
-        return subjects;
-    }
 
-    public ArrayList<Professor> professors () throws SQLException {
+    public ArrayList<Professor> professors() throws SQLException {
         ArrayList<Professor> professors = new ArrayList<>();
         var resultSet = allProfessorStmt.executeQuery();
         while (resultSet.next()) {
@@ -213,32 +216,7 @@ public class BazaDAO {
         return semester;
     }
 
-    public Student getStudent(int id) {
-        Student student = null;
-        try {
-            getStudentStmt.setInt(1, id);
-            var resultSet = getStudentStmt.executeQuery();
-            while (resultSet.next()) {
-                student = new Student();
-                student.setId(resultSet.getInt(1));
-                student.setFirstName(resultSet.getString(2));
-                student.setLastName(resultSet.getString(3));
-                student.setJmbg(resultSet.getString(4));
-                student.setAddress(resultSet.getString(5));
-                student.setEmail(resultSet.getString(6));
-                student.setLogin(getLogin(resultSet.getInt(7)));
-                student.setBirthDate(resultSet.getDate(9).toLocalDate());
-                student.setSemester(getSemester(resultSet.getInt(10)));
-                student.setCourse(getCourse(resultSet.getInt(11)));
-                student.setPauseDate((resultSet.getDate(12) == null) ? null : (resultSet.getDate(12).toLocalDate()));
-            }
-        } catch (SQLException ignored) {
-            return null;
-        }
-        return student;
-    }
-
-    public ArrayList<Student> students () throws SQLException {
+    public ArrayList<Student> students() throws SQLException {
         ArrayList<Student> students = new ArrayList<>();
         var resultSet = allStudentStmt.executeQuery();
         while (resultSet.next()) {
@@ -248,7 +226,7 @@ public class BazaDAO {
         return students;
     }
 
-    public ArrayList<Course> courses () throws SQLException {
+    public ArrayList<Course> courses() throws SQLException {
         ArrayList<Course> courses = new ArrayList<>();
         var resultSet = allCourseStmt.executeQuery();
         while (resultSet.next()) {
@@ -260,7 +238,7 @@ public class BazaDAO {
         return courses;
     }
 
-    public ArrayList<Semester> semesters () throws SQLException {
+    public ArrayList<Semester> semesters() throws SQLException {
         ArrayList<Semester> semesters = new ArrayList<>();
         var resultSet = allSemesterStmt.executeQuery();
         while (resultSet.next()) {
@@ -291,7 +269,7 @@ public class BazaDAO {
     }
 
 
-    public ArrayList<Curriculum> curriculums () throws SQLException {
+    public ArrayList<Curriculum> curriculums() throws SQLException {
         ArrayList<Curriculum> curriculums = new ArrayList<>();
         var resultSet = allCurriculumStmt.executeQuery();
         while (resultSet.next()) {
@@ -464,37 +442,155 @@ public class BazaDAO {
         deleteCurriculumStmt.executeUpdate();
     }
 
-    public float getAvgSubjectGrade(Subject subject) throws SQLException {
-        float average = 0;
-        getavgSubjectGradeStmt.setInt(1, subject.getId());
-        var resultSet = getavgSubjectGradeStmt.executeQuery();
+    private int getCountInfo(int id, PreparedStatement preparedStatement) throws SQLException {
+        int no = 0;
+        preparedStatement.setInt(1, id);
+        var resultSet = preparedStatement.executeQuery();
         while (resultSet.next())
-            average = resultSet.getFloat(1);
+            no = resultSet.getInt(1);
+        return no;
+    }
+
+    private float getAvgInfo(int id, PreparedStatement preparedStatement) throws SQLException {
+        float average = 0;
+        preparedStatement.setInt(1, id);
+        var resultSet = preparedStatement.executeQuery();
+        while (resultSet.next())
+            average = resultSet.getInt(1);
         return average;
     }
 
-    public float getPercentSubjectPassed (Subject subject) throws SQLException {
+    public float getAvgSubjectGrade(Subject subject) throws SQLException {
+        return getAvgInfo(subject.getId(), getavgSubjectGradeStmt);
+    }
+
+    public float getPercentSubjectPassed(Subject subject) throws SQLException {
         return Math.round(getNoSubjectGraded(subject) * 10000f / (getNoSubjectGraded(subject) + getNoSubjectNotGraded(subject))) / 100f;
     }
 
     public int getNoStudentsOnSubject(Subject subject) throws SQLException {
-        return getCountInfo(subject, getNoStudentsOnSubjectStmt);
+        return getCountInfo(subject.getId(), getNoStudentsOnSubjectStmt);
     }
 
     public int getNoSubjectGraded(Subject subject) throws SQLException {
-        return getCountInfo(subject, getNoSubjectGradedStmt);
+        return getCountInfo(subject.getId(), getNoSubjectGradedStmt);
     }
 
     public int getNoSubjectNotGraded(Subject subject) throws SQLException {
-        return getCountInfo(subject, getNoSubjectNotGradedStmt);
+        return getCountInfo(subject.getId(), getNoSubjectNotGradedStmt);
     }
 
-    private int getCountInfo(Subject subject, PreparedStatement getNoSubjectNotGradedStmt) throws SQLException {
-        int no = 0;
-        getNoSubjectNotGradedStmt.setInt(1, subject.getId());
-        var resultSet = getNoSubjectNotGradedStmt.executeQuery();
-        while (resultSet.next())
-            no = resultSet.getInt(1);
-        return no;
+    public int getNoStudentsOnProfessor(Professor professor) throws SQLException {
+        return getCountInfo(professor.getId(), getNoStudentsOnProfessorStmt);
+    }
+
+    public float getAvgProfessorGrade(Professor professor) throws SQLException {
+        return getAvgInfo(professor.getId(), getavgProfessorGradeStmt);
+    }
+
+    public int getNoProfessorGraded(Professor professor) throws SQLException {
+        return getCountInfo(professor.getId(), getNoProfessorGradedStmt);
+    }
+
+    public int getNoProfessorNotGraded(Professor professor) throws SQLException {
+        return getCountInfo(professor.getId(), getNoProfessorNotGradedStmt);
+    }
+
+    public float getPercentProfessorPassed(Professor professor) throws SQLException {
+        return Math.round(getNoProfessorGraded(professor) * 10000f / (getNoProfessorGraded(professor) + getNoProfessorNotGraded(professor))) / 100f;
+    }
+
+    private Student getStudentInfo(Student student, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            student = new Student();
+            student.setId(resultSet.getInt(1));
+            student.setFirstName(resultSet.getString(2));
+            student.setLastName(resultSet.getString(3));
+            student.setJmbg(resultSet.getString(4));
+            student.setAddress(resultSet.getString(5));
+            student.setEmail(resultSet.getString(6));
+            student.setLogin(getLogin(resultSet.getInt(7)));
+            student.setBirthDate(resultSet.getDate(9).toLocalDate());
+            student.setSemester(getSemester(resultSet.getInt(10)));
+            student.setCourse(getCourse(resultSet.getInt(11)));
+            student.setPauseDate((resultSet.getDate(12) == null) ? null : (resultSet.getDate(12).toLocalDate()));
+        }
+        return student;
+    }
+
+    public Student getStudent(Login login) {
+        Student student = null;
+        try {
+            getStudentLoginStmt.setInt(1, login.getId());
+            var resultSet = getStudentLoginStmt.executeQuery();
+            student = getStudentInfo(student, resultSet);
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return student;
+    }
+
+    public Student getStudent(int id) {
+        Student student = null;
+        try {
+            getStudentStmt.setInt(1, id);
+            var resultSet = getStudentStmt.executeQuery();
+            student = getStudentInfo(student, resultSet);
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return student;
+    }
+
+    public ArrayList<Subject> subjects() throws SQLException {
+        ArrayList<Subject> subjects = new ArrayList<>();
+        var resultSet = allSubjectStmt.executeQuery();
+        while (resultSet.next()) {
+            Subject subject = getSubject(resultSet.getInt(1));
+            subjects.add(subject);
+        }
+        return subjects;
+    }
+
+    public ArrayList<SubjectGradeWrapper> subjects(Student student) throws SQLException {
+        return getSubjectGrades(student, allSubjectStudentStmt);
+    }
+
+    public ArrayList<SubjectGradeWrapper> subjectsPassed(Student student) throws SQLException {
+        return getSubjectGrades(student, allSubjectPassedStudentStmt);
+    }
+
+    private ArrayList<SubjectGradeWrapper> getSubjectGrades(Student student, PreparedStatement preparedStatement) throws SQLException {
+        ArrayList<SubjectGradeWrapper> subjectGradeWrappers = new ArrayList<>();
+        preparedStatement.setInt(1, student.getId());
+        var resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Subject subject = getSubject(resultSet.getInt(1));
+            Grade grade = getGrade(resultSet.getInt(2));
+            SubjectGradeWrapper subjectGradeWrapper = new SubjectGradeWrapper(subject, grade);
+            subjectGradeWrappers.add(subjectGradeWrapper);
+        }
+        return subjectGradeWrappers;
+    }
+
+    private Grade getGrade(int id) {
+        Grade grade = null;
+        try {
+            getGradeStmt.setInt(1, id);
+            var resultSet = getGradeStmt.executeQuery();
+            while (resultSet.next()) {
+                grade = new Grade();
+                grade.setId(resultSet.getInt(1));
+                grade.setStudent(getStudent(resultSet.getInt(2)));
+                grade.setSubject(getSubject(resultSet.getInt(3)));
+                grade.setPoints(resultSet.getFloat(4));
+                grade.setScore(resultSet.getInt(5));
+                grade.setGradeDate((resultSet.getDate(6) == null) ? null : resultSet.getDate(6).toLocalDate());
+                grade.setProfessor(getProfessor(resultSet.getInt(7)));
+            }
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return grade;
     }
 }

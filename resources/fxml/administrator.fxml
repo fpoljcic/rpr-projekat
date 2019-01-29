@@ -96,10 +96,6 @@
                                    <VBox.margin>
                                        <Insets left="5.0" right="5.0" />
                                    </VBox.margin></Label>
-                               <Label fx:id="lastLoginDateField" alignment="CENTER" maxWidth="Infinity" text="25.1.2019  14:11">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="22.0" />
-                                   </VBox.margin></Label>
                            </children>
                         </VBox>
                      </right>
@@ -138,14 +134,54 @@
                               </Button>
                                <Button mnemonicParsing="false" onAction="#updateProfessor" prefHeight="25.0" prefWidth="161.0" text="Ažuriraj profesora">
                                    <VBox.margin>
-                                       <Insets bottom="10.0" left="5.0" />
+                                       <Insets left="5.0" />
                                    </VBox.margin>
                                </Button>
                                <Button mnemonicParsing="false" onAction="#deleteProfessor" prefHeight="25.0" prefWidth="161.0" text="Izbriši profesora">
                                    <VBox.margin>
-                                       <Insets bottom="10.0" left="5.0" />
+                                       <Insets left="5.0" top="10.0" />
                                    </VBox.margin>
                                </Button>
+                               <Label alignment="CENTER" maxWidth="Infinity" text="Broj studenata">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" top="30.0" />
+                                   </VBox.margin></Label>
+                               <Label fx:id="noProfessorStudentField" alignment="CENTER" maxWidth="Infinity" text="0">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" />
+                                   </VBox.margin></Label>
+                               <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" top="20.0" />
+                                   </VBox.margin></Label>
+                               <Label fx:id="avgProfessorGradeField" alignment="CENTER" maxWidth="Infinity" text="0">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" />
+                                   </VBox.margin></Label>
+                               <Label alignment="CENTER" maxWidth="Infinity" text="Upisalo ocjenu">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" top="20.0" />
+                                   </VBox.margin></Label>
+                               <Label fx:id="noProfessorGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" />
+                                   </VBox.margin></Label>
+                               <Label alignment="CENTER" maxWidth="Infinity" text="Nije upisalo ocjenu">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" top="20.0" />
+                                   </VBox.margin></Label>
+                               <Label fx:id="noProfessorNotGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" />
+                                   </VBox.margin></Label>
+                               <Label alignment="CENTER" maxWidth="Infinity" text="Prolaznost">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" top="20.0" />
+                                   </VBox.margin></Label>
+                               <Label fx:id="percentProfessorPassedField" alignment="CENTER" maxWidth="Infinity" text="0">
+                                   <VBox.margin>
+                                       <Insets left="5.0" right="5.0" />
+                                   </VBox.margin></Label>
                            </children>
                         </VBox>
                      </right>

@@ -62,7 +62,6 @@ public class LoginController {
     }
 
     public void loginClick(ActionEvent actionEvent) {
-
         if (usernameField.getText().isEmpty()) {
             showAlert("Greška", "Unesite korisničko ime", Alert.AlertType.ERROR);
             return;
@@ -116,6 +115,7 @@ public class LoginController {
             mainStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             return mainStage;
         } catch (IOException ignored) {
+            ignored.printStackTrace();
             return null;
         }
     }

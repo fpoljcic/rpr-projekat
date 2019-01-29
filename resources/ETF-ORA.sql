@@ -156,11 +156,11 @@ INSERT INTO course VALUES(course_seq.nextval, 'Telekomunikacije');
 
 INSERT INTO administrator VALUES(1);
 INSERT INTO administrator VALUES(2);
-INSERT INTO student VALUES(3, TO_DATE('01-07-1998', 'dd-mm-yyyy'), 1, 1);   
+INSERT INTO student VALUES(3, TO_DATE('01-07-1998', 'dd-mm-yyyy'), 1, 1, NULL);   
 INSERT INTO professor VALUES(4, 'Vanredni prof');
 INSERT INTO professor VALUES(5, 'Redovni prof');
-INSERT INTO student VALUES(6, TO_DATE('21-01-1997', 'dd-mm-yyyy'), 2, 1); 
-INSERT INTO student VALUES(7, TO_DATE('10-01-1999', 'dd-mm-yyyy'), 1, SYSDATE);  
+INSERT INTO student VALUES(6, TO_DATE('21-01-1997', 'dd-mm-yyyy'), 2, 1, NULL); 
+INSERT INTO student VALUES(7, TO_DATE('10-01-1999', 'dd-mm-yyyy'), 1, 1, SYSDATE);  
 
 INSERT INTO subject VALUES(subject_seq.nextval, 'Razvoj programskih rjesenja', 'RPR', 10, 4, NULL);
 INSERT INTO subject VALUES(subject_seq.nextval, 'Diskretna matematika', 'DM', 8, 5, NULL);

@@ -58,7 +58,8 @@ public class AdministratorController {
     public TableColumn<Curriculum, Subject> curriculumSubjectCol;
     public TableColumn<Curriculum, String> curriculumRequiredSubjectCol;
     public TabPane tabPane;
-    public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField, lastLoginDateField;
+    public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField;
+    public Label noProfessorStudentField, avgProfessorGradeField, noProfessorGradedField, noProfessorNotGradedField, percentProfessorPassedField;
     private Login login;
     private BazaDAO dataBase;
     private Subject selectedSubject;
@@ -159,6 +160,25 @@ public class AdministratorController {
         professorTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 selectedProfessor = professorTable.getSelectionModel().getSelectedItem();
+                Thread thread = new Thread(() -> {
+                    try {
+                        String noProfessorStudent = String.valueOf(dataBase.getNoStudentsOnProfessor(newValue));
+                        String avgProfessorGrade = String.valueOf(dataBase.getAvgProfessorGrade(newValue));
+                        String noProfessorGraded = String.valueOf(dataBase.getNoProfessorGraded(newValue));
+                        String noProfessorNotGraded = String.valueOf(dataBase.getNoProfessorNotGraded(newValue));
+                        Float percentProfessorPassed = dataBase.getPercentProfessorPassed(newValue);
+                        Platform.runLater(() -> {
+                            noProfessorStudentField.setText(noProfessorStudent);
+                            avgProfessorGradeField.setText(avgProfessorGrade);
+                            noProfessorGradedField.setText(noProfessorGraded);
+                            noProfessorNotGradedField.setText(noProfessorNotGraded);
+                            percentProfessorPassedField.setText(percentProfessorPassed + " %");
+                        });
+                    } catch (SQLException error) {
+                        Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+                    }
+                });
+                thread.start();
             }
         });
         studentTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -190,7 +210,6 @@ public class AdministratorController {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
         }
         setSelectedItems();
-        lastLoginDateField.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd. MM. yyyy HH:mm")));
         currentTab = tabPane.getSelectionModel().getSelectedItem();
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -276,7 +295,7 @@ public class AdministratorController {
     private void editProfessor(Professor professor) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(selectedProfessor));
+            loader.setController(new AddPersonController(selectedProfessor, "Profesor"));
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (professor == null)
@@ -334,7 +353,7 @@ public class AdministratorController {
     private void editStudent(Student student) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(selectedStudent));
+            loader.setController(new AddPersonController(selectedStudent, "Student"));
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (student == null)
