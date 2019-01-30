@@ -125,13 +125,13 @@ CREATE SEQUENCE curriculum_seq
 START WITH 1
 INCREMENT BY 1;
 
-INSERT INTO login VALUES(login_seq.nextval, 'a', 'a', SYSDATE, 'Administrator', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'fpoljcic1', 'test', SYSDATE, 'Administrator', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'fsisic1', 'test', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'vljubovic2', 'test', SYSDATE, 'Profesor', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'zjuric', 'test', SYSDATE, 'Profesor', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'bpoljcic', 'test', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'apoljcic', 'test', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'aaa', 'rr5j8b03sqv7v0hgts5y5bng7fj1vbmm9sl6j3b2bamw58grbx', SYSDATE, 'Administrator', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fpoljcic1', 'wb0r7uq9jvcld9yo0p208fag4c283qesut2wlsd84njj1dve77', SYSDATE, 'Administrator', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fsisic1', 'wb4r6ua939ffcq1p7v1e0jngb7k5ou0ndycpex7kn2w0aas07y', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'vljubovic2', 'dbrr1uh9shyfbcut1ahnofo9grl3otbcq0hs4ekkcj7r1472a0', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'zjuric', 'hbfrxuo90js5pt9v2sxtmwes1ao7w6d3enppcdsr0iwukyt2hy', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'bpoljcic', 'sbmrcue9ufceks1viyj28g5y506udi795hwlg70mjlxo56rsh5', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'apoljcic', 'rbsrhui9qqkv7h3oympo5og3466ipslpgr0uir8wrw4td5udh2', SYSDATE, 'Student', NULL);
 
 INSERT INTO person VALUES(person_seq.nextval, 'Test', 'Test', '2107998170067', 'Adresa', 'test@mail.ba', 1);
 INSERT INTO person VALUES(person_seq.nextval, 'Faris', 'Poljcic', '2207995170057', 'Tome Medje 3', 'fpoljcic1@etf.unsa.ba', 2);

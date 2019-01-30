@@ -1,8 +1,6 @@
 package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -73,6 +71,11 @@ public class AddPersonController {
 
     @FXML
     public void initialize() {
+        ArrayList<String> userTypes = new ArrayList<>();
+        userTypes.add("Administrator");
+        userTypes.add("Student");
+        userTypes.add("Profesor");
+        userTypeChoiceBox.setItems(FXCollections.observableArrayList(userTypes));
         userTypeChoiceBox.setValue(userType);
         Thread thread = new Thread(() -> {
             try {
@@ -140,7 +143,7 @@ public class AddPersonController {
         person.setEmail(emailField.getText());
         Login login = new Login();
         login.setUsername(usernameField.getText());
-        login.setPassword(passwordField.getText());
+        login.setPassword(LoginController.getEncodedPassword(usernameField.getText(), passwordField.getText()));
         login.setDateCreated(LocalDate.now());
         login.setUserType(userTypeChoiceBox.getValue());
         person.setLogin(login);
@@ -265,12 +268,12 @@ public class AddPersonController {
     }
 
     private boolean validLoginInfo() {
-        if (usernameField.getText().isEmpty() || usernameField.getText().length() > 50) {
+        if (usernameField.getText().isEmpty() || usernameField.getText().length() > 50 || usernameField.getText().length() < 3) {
             addColor(usernameField, false);
             return false;
         }
         addColor(usernameField, true);
-        if (passwordField.getText().isEmpty() || passwordField.getText().length() > 100) {
+        if (passwordField.getText().isEmpty() || passwordField.getText().length() > 50 || passwordField.getText().length() < 4) {
             addColor(passwordField, false);
             return false;
         }

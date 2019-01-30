@@ -1,7 +1,6 @@
 package ba.unsa.etf.rpr.projekat;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class Student extends Person {
     private LocalDate birthDate;

@@ -2,7 +2,6 @@ package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -65,8 +64,7 @@ public class StudentController {
     }
 
     private void fillSubjects() throws SQLException {
-        ObservableList<SubjectGradeWrapper> testinggg = FXCollections.observableArrayList(dataBase.subjects(student));
-        subjectTable.setItems(testinggg);
+        subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects(student)));
         subjectNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         subjectCodeCol.setCellValueFactory(new PropertyValueFactory<>("code"));
         subjectEctsCol.setCellValueFactory(new PropertyValueFactory<>("ects"));

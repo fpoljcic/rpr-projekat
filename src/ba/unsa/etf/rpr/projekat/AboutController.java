@@ -17,9 +17,6 @@ public class AboutController {
 
     @FXML
     public void initialize() {
-        //File file = new File("about.png");
-        //Image image = new Image(file.toURI().toString());
-        //imageView.setImage(image);
         imageView.setImage(new Image("/img/about.png"));
         aboutText.setText("Naziv: E-index\nAutor: Faris Poljčić");
     }

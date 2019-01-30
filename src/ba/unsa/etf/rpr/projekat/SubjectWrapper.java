@@ -1,33 +1,37 @@
 package ba.unsa.etf.rpr.projekat;
 
-import java.util.Objects;
-
-public class Subject {
-    private int id;
+public class SubjectWrapper {
+    // Subject attributes
+    private int idSubject;
     private String name;
     private String code;
     private int ects;
     private Professor professor;
     private Subject reqSubject;
 
-    public Subject(int id, String name, String code, int ects, Professor professor, Subject reqSubject) {
-        this.id = id;
-        this.name = name;
-        this.code = code;
-        this.ects = ects;
-        this.professor = professor;
-        this.reqSubject = reqSubject;
+    private int noStudents;
+
+    public SubjectWrapper() {
     }
 
-    public Subject() {
+    public SubjectWrapper(Subject subject, int noStudents) {
+        if (subject != null) {
+            idSubject = subject.getId();
+            name = subject.getName();
+            code = subject.getCode();
+            ects = subject.getEcts();
+            professor = subject.getProfessor();
+            reqSubject = subject.getReqSubject();
+        }
+        this.noStudents = noStudents;
     }
 
-    public int getId() {
-        return id;
+    public int getIdSubject() {
+        return idSubject;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdSubject(int idSubject) {
+        this.idSubject = idSubject;
     }
 
     public String getName() {
@@ -70,21 +74,11 @@ public class Subject {
         this.reqSubject = reqSubject;
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public int getNoStudents() {
+        return noStudents;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Subject subject = (Subject) o;
-        return id == subject.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public void setNoStudents(int noStudents) {
+        this.noStudents = noStudents;
     }
 }
