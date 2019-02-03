@@ -10,12 +10,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -58,14 +60,22 @@ public class AdministratorController {
     public TabPane tabPane;
     public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField;
     public Label noProfessorStudentField, avgProfessorGradeField, noProfessorGradedField, noProfessorNotGradedField, percentProfessorPassedField;
+    public ChoiceBox<String> cycleChoiceBox;
+    public ChoiceBox<String> courseChoiceBox;
+    public ChoiceBox<String> semeseterChoiceBox;
+    public Button refreshButton;
+    public Label avgStudentGradeField;
+    public Label noStudentGradedField;
+    public Label noStudentNotGradedField;
     private Login login;
     private BazaDAO dataBase;
     private Subject selectedSubject;
     private Professor selectedProfessor;
     private Student selectedStudent;
-    private Course selectedCourse;
-    private Curriculum selectedCurriculum;
+    //private Course selectedCourse;
+    //private Curriculum selectedCurriculum;
     private Tab currentTab;
+    private String selectedCycle, selectedCourse, selectedSemester;
 
 
     public AdministratorController(Login login) {
@@ -130,17 +140,24 @@ public class AdministratorController {
         curriculumRequiredSubjectCol.setCellValueFactory(new PropertyValueFactory<>("requiredSubject"));
     }
 
-    private void setSelectedItems() {
+    private void setListenersOnSelectedItems() {
+        selectedCycle = cycleChoiceBox.getValue();
+        selectedCourse = courseChoiceBox.getValue();
+        selectedSemester = semeseterChoiceBox.getValue();
         subjectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
                 Thread thread = new Thread(() -> {
                     try {
-                        String noSubjectStudent = String.valueOf(dataBase.getNoStudentsOnSubject(newValue));
+                        //String noSubjectStudent = String.valueOf(dataBase.getNoStudentsOnSubject(newValue));
+                        //Float percentSubjectPassed = dataBase.getPercentSubjectPassed(newValue);
                         String avgSubjectGrade = String.valueOf(dataBase.getAvgSubjectGrade(newValue));
-                        String noSubjectGraded = String.valueOf(dataBase.getNoSubjectGraded(newValue));
-                        String noSubjectNotGraded = String.valueOf(dataBase.getNoSubjectNotGraded(newValue));
-                        Float percentSubjectPassed = dataBase.getPercentSubjectPassed(newValue);
+                        int noSubjectGradedInt = dataBase.getNoSubjectGraded(newValue);
+                        String noSubjectGraded = String.valueOf(noSubjectGradedInt);
+                        int noSubjectNotGradedInt = dataBase.getNoSubjectNotGraded(newValue);
+                        String noSubjectNotGraded = String.valueOf(noSubjectNotGradedInt);
+                        String noSubjectStudent = String.valueOf(noSubjectGradedInt + noSubjectNotGradedInt);
+                        Float percentSubjectPassed = Math.round(noSubjectGradedInt * 10000f / (noSubjectGradedInt + noSubjectNotGradedInt)) / 100f;
                         Platform.runLater(() -> {
                             noSubjectStudentField.setText(noSubjectStudent);
                             avgSubjectGradeField.setText(avgSubjectGrade);
@@ -149,6 +166,7 @@ public class AdministratorController {
                             percentSubjectPassedField.setText(percentSubjectPassed + " %");
                         });
                     } catch (SQLException error) {
+                        error.printStackTrace();
                         Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
                     }
                 });
@@ -160,11 +178,15 @@ public class AdministratorController {
                 selectedProfessor = professorTable.getSelectionModel().getSelectedItem();
                 Thread thread = new Thread(() -> {
                     try {
-                        String noProfessorStudent = String.valueOf(dataBase.getNoStudentsOnProfessor(newValue));
+                        //int noStudentsOnProfessor = dataBase.getNoStudentsOnProfessor(newValue);
+                        // Float percentProfessorPassed = dataBase.getPercentProfessorPassed(newValue);
                         String avgProfessorGrade = String.valueOf(dataBase.getAvgProfessorGrade(newValue));
-                        String noProfessorGraded = String.valueOf(dataBase.getNoProfessorGraded(newValue));
-                        String noProfessorNotGraded = String.valueOf(dataBase.getNoProfessorNotGraded(newValue));
-                        Float percentProfessorPassed = dataBase.getPercentProfessorPassed(newValue);
+                        int noProfessorGradedInt = dataBase.getNoProfessorGraded(newValue);
+                        String noProfessorGraded = String.valueOf(noProfessorGradedInt);
+                        int noProfessorNotGradedInt = dataBase.getNoProfessorNotGraded(newValue);
+                        String noProfessorNotGraded = String.valueOf(noProfessorNotGradedInt);
+                        String noProfessorStudent = String.valueOf(noProfessorGradedInt + noProfessorNotGradedInt);
+                        Float percentProfessorPassed = Math.round(noProfessorGradedInt * 10000f / (noProfessorGradedInt + noProfessorNotGradedInt)) / 100f;
                         Platform.runLater(() -> {
                             noProfessorStudentField.setText(noProfessorStudent);
                             avgProfessorGradeField.setText(avgProfessorGrade);
@@ -184,6 +206,40 @@ public class AdministratorController {
                 selectedStudent = studentTable.getSelectionModel().getSelectedItem();
             }
         });
+        currentTab = tabPane.getSelectionModel().getSelectedItem();
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null)
+                currentTab = newValue;
+        });
+        courseChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null)
+                selectedCourse = newValue;
+        });
+        cycleChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedCycle = newValue;
+                if (newValue.equals("Svi ciklusi")) {
+                    semeseterChoiceBox.getItems().clear();
+                    semeseterChoiceBox.getItems().add("Svi semestri");
+                    semeseterChoiceBox.getSelectionModel().select(0);
+                    selectedSemester = semeseterChoiceBox.getValue();
+                    return;
+                }
+                try {
+                    semeseterChoiceBox.setItems(FXCollections.observableArrayList(dataBase.getSemestersOnCycle(Integer.valueOf(newValue))));
+                    semeseterChoiceBox.getItems().add(0, "Svi semestri");
+                    semeseterChoiceBox.getSelectionModel().select(0);
+                    selectedSemester = semeseterChoiceBox.getValue();
+                } catch (SQLException error) {
+                    showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        });
+        semeseterChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null)
+                selectedSemester = newValue;
+        });
+        /*
         courseTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 selectedCourse = courseTable.getSelectionModel().getSelectedItem();
@@ -194,6 +250,7 @@ public class AdministratorController {
                 selectedCurriculum = curriculumTable.getSelectionModel().getSelectedItem();
             }
         });
+        */
     }
 
     @FXML
@@ -204,17 +261,22 @@ public class AdministratorController {
             fillStudents();
             fillCourses();
             fillCurriculums();
+            ArrayList<String> cycles = dataBase.cycles();
+            cycles.add(0, "Svi ciklusi");
+            cycleChoiceBox.setItems(FXCollections.observableArrayList(cycles));
+            cycleChoiceBox.getSelectionModel().select(0);
+            ArrayList<String> courses = dataBase.coursesNames();
+            courses.add(0, "Svi smjerovi");
+            courseChoiceBox.setItems(FXCollections.observableArrayList(courses));
+            courseChoiceBox.getSelectionModel().select(0);
+            semeseterChoiceBox.getItems().add("Svi semestri");
+            semeseterChoiceBox.getSelectionModel().select(0);
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
         }
-        setSelectedItems();
-        currentTab = tabPane.getSelectionModel().getSelectedItem();
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                currentTab = newValue;
-            }
-        });
-
+        setListenersOnSelectedItems();
+        Image refreshImage = new Image("img/refresh.png", 20, 20, true, true);
+        refreshButton.setGraphic(new ImageView(refreshImage));
     }
 
     private void editSubject(Subject subject) {
@@ -515,6 +577,15 @@ public class AdministratorController {
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
         } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public void refreshStudent(ActionEvent actionEvent) {
+        try {
+            studentTable.setItems(FXCollections.observableArrayList(dataBase.getStudents(selectedCourse, selectedCycle, selectedSemester)));
+        } catch (SQLException error) {
+            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
     }

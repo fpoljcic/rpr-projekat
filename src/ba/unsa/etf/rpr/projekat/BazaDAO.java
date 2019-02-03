@@ -7,13 +7,14 @@ import java.util.ArrayList;
 
 public class BazaDAO {
     private static BazaDAO instance = null;
-    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt;
+    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt;
     private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt;
-    private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt;
+    private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement allSubjectProfessorStmt, allStudentProfessorStmt;
+    private PreparedStatement getStudentsStmt;
     private PreparedStatement getNoStudentsOnSubjectStmt, getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
     private PreparedStatement getNoStudentsOnProfessorStmt, getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
     private Connection conn;
@@ -51,6 +52,8 @@ public class BazaDAO {
             getSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER WHERE ID=?");
             getSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT WHERE ID=?");
             getGradeStmt = conn.prepareStatement("SELECT * FROM FP18120.GRADE WHERE ID=?");
+            getSemestersCycleStmt = conn.prepareStatement("SELECT NO FROM FP18120.SEMESTER WHERE CYCLE_NO=?");
+            getStudentsStmt = conn.prepareStatement("SELECT STUDENT.ID FROM FP18120.PERSON, FP18120.STUDENT, FP18120.COURSE, FP18120.SEMESTER WHERE PERSON.ID = STUDENT.ID AND COURSE_ID = COURSE.ID AND SEMESTER.ID = SEMESTER_ID");
 
             addSubjectStmt = conn.prepareStatement("INSERT INTO FP18120.SUBJECT VALUES (FP18120.SUBJECT_SEQ.NEXTVAL, ?, ?, ?, ?, ?)");
             addPersonStmt = conn.prepareStatement("INSERT INTO FP18120.PERSON VALUES (FP18120.PERSON_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?)");
@@ -82,6 +85,7 @@ public class BazaDAO {
             allCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE");
             allCurriculumStmt = conn.prepareStatement("SELECT * FROM FP18120.CURRICULUM");
             allSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER");
+            allCyclesStmt = conn.prepareStatement("SELECT DISTINCT(CYCLE_NO) FROM FP18120.SEMESTER");
 
             allSubjectStudentStmt = conn.prepareStatement("SELECT SUBJECT.ID, GRADE.ID FROM FP18120.SUBJECT, FP18120.GRADE, FP18120.STUDENT WHERE SUBJECT.ID = SUBJECT_ID AND STUDENT.ID = STUDENT_ID AND SCORE IS NULL AND STUDENT.ID=?");
             allSubjectPassedStudentStmt = conn.prepareStatement("SELECT SUBJECT.ID, GRADE.ID FROM FP18120.SUBJECT, FP18120.GRADE, FP18120.STUDENT WHERE SUBJECT.ID = SUBJECT_ID AND STUDENT.ID = STUDENT_ID AND SCORE IS NOT NULL AND STUDENT.ID=?");
@@ -219,14 +223,12 @@ public class BazaDAO {
         return courses;
     }
 
-    public ArrayList<Semester> semesters() throws SQLException {
-        ArrayList<Semester> semesters = new ArrayList<>();
-        var resultSet = allSemesterStmt.executeQuery();
-        while (resultSet.next()) {
-            Semester semester = getSemester(resultSet.getInt(1));
-            semesters.add(semester);
-        }
-        return semesters;
+    public ArrayList<String> coursesNames() throws SQLException {
+        ArrayList<String> courses = new ArrayList<>();
+        var resultSet = allCourseStmt.executeQuery();
+        while (resultSet.next())
+            courses.add(resultSet.getString(2));
+        return courses;
     }
 
     private Subject getSubject(int id) {
@@ -637,5 +639,61 @@ public class BazaDAO {
             return null;
         }
         return professor;
+    }
+
+    public ArrayList<Semester> semesters() throws SQLException {
+        ArrayList<Semester> semesters = new ArrayList<>();
+        var resultSet = allSemesterStmt.executeQuery();
+        while (resultSet.next()) {
+            Semester semester = getSemester(resultSet.getInt(1));
+            semesters.add(semester);
+        }
+        return semesters;
+    }
+
+    public ArrayList<String> cycles() throws SQLException {
+        ArrayList<String> cycles = new ArrayList<>();
+        var resultSet = allCyclesStmt.executeQuery();
+        while (resultSet.next()) {
+            String cycle = String.valueOf(resultSet.getInt(1));
+            cycles.add(cycle);
+        }
+        return cycles;
+    }
+
+    public ArrayList<String> getSemestersOnCycle(int cycleNo) throws SQLException {
+        ArrayList<String> semesters = new ArrayList<>();
+        getSemestersCycleStmt.setInt(1, cycleNo);
+        var resultSet = getSemestersCycleStmt.executeQuery();
+        while (resultSet.next()) {
+            String semester = String.valueOf(resultSet.getInt(1));
+            semesters.add(semester);
+        }
+        return semesters;
+    }
+
+    public ArrayList<Student> getStudents(String selectedCourse, String selectedCycle, String selectedSemester) throws SQLException {
+        ArrayList<Student> students = new ArrayList<>();
+        String getStudentsQuery = "SELECT STUDENT.ID FROM FP18120.PERSON, FP18120.STUDENT, FP18120.COURSE, FP18120.SEMESTER WHERE PERSON.ID = STUDENT.ID AND COURSE_ID = COURSE.ID AND SEMESTER.ID = SEMESTER_ID";
+        if (!selectedCourse.equals("Svi smjerovi"))
+            getStudentsQuery += " AND NAME=?";
+        if (!selectedCycle.equals("Svi ciklusi"))
+            getStudentsQuery += " AND CYCLE_NO=?";
+        if (!selectedSemester.equals("Svi semestri"))
+            getStudentsQuery += " AND NO=?";
+        getStudentsStmt = conn.prepareStatement(getStudentsQuery);
+        int indeks = 1;
+        if (!selectedCourse.equals("Svi smjerovi"))
+            getStudentsStmt.setString(indeks++, selectedCourse);
+        if (!selectedCycle.equals("Svi ciklusi"))
+            getStudentsStmt.setInt(indeks++, Integer.valueOf(selectedCycle));
+        if (!selectedSemester.equals("Svi semestri"))
+            getStudentsStmt.setInt(indeks, Integer.valueOf(selectedSemester));
+        var resultSet = getStudentsStmt.executeQuery();
+        while (resultSet.next()) {
+            Student student = getStudent(resultSet.getInt(1));
+            students.add(student);
+        }
+        return students;
     }
 }
