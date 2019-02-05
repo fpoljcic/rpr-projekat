@@ -7,16 +7,18 @@ import java.util.ArrayList;
 
 public class BazaDAO {
     private static BazaDAO instance = null;
-    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
+    private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getAdminStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt;
-    private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt;
-    private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt;
+    private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deleteAdminStmt;
+    private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt, allAdminStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement allSubjectProfessorStmt, allStudentProfessorStmt;
     private PreparedStatement getStudentsStmt;
-    private PreparedStatement getNoStudentsOnSubjectStmt, getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
-    private PreparedStatement getNoStudentsOnProfessorStmt, getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
+    private PreparedStatement getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
+    private PreparedStatement getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
+    private PreparedStatement getavgStudentGradeStmt, getNoStudentGradedStmt, getNoStudentNotGradedStmt;
+    private PreparedStatement getavgCourseGradeStmt, getNoStudentsOnCourseStmt;
     private Connection conn;
 
     public static BazaDAO getInstance() {
@@ -44,10 +46,11 @@ public class BazaDAO {
             fetchLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE USERNAME=? AND USER_TYPE=?");
 
             getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE ID=?");
-            getProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PROFESSOR.ID=? AND PERSON.ID=PROFESSOR.ID");
-            getStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE STUDENT.ID=? AND PERSON.ID=STUDENT.ID");
-            getStudentLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE LOGIN_ID=? AND PERSON.ID=STUDENT.ID");
-            getProfessorLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE LOGIN_ID=? AND PERSON.ID=PROFESSOR.ID");
+            getProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PROFESSOR.ID=? AND PERSON.ID = PROFESSOR.ID");
+            getStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE STUDENT.ID=? AND PERSON.ID = STUDENT.ID");
+            getAdminStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.ADMINISTRATOR WHERE ADMINISTRATOR.ID=? AND PERSON.ID = ADMINISTRATOR.ID");
+            getStudentLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE LOGIN_ID=? AND PERSON.ID = STUDENT.ID");
+            getProfessorLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE LOGIN_ID=? AND PERSON.ID = PROFESSOR.ID");
             getCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE WHERE ID=?");
             getSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER WHERE ID=?");
             getSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT WHERE ID=?");
@@ -73,15 +76,16 @@ public class BazaDAO {
             updateLoginStmt = conn.prepareStatement("UPDATE FP18120.LOGIN SET USERNAME=?, PASSWORD=?, DATE_CREATED=?, USER_TYPE=?, LAST_LOGIN_DATE=? WHERE ID=?");
 
             deleteSubjectStmt = conn.prepareStatement("DELETE FROM FP18120.SUBJECT WHERE ID=?");
-            deletePersonStmt = conn.prepareStatement("DELETE FROM FP18120.PERSON WHERE ID=?");
             deleteProfessorStmt = conn.prepareStatement("DELETE FROM FP18120.PROFESSOR WHERE ID=?");
             deleteStudentStmt = conn.prepareStatement("DELETE FROM FP18120.STUDENT WHERE ID=?");
+            deleteAdminStmt = conn.prepareStatement("DELETE FROM FP18120.ADMINISTRATOR WHERE ID=?");
             deleteCourseStmt = conn.prepareStatement("DELETE FROM FP18120.COURSE WHERE ID=?");
             deleteCurriculumStmt = conn.prepareStatement("DELETE FROM FP18120.CURRICULUM WHERE ID=?");
 
             allSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT");
-            allProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PERSON.ID=PROFESSOR.ID");
-            allStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE PERSON.ID=STUDENT.ID");
+            allProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PERSON.ID = PROFESSOR.ID");
+            allStudentStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.STUDENT WHERE PERSON.ID = STUDENT.ID");
+            allAdminStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.ADMINISTRATOR WHERE PERSON.ID = ADMINISTRATOR.ID");
             allCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE");
             allCurriculumStmt = conn.prepareStatement("SELECT * FROM FP18120.CURRICULUM");
             allSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER");
@@ -93,15 +97,20 @@ public class BazaDAO {
             allSubjectProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT WHERE PROFESSOR_ID=?");
             allStudentProfessorStmt = conn.prepareStatement("SELECT STUDENT.ID, GRADE.ID, SUBJECT_ID FROM FP18120.PERSON, FP18120.STUDENT, FP18120.GRADE, FP18120.SUBJECT, FP18120.PROFESSOR WHERE PERSON.ID = STUDENT.ID AND STUDENT.ID = STUDENT_ID AND SUBJECT_ID = SUBJECT.ID AND SUBJECT.PROFESSOR_ID = PROFESSOR.ID AND SCORE IS NULL AND PROFESSOR.ID=?");
 
-            getNoStudentsOnSubjectStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getavgSubjectGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NOT NULL AND SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoSubjectGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NOT NULL AND SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoSubjectNotGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NULL AND SUBJECT_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
 
-            getNoStudentsOnProfessorStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getavgProfessorGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SCORE IS NOT NULL AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoProfessorGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SCORE IS NOT NULL AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoProfessorNotGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT, FP18120.SUBJECT WHERE SUBJECT_ID = SUBJECT.ID AND SCORE IS NULL AND SUBJECT.PROFESSOR_ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
+
+            getavgStudentGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NOT NULL AND STUDENT.ID = STUDENT_ID AND STUDENT.ID=?");
+            getNoStudentGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NOT NULL AND STUDENT.ID = STUDENT_ID AND STUDENT.ID=?");
+            getNoStudentNotGradedStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.GRADE, FP18120.STUDENT WHERE SCORE IS NULL AND STUDENT.ID = STUDENT_ID AND STUDENT.ID=?");
+
+            getavgCourseGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.COURSE, FP18120.GRADE, FP18120.STUDENT WHERE COURSE_ID = COURSE.ID AND SCORE IS NOT NULL AND COURSE.ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
+            getNoStudentsOnCourseStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.COURSE, FP18120.STUDENT WHERE COURSE_ID = COURSE.ID AND COURSE.ID=? AND PAUSE_DATE IS NULL");
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa konektovanjem na bazu: " + error.getMessage(), Alert.AlertType.ERROR);
         }
@@ -155,6 +164,46 @@ public class BazaDAO {
             return null;
         }
         return login;
+    }
+
+    public ArrayList<Administrator> admins() throws SQLException {
+        ArrayList<Administrator> administrators = new ArrayList<>();
+        var resultSet = allAdminStmt.executeQuery();
+        while (resultSet.next()) {
+            Administrator administrator = getAdmin(resultSet.getInt(1));
+            administrators.add(administrator);
+        }
+        return administrators;
+    }
+
+    public Administrator getAdmin(int id) {
+        Administrator administrator = null;
+        try {
+            getAdminStmt.setInt(1, id);
+            var resultSet = getAdminStmt.executeQuery();
+            administrator = getAdminInfo(administrator, resultSet);
+        } catch (SQLException ignored) {
+            return null;
+        }
+        return administrator;
+    }
+
+    private Administrator getAdminInfo(Administrator administrator, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            administrator = new Administrator();
+            setPersonInfo(administrator, resultSet);
+        }
+        return administrator;
+    }
+
+    private void setPersonInfo(Person person, ResultSet resultSet) throws SQLException {
+        person.setId(resultSet.getInt(1));
+        person.setFirstName(resultSet.getString(2));
+        person.setLastName(resultSet.getString(3));
+        person.setJmbg(resultSet.getString(4));
+        person.setAddress(resultSet.getString(5));
+        person.setEmail(resultSet.getString(6));
+        person.setLogin(getLogin(resultSet.getInt(7)));
     }
 
     public ArrayList<Professor> professors() throws SQLException {
@@ -400,11 +449,6 @@ public class BazaDAO {
         deleteSubjectStmt.executeUpdate();
     }
 
-    public void deletePerson(Person person) throws SQLException {
-        deleteSubjectStmt.setInt(1, person.getId());
-        deleteSubjectStmt.executeUpdate();
-    }
-
     public void deleteProfessor(Professor professor) throws SQLException {
         deleteProfessorStmt.setInt(1, professor.getId());
         deleteProfessorStmt.executeUpdate();
@@ -413,6 +457,11 @@ public class BazaDAO {
     public void deleteStudent(Student student) throws SQLException {
         deleteStudentStmt.setInt(1, student.getId());
         deleteStudentStmt.executeUpdate();
+    }
+
+    public void deleteAdmin(Administrator administrator) throws SQLException {
+        deleteAdminStmt.setInt(1, administrator.getId());
+        deleteAdminStmt.executeUpdate();
     }
 
     public void deleteCourse(Course course) throws SQLException {
@@ -443,16 +492,20 @@ public class BazaDAO {
         return average;
     }
 
+    public float getAvgStudentGrade(Student student) throws SQLException {
+        return getAvgInfo(student.getId(), getavgStudentGradeStmt);
+    }
+
+    public int getNoStudentGraded(Student student) throws SQLException {
+        return getCountInfo(student.getId(), getNoStudentGradedStmt);
+    }
+
+    public int getNoStudentNotGraded(Student student) throws SQLException {
+        return getCountInfo(student.getId(), getNoStudentNotGradedStmt);
+    }
+
     public float getAvgSubjectGrade(Subject subject) throws SQLException {
         return getAvgInfo(subject.getId(), getavgSubjectGradeStmt);
-    }
-
-    public float getPercentSubjectPassed(Subject subject) throws SQLException {
-        return Math.round(getNoSubjectGraded(subject) * 10000f / (getNoSubjectGraded(subject) + getNoSubjectNotGraded(subject))) / 100f;
-    }
-
-    public int getNoStudentsOnSubject(Subject subject) throws SQLException {
-        return getCountInfo(subject.getId(), getNoStudentsOnSubjectStmt);
     }
 
     public int getNoSubjectGraded(Subject subject) throws SQLException {
@@ -461,10 +514,6 @@ public class BazaDAO {
 
     public int getNoSubjectNotGraded(Subject subject) throws SQLException {
         return getCountInfo(subject.getId(), getNoSubjectNotGradedStmt);
-    }
-
-    public int getNoStudentsOnProfessor(Professor professor) throws SQLException {
-        return getCountInfo(professor.getId(), getNoStudentsOnProfessorStmt);
     }
 
     public float getAvgProfessorGrade(Professor professor) throws SQLException {
@@ -479,20 +528,18 @@ public class BazaDAO {
         return getCountInfo(professor.getId(), getNoProfessorNotGradedStmt);
     }
 
-    public float getPercentProfessorPassed(Professor professor) throws SQLException {
-        return Math.round(getNoProfessorGraded(professor) * 10000f / (getNoProfessorGraded(professor) + getNoProfessorNotGraded(professor))) / 100f;
+    public float getAvgCourseGrade(Course course) throws SQLException {
+        return getAvgInfo(course.getId(), getavgCourseGradeStmt);
+    }
+
+    public int getNoStudentsOnCourse(Course course) throws SQLException {
+        return getCountInfo(course.getId(), getNoStudentsOnCourseStmt);
     }
 
     private Student getStudentInfo(Student student, ResultSet resultSet) throws SQLException {
         while (resultSet.next()) {
             student = new Student();
-            student.setId(resultSet.getInt(1));
-            student.setFirstName(resultSet.getString(2));
-            student.setLastName(resultSet.getString(3));
-            student.setJmbg(resultSet.getString(4));
-            student.setAddress(resultSet.getString(5));
-            student.setEmail(resultSet.getString(6));
-            student.setLogin(getLogin(resultSet.getInt(7)));
+            setPersonInfo(student, resultSet);
             student.setBirthDate(resultSet.getDate(9).toLocalDate());
             student.setSemester(getSemester(resultSet.getInt(10)));
             student.setCourse(getCourse(resultSet.getInt(11)));
@@ -605,13 +652,7 @@ public class BazaDAO {
     private Professor getProfessorInfo(Professor professor, ResultSet resultSet) throws SQLException {
         while (resultSet.next()) {
             professor = new Professor();
-            professor.setId(resultSet.getInt(1));
-            professor.setFirstName(resultSet.getString(2));
-            professor.setLastName(resultSet.getString(3));
-            professor.setJmbg(resultSet.getString(4));
-            professor.setAddress(resultSet.getString(5));
-            professor.setEmail(resultSet.getString(6));
-            professor.setLogin(getLogin(resultSet.getInt(7)));
+            setPersonInfo(professor, resultSet);
             professor.setTitle(resultSet.getString(9));
         }
         return professor;

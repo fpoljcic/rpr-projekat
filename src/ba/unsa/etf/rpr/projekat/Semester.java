@@ -52,7 +52,7 @@ public class Semester {
 
     @Override
     public String toString() {
-        return no + ". semestar - " + cycleNo + ". ciklus studija";
+        return cycleNo + ".ciklus, " + no + ".semestar";
     }
 
     @Override

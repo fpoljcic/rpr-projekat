@@ -35,7 +35,7 @@ CREATE TABLE semester (
 
 CREATE TABLE course (
     id     INTEGER PRIMARY KEY,
-    name   VARCHAR(50) NOT NULL
+    name   VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE student (

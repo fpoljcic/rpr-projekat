@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class AddPersonController {
     public TextField firstNameField;
@@ -57,40 +56,28 @@ public class AddPersonController {
         studentLabel.setDisable(true);
         birthDateLabel.setDisable(true);
         birthDatePicker.setDisable(true);
+        disableStudentUpdate();
+    }
+
+    private void disableProfessor() {
+        professorLabel.setDisable(true);
+        disableProfessorUpdate();
+    }
+
+    private void disableStudentUpdate() {
         semesterLabel.setDisable(true);
         semesterChoiceBox.setDisable(true);
         courseLabel.setDisable(true);
         courseChoiceBox.setDisable(true);
     }
 
-    private void disableProfessor() {
-        professorLabel.setDisable(true);
+    private void disableProfessorUpdate() {
         titleLabel.setDisable(true);
         titleField.setDisable(true);
     }
 
     @FXML
     public void initialize() {
-        ArrayList<String> userTypes = new ArrayList<>();
-        userTypes.add("Administrator");
-        userTypes.add("Student");
-        userTypes.add("Profesor");
-        userTypeChoiceBox.setItems(FXCollections.observableArrayList(userTypes));
-        userTypeChoiceBox.setValue(userType);
-        Thread thread = new Thread(() -> {
-            try {
-                var semesters = FXCollections.observableArrayList(dataBase.semesters());
-                var courses = FXCollections.observableArrayList(dataBase.courses());
-                Platform.runLater(() -> {
-                    semesterChoiceBox.setItems(semesters);
-                    courseChoiceBox.setItems(courses);
-                });
-            } catch (SQLException error) {
-                showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
-            }
-        });
-        thread.start();
-
         switch (userType) {
             case "Administrator":
                 disableStudent();
@@ -98,11 +85,32 @@ public class AddPersonController {
                 break;
             case "Student":
                 disableProfessor();
+                if (person != null)
+                    disableStudentUpdate();
                 break;
             case "Profesor":
                 disableStudent();
+                if (person != null)
+                    disableProfessorUpdate();
                 break;
         }
+
+        userTypeChoiceBox.getItems().add(userType);
+        userTypeChoiceBox.setValue(userType);
+        if (userType.equals("Student")) {
+            Thread thread = new Thread(() -> {
+                try {
+                    var semesters = FXCollections.observableArrayList(dataBase.semesters());
+                    var courses = FXCollections.observableArrayList(dataBase.courses());
+                    Platform.runLater(() -> semesterChoiceBox.setItems(semesters));
+                    Platform.runLater(() -> courseChoiceBox.setItems(courses));
+                } catch (SQLException error) {
+                    showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+                }
+            });
+            thread.start();
+        }
+
 
         if (person != null) {
             usernameField.setText(person.getLogin().getUsername());
@@ -151,14 +159,19 @@ public class AddPersonController {
 
     private void addPerson() throws SQLException {
         Person person;
-        if (this.person instanceof Administrator)
-            person = new Administrator();
-        else if (this.person instanceof Professor)
-            person = new Professor();
-        else if (this.person instanceof Student)
-            person = new Student();
-        else
-            return;
+        switch (userType) {
+            case "Administrator":
+                person = new Administrator();
+                break;
+            case "Professor":
+                person = new Professor();
+                break;
+            case "Student":
+                person = new Student();
+                break;
+            default:
+                return;
+        }
         getPersonInfo(person);
         if (person instanceof Administrator)
             dataBase.addAdministrator((Administrator) person);
@@ -176,9 +189,9 @@ public class AddPersonController {
 
     private void updatePerson() throws SQLException {
         getPersonInfo(person);
-        if (person instanceof Administrator)
+        if (userType.equals("Administrator"))
             dataBase.updateAdministrator((Administrator) person);
-        else if (person instanceof Professor) {
+        else if (userType.equals("Professor")) {
             ((Professor) person).setTitle(titleField.getText());
             dataBase.updateProfessor((Professor) person);
         } else {

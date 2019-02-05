@@ -27,6 +27,7 @@ public class AdministratorController {
     public TableView<Student> studentTable;
     public TableView<Course> courseTable;
     public TableView<Curriculum> curriculumTable;
+    public TableView<Administrator> adminTable;
     public TableColumn<Subject, Integer> subjectIdCol;
     public TableColumn<Subject, String> subjectNameCol;
     public TableColumn<Subject, String> subjectCodeCol;
@@ -57,6 +58,12 @@ public class AdministratorController {
     public TableColumn<Curriculum, Semester> curriculumSemesterCol;
     public TableColumn<Curriculum, Subject> curriculumSubjectCol;
     public TableColumn<Curriculum, String> curriculumRequiredSubjectCol;
+    public TableColumn<Administrator, Integer> adminIdCol;
+    public TableColumn<Administrator, String> adminFirstNameCol;
+    public TableColumn<Administrator, String> adminLastNameCol;
+    public TableColumn<Administrator, String> adminJmbgCol;
+    public TableColumn<Administrator, String> adminAdressCol;
+    public TableColumn<Administrator, String> adminEmailCol;
     public TabPane tabPane;
     public Label noSubjectStudentField, avgSubjectGradeField, noSubjectGradedField, noSubjectNotGradedField, percentSubjectPassedField;
     public Label noProfessorStudentField, avgProfessorGradeField, noProfessorGradedField, noProfessorNotGradedField, percentProfessorPassedField;
@@ -67,15 +74,18 @@ public class AdministratorController {
     public Label avgStudentGradeField;
     public Label noStudentGradedField;
     public Label noStudentNotGradedField;
+    public Label avgCourseGradeField;
+    public Label noStudentOnCourseField;
     private Login login;
     private BazaDAO dataBase;
     private Subject selectedSubject;
     private Professor selectedProfessor;
     private Student selectedStudent;
-    //private Course selectedCourse;
-    //private Curriculum selectedCurriculum;
+    private Course selectedCourse;
+    private Curriculum selectedCurriculum;
+    private Administrator selectedAdmin;
     private Tab currentTab;
-    private String selectedCycle, selectedCourse, selectedSemester;
+    private String selectedCycle, selectedCourseChoice, selectedSemester;
 
 
     public AdministratorController(Login login) {
@@ -98,6 +108,16 @@ public class AdministratorController {
         subjectEctsCol.setCellValueFactory(new PropertyValueFactory<>("ects"));
         subjectProfessorCol.setCellValueFactory(new PropertyValueFactory<>("professor"));
         subjectReqSubjectCol.setCellValueFactory(new PropertyValueFactory<>("reqSubject"));
+    }
+
+    private void fillAdmins() throws SQLException {
+        adminTable.setItems(FXCollections.observableArrayList(dataBase.admins()));
+        adminIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        adminFirstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        adminLastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        adminJmbgCol.setCellValueFactory(new PropertyValueFactory<>("jmbg"));
+        adminAdressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        adminEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
     }
 
     private void fillProfessors() throws SQLException {
@@ -142,15 +162,13 @@ public class AdministratorController {
 
     private void setListenersOnSelectedItems() {
         selectedCycle = cycleChoiceBox.getValue();
-        selectedCourse = courseChoiceBox.getValue();
+        selectedCourseChoice = courseChoiceBox.getValue();
         selectedSemester = semeseterChoiceBox.getValue();
         subjectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
                 Thread thread = new Thread(() -> {
                     try {
-                        //String noSubjectStudent = String.valueOf(dataBase.getNoStudentsOnSubject(newValue));
-                        //Float percentSubjectPassed = dataBase.getPercentSubjectPassed(newValue);
                         String avgSubjectGrade = String.valueOf(dataBase.getAvgSubjectGrade(newValue));
                         int noSubjectGradedInt = dataBase.getNoSubjectGraded(newValue);
                         String noSubjectGraded = String.valueOf(noSubjectGradedInt);
@@ -178,8 +196,6 @@ public class AdministratorController {
                 selectedProfessor = professorTable.getSelectionModel().getSelectedItem();
                 Thread thread = new Thread(() -> {
                     try {
-                        //int noStudentsOnProfessor = dataBase.getNoStudentsOnProfessor(newValue);
-                        // Float percentProfessorPassed = dataBase.getPercentProfessorPassed(newValue);
                         String avgProfessorGrade = String.valueOf(dataBase.getAvgProfessorGrade(newValue));
                         int noProfessorGradedInt = dataBase.getNoProfessorGraded(newValue);
                         String noProfessorGraded = String.valueOf(noProfessorGradedInt);
@@ -204,6 +220,21 @@ public class AdministratorController {
         studentTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 selectedStudent = studentTable.getSelectionModel().getSelectedItem();
+                Thread thread = new Thread(() -> {
+                    try {
+                        String avgStudentGrade = String.valueOf(dataBase.getAvgStudentGrade(newValue));
+                        String noStudentGraded = String.valueOf(dataBase.getNoStudentGraded(newValue));
+                        String noStudentNotGraded = String.valueOf(dataBase.getNoStudentNotGraded(newValue));
+                        Platform.runLater(() -> {
+                            avgStudentGradeField.setText(avgStudentGrade);
+                            noStudentGradedField.setText(noStudentGraded);
+                            noStudentNotGradedField.setText(noStudentNotGraded);
+                        });
+                    } catch (SQLException error) {
+                        Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+                    }
+                });
+                thread.start();
             }
         });
         currentTab = tabPane.getSelectionModel().getSelectedItem();
@@ -213,7 +244,7 @@ public class AdministratorController {
         });
         courseChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null)
-                selectedCourse = newValue;
+                selectedCourseChoice = newValue;
         });
         cycleChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -239,18 +270,33 @@ public class AdministratorController {
             if (newValue != null)
                 selectedSemester = newValue;
         });
-        /*
         courseTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                selectedCourse = courseTable.getSelectionModel().getSelectedItem();
+                selectedCourse = newValue;
+                Thread thread = new Thread(() -> {
+                    try {
+                        String avgCourseGrade = String.valueOf(dataBase.getAvgCourseGrade(newValue));
+                        String noStudentOnCourse = String.valueOf(dataBase.getNoStudentsOnCourse(newValue));
+                        Platform.runLater(() -> {
+                            avgCourseGradeField.setText(avgCourseGrade);
+                            noStudentOnCourseField.setText(noStudentOnCourse);
+                        });
+                    } catch (SQLException error) {
+                        Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+                    }
+                });
+                thread.start();
             }
         });
         curriculumTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                selectedCurriculum = curriculumTable.getSelectionModel().getSelectedItem();
+                selectedCurriculum = newValue;
             }
         });
-        */
+        adminTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null)
+                selectedAdmin = newValue;
+        });
     }
 
     @FXML
@@ -261,6 +307,7 @@ public class AdministratorController {
             fillStudents();
             fillCourses();
             fillCurriculums();
+            fillAdmins();
             ArrayList<String> cycles = dataBase.cycles();
             cycles.add(0, "Svi ciklusi");
             cycleChoiceBox.setItems(FXCollections.observableArrayList(cycles));
@@ -313,6 +360,21 @@ public class AdministratorController {
     private void clearSelectedStudent() {
         studentTable.getSelectionModel().clearSelection();
         selectedStudent = null;
+    }
+
+    private void clearSelectedCourse() {
+        courseTable.getSelectionModel().clearSelection();
+        selectedCourse = null;
+    }
+
+    private void clearSelectedCurriculum() {
+        curriculumTable.getSelectionModel().clearSelection();
+        selectedCurriculum = null;
+    }
+
+    private void clearSelectedAdmin() {
+        adminTable.getSelectionModel().clearSelection();
+        selectedAdmin = null;
     }
 
     public void addSubject(ActionEvent actionEvent) {
@@ -461,21 +523,11 @@ public class AdministratorController {
             studentTable.setItems(FXCollections.observableArrayList(dataBase.students()));
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
-            clearSelectedProfessor();
+            clearSelectedStudent();
             return;
         }
         showAlert("Uspjeh", "Uspješno izbrisan student", Alert.AlertType.INFORMATION);
         clearSelectedStudent();
-    }
-
-
-
-    public void addCourse(ActionEvent actionEvent) {
-
-    }
-
-    public void addCurriculum(ActionEvent actionEvent) {
-
     }
 
     public void closeClick(ActionEvent actionEvent) {
@@ -531,14 +583,12 @@ public class AdministratorController {
             case "Studenti":
                 updateStudent(null);
                 break;
-                /*
             case "Smjerovi":
                 updateCourse(null);
                 break;
             case "Programi":
                 updateCurriculum(null);
                 break;
-                */
         }
     }
 
@@ -554,14 +604,12 @@ public class AdministratorController {
             case "Studenti":
                 deleteStudent(null);
                 break;
-                /*
             case "Smjerovi":
                 deleteCourse(null);
                 break;
             case "Programi":
                 deleteCurriculum(null);
                 break;
-                */
         }
     }
 
@@ -583,10 +631,187 @@ public class AdministratorController {
 
     public void refreshStudent(ActionEvent actionEvent) {
         try {
-            studentTable.setItems(FXCollections.observableArrayList(dataBase.getStudents(selectedCourse, selectedCycle, selectedSemester)));
+            studentTable.setItems(FXCollections.observableArrayList(dataBase.getStudents(selectedCourseChoice, selectedCycle, selectedSemester)));
         } catch (SQLException error) {
-            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    public void addCourse(ActionEvent actionEvent) {
+        clearSelectedCourse();
+        editCourse(null);
+    }
+
+    public void updateCourse(ActionEvent actionEvent) {
+        if (selectedCourse == null) {
+            showAlert("Greška", "Prvo odaberite smjer", Alert.AlertType.ERROR);
+            return;
+        }
+        editCourse(selectedCourse);
+        clearSelectedCourse();
+    }
+
+    private void editCourse(Course course) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addCourse.fxml"));
+            loader.setController(new AddCourseController(selectedCourse));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            if (course == null)
+                secondaryStage.setTitle("Dodaj smjer");
+            else
+                secondaryStage.setTitle("Ažuriraj smjer");
+            secondaryStage.getIcons().add(new Image("/img/course.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            courseTable.setItems(FXCollections.observableArrayList(dataBase.courses()));
+        } catch (IOException | SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+
+    public void deleteCourse(ActionEvent actionEvent) {
+        if (selectedCourse == null) {
+            showAlert("Greška", "Prvo odaberite smjer", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite izbrisati smjer '" + selectedCourse + "'?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
+            dataBase.deleteCourse(selectedCourse);
+            courseTable.setItems(FXCollections.observableArrayList(dataBase.courses()));
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            clearSelectedCourse();
+            return;
+        }
+        showAlert("Uspjeh", "Uspješno izbrisan smjer", Alert.AlertType.INFORMATION);
+        clearSelectedCourse();
+    }
+
+
+    public void addCurriculum(ActionEvent actionEvent) {
+        clearSelectedCurriculum();
+        editCurriculum(null);
+    }
+
+
+    public void updateCurriculum(ActionEvent actionEvent) {
+        if (selectedCurriculum == null) {
+            showAlert("Greška", "Prvo odaberite stavku", Alert.AlertType.ERROR);
+            return;
+        }
+        editCurriculum(selectedCurriculum);
+        clearSelectedCurriculum();
+    }
+
+    private void editCurriculum(Curriculum curriculum) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addCurriculum.fxml"));
+            loader.setController(new AddCurriculumController(selectedCurriculum));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            if (curriculum == null)
+                secondaryStage.setTitle("Dodaj stavku");
+            else
+                secondaryStage.setTitle("Ažuriraj stavku");
+            secondaryStage.getIcons().add(new Image("/img/curriculum.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            curriculumTable.setItems(FXCollections.observableArrayList(dataBase.curriculums()));
+        } catch (IOException | SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public void deleteCurriculum(ActionEvent actionEvent) {
+        if (selectedCurriculum == null) {
+            showAlert("Greška", "Prvo odaberite stavku", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite izbrisati stavku (ID: " + selectedCurriculum.getId() + ") ?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
+            dataBase.deleteCurriculum(selectedCurriculum);
+            curriculumTable.setItems(FXCollections.observableArrayList(dataBase.curriculums()));
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            clearSelectedCurriculum();
+            return;
+        }
+        showAlert("Uspjeh", "Uspješno izbrisana stavka", Alert.AlertType.INFORMATION);
+        clearSelectedCurriculum();
+    }
+
+    private void editAdmin(Administrator admin) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
+            loader.setController(new AddPersonController(selectedAdmin, "Administrator"));
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            if (admin == null)
+                secondaryStage.setTitle("Dodaj administratora");
+            else
+                secondaryStage.setTitle("Ažuriraj administratora");
+            secondaryStage.getIcons().add(new Image("/img/administrator.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            adminTable.setItems(FXCollections.observableArrayList(dataBase.admins()));
+        } catch (IOException | SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+
+    public void addAdmin(ActionEvent actionEvent) {
+        clearSelectedAdmin();
+        editAdmin(selectedAdmin);
+    }
+
+    public void updateAdmin(ActionEvent actionEvent) {
+        if (selectedAdmin == null) {
+            showAlert("Greška", "Prvo odaberite administratora", Alert.AlertType.ERROR);
+            return;
+        }
+        editAdmin(selectedAdmin);
+        clearSelectedAdmin();
+    }
+
+    public void deleteAdmin(ActionEvent actionEvent) {
+        if (selectedAdmin == null) {
+            showAlert("Greška", "Prvo odaberite administratora", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite izbrisati administratora '" + selectedAdmin + "'?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
+            dataBase.deleteAdmin(selectedAdmin);
+            adminTable.setItems(FXCollections.observableArrayList(dataBase.admins()));
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            clearSelectedAdmin();
+            return;
+        }
+        showAlert("Uspjeh", "Uspješno izbrisan administrator", Alert.AlertType.INFORMATION);
+        clearSelectedAdmin();
     }
 }

@@ -46,10 +46,8 @@ public class AddSubjectController {
             try {
                 var professors = FXCollections.observableArrayList(dataBase.professors());
                 var subjects = FXCollections.observableArrayList(dataBase.subjects());
-                Platform.runLater(() -> {
-                    professorChoiceBox.setItems(professors);
-                    reqSubjectChoiceBox.setItems(subjects);
-                });
+                Platform.runLater(() -> professorChoiceBox.setItems(professors));
+                Platform.runLater(() -> reqSubjectChoiceBox.setItems(subjects));
             } catch (SQLException error) {
                 showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             }

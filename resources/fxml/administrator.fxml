@@ -14,376 +14,543 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="494.0" prefWidth="798.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="494.0" prefWidth="798.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1">
     <!--                  fx:controller="ba.unsa.etf.rpr.projekat.AdministratorController"                     !-->
-   <center>
-      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab text="Predmeti">
-            <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <center>
-                        <TableView fx:id="subjectTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <columns>
-                              <TableColumn fx:id="subjectIdCol" prefWidth="101.00001525878906" text="Id" />
-                              <TableColumn fx:id="subjectNameCol" prefWidth="161.0" text="Naziv" />
-                              <TableColumn fx:id="subjectCodeCol" minWidth="0.0" prefWidth="105.0" text="Šifra" />
-                              <TableColumn fx:id="subjectEctsCol" prefWidth="138.0" text="Ects" />
-                              <TableColumn fx:id="subjectProfessorCol" prefWidth="87.0" text="Profesor" />
-                              <TableColumn fx:id="subjectReqSubjectCol" prefWidth="87.0" text="Uslovni predmet" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </center>
-                     <right>
-                        <VBox prefHeight="416.0" prefWidth="116.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#addSubject" prefHeight="25.0" prefWidth="123.0" text="Dodaj predmet">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="5.0" />
-                                 </VBox.margin>
-                              </Button>
-                              <Button layoutX="15.0" layoutY="10.0" mnemonicParsing="false" onAction="#updateSubject" prefHeight="25.0" prefWidth="123.0" text="Ažuriraj predmet">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Button>
-                              <Button layoutX="15.0" layoutY="45.0" mnemonicParsing="false" onAction="#deleteSubject" prefHeight="25.0" prefWidth="123.0" text="Izbriši predmet">
-                                 <VBox.margin>
-                                    <Insets left="5.0" top="10.0" />
-                                 </VBox.margin></Button>
-                              <Label alignment="CENTER" maxWidth="Infinity" text="Broj studenata">
-                                 <VBox.margin>
-                                    <Insets left="5.0" right="5.0" top="30.0" />
-                                 </VBox.margin></Label>
-                               <Label fx:id="noSubjectStudentField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="avgSubjectGradeField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Upisalo ocjenu">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noSubjectGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Nije upisalo ocjenu">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noSubjectNotGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Prolaznost">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="percentSubjectPassedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                           </children>
-                        </VBox>
-                     </right>
-                  </BorderPane>
-            </content>
-          </Tab>
-          <Tab text="Profesori">
-            <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <center>
-                        <TableView fx:id="professorTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                          <columns>
-                            <TableColumn fx:id="professorIdCol" prefWidth="62.0" text="Id" />
-                            <TableColumn fx:id="professorFirstNameCol" prefWidth="44.0" text="Ime" />
-                              <TableColumn fx:id="professorLastNameCol" minWidth="0.0" prefWidth="82.0" text="Prezime" />
-                              <TableColumn fx:id="professorJmbgCol" prefWidth="99.0" text="Jmbg" />
-                              <TableColumn fx:id="professorAdressCol" prefWidth="74.0" text="Adresa" />
-                              <TableColumn fx:id="professorEmailCol" prefWidth="74.0" text="Email" />
-                              <TableColumn fx:id="professorTitleCol" prefWidth="111.0" text="Titula" />
-                          </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </center>
-                     <right>
-                        <VBox prefHeight="416.0" prefWidth="136.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#addProfessor" prefHeight="25.0" prefWidth="161.0" text="Dodaj profesora">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="5.0" />
-                                 </VBox.margin>
-                              </Button>
-                               <Button mnemonicParsing="false" onAction="#updateProfessor" prefHeight="25.0" prefWidth="161.0" text="Ažuriraj profesora">
-                                   <VBox.margin>
-                                       <Insets left="5.0" />
-                                   </VBox.margin>
-                               </Button>
-                               <Button mnemonicParsing="false" onAction="#deleteProfessor" prefHeight="25.0" prefWidth="161.0" text="Izbriši profesora">
-                                   <VBox.margin>
-                                       <Insets left="5.0" top="10.0" />
-                                   </VBox.margin>
-                               </Button>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Broj studenata">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="30.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noProfessorStudentField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="avgProfessorGradeField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Upisalo ocjenu">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noProfessorGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Nije upisalo ocjenu">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noProfessorNotGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Prolaznost">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="20.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="percentProfessorPassedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                           </children>
-                        </VBox>
-                     </right>
-                  </BorderPane>
-            </content>
-          </Tab>
-            <Tab text="Studenti">
-               <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <center>
-                        <TableView fx:id="studentTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <columns>
-                              <TableColumn fx:id="studentIdCol" prefWidth="62.0" text="Id" />
-                              <TableColumn fx:id="studentFirstNameCol" prefWidth="44.0" text="Ime" />
-                              <TableColumn fx:id="studentLastNameCol" minWidth="0.0" prefWidth="64.0" text="Prezime" />
-                              <TableColumn fx:id="studentJmbgCol" prefWidth="46.0" text="Jmbg" />
-                              <TableColumn fx:id="studentAdressCol" prefWidth="53.0" text="Adresa" />
-                              <TableColumn fx:id="studentEmailCol" prefWidth="53.0" text="Email" />
-                              <TableColumn fx:id="studentBirthDateCol" prefWidth="130.0" text="Datum rođenja" />
-                              <TableColumn fx:id="studentSemesterCol" prefWidth="64.0" text="Semestar" />
-                              <TableColumn fx:id="studentCourseCol" prefWidth="91.0" text="Smjer" />
-                              <TableColumn fx:id="studentPauseDateCol" prefWidth="91.0" text="Zaledio" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </center>
-                     <right>
-                        <VBox prefHeight="416.0" prefWidth="130.0" BorderPane.alignment="CENTER">
-                           <children>
-                               <Button mnemonicParsing="false" onAction="#addStudent" prefHeight="25.0" prefWidth="161.0" text="Dodaj studenta">
-                                   <VBox.margin>
-                                       <Insets bottom="10.0" left="5.0" />
-                                   </VBox.margin>
-                               </Button>
-                               <Button mnemonicParsing="false" onAction="#updateStudent" prefHeight="25.0" prefWidth="161.0" text="Ažuriraj studenta">
-                                   <VBox.margin>
-                                       <Insets bottom="10.0" left="5.0" />
-                                   </VBox.margin>
-                               </Button>
-                               <Button mnemonicParsing="false" onAction="#deleteStudent" prefHeight="25.0" prefWidth="161.0" text="Izbriši studenta">
-                                   <VBox.margin>
-                                       <Insets bottom="10.0" left="5.0" />
-                                   </VBox.margin>
-                               </Button>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Smjer">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="5.0" />
-                                   </VBox.margin></Label>
-                               <ChoiceBox fx:id="courseChoiceBox" prefWidth="150.0">
-                                   <VBox.margin>
-                                       <Insets bottom="10.0" left="5.0" />
-                                   </VBox.margin>
-                               </ChoiceBox>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Ciklus">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                              <ChoiceBox fx:id="cycleChoiceBox" prefWidth="150.0">
-                                  <VBox.margin>
-                                      <Insets bottom="10.0" left="5.0" />
-                                  </VBox.margin>
-                              </ChoiceBox>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Semestar">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <ChoiceBox fx:id="semeseterChoiceBox" prefWidth="150.0">
-                                   <VBox.margin>
-                                       <Insets bottom="5.0" left="5.0" />
-                                   </VBox.margin>
-                               </ChoiceBox>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="10.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="avgStudentGradeField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Broj upisanih ocjena">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="10.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noStudentGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Label alignment="CENTER" maxWidth="Infinity" text="Broj neupisanih ocjena">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="10.0" />
-                                   </VBox.margin></Label>
-                               <Label fx:id="noStudentNotGradedField" alignment="CENTER" maxWidth="Infinity" text="0">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" />
-                                   </VBox.margin></Label>
-                               <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refreshStudent" prefHeight="25.0" prefWidth="161.0" text="Osvježi">
-                                   <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="10.0" />
-                                   </VBox.margin>
-                               </Button>
-                           </children>
-                        </VBox>
-                     </right>
-                  </BorderPane>
-               </content>
-            </Tab>
-            <Tab text="Smjerovi">
-               <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <TableView fx:id="courseTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <columns>
-                              <TableColumn fx:id="courseIdCol" prefWidth="62.0" text="Id" />
-                              <TableColumn fx:id="courseNameCol" prefWidth="188.0" text="Naziv" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </center>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <right>
-                        <VBox prefHeight="416.0" prefWidth="138.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#addCourse" prefHeight="25.0" prefWidth="153.0" text="Dodaj smjer">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </right>
-                  </BorderPane>
-               </content>
-            </Tab>
-            <Tab text="Programi">
-               <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <TableView fx:id="curriculumTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <columns>
-                              <TableColumn fx:id="curriculumIdCol" prefWidth="62.0" text="Id" />
-                              <TableColumn fx:id="curriculumCourseCol" prefWidth="188.0" text="Smjer" />
-                              <TableColumn fx:id="curriculumSemesterCol" minWidth="0.0" prefWidth="84.0" text="Semestar" />
-                              <TableColumn fx:id="curriculumSubjectCol" prefWidth="120.0" text="Predmet" />
-                              <TableColumn fx:id="curriculumRequiredSubjectCol" prefWidth="143.0" text="Obavezan predmet" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </center>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <right>
-                        <VBox prefHeight="416.0" prefWidth="123.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#addCurriculum" prefHeight="25.0" prefWidth="129.0" text="Dodaj program">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </right>
-                  </BorderPane>
-               </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-   </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-                  <MenuItem mnemonicParsing="false" onAction="#logOutClick" text="Log out..." />
-              <MenuItem mnemonicParsing="false" onAction="#closeClick" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#addClick" text="Add" />
-                  <MenuItem mnemonicParsing="false" onAction="#updateClick" text="Update" />
-                  <MenuItem mnemonicParsing="false" onAction="#deleteClick" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#aboutClick" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
+    <center>
+        <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+                 BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab text="Predmeti">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <center>
+                                <TableView fx:id="subjectTable" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="subjectIdCol" prefWidth="101.00001525878906" text="Id"/>
+                                        <TableColumn fx:id="subjectNameCol" prefWidth="161.0" text="Naziv"/>
+                                        <TableColumn fx:id="subjectCodeCol" minWidth="0.0" prefWidth="105.0"
+                                                     text="Šifra"/>
+                                        <TableColumn fx:id="subjectEctsCol" prefWidth="138.0" text="Ects"/>
+                                        <TableColumn fx:id="subjectProfessorCol" prefWidth="87.0" text="Profesor"/>
+                                        <TableColumn fx:id="subjectReqSubjectCol" prefWidth="87.0"
+                                                     text="Uslovni predmet"/>
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                </TableView>
+                            </center>
+                            <right>
+                                <VBox prefHeight="416.0" prefWidth="116.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#addSubject" prefHeight="25.0"
+                                                prefWidth="123.0" text="Dodaj predmet">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button layoutX="15.0" layoutY="10.0" mnemonicParsing="false"
+                                                onAction="#updateSubject" prefHeight="25.0" prefWidth="123.0"
+                                                text="Ažuriraj predmet">
+                                            <VBox.margin>
+                                                <Insets left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button layoutX="15.0" layoutY="45.0" mnemonicParsing="false"
+                                                onAction="#deleteSubject" prefHeight="25.0" prefWidth="123.0"
+                                                text="Izbriši predmet">
+                                            <VBox.margin>
+                                                <Insets left="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Broj studenata">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="30.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noSubjectStudentField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="avgSubjectGradeField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Upisalo ocjenu">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noSubjectGradedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Nije upisalo ocjenu">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noSubjectNotGradedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Prolaznost">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="percentSubjectPassedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </right>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab text="Profesori">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <center>
+                                <TableView fx:id="professorTable" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="professorIdCol" prefWidth="62.0" text="Id"/>
+                                        <TableColumn fx:id="professorFirstNameCol" prefWidth="44.0" text="Ime"/>
+                                        <TableColumn fx:id="professorLastNameCol" minWidth="0.0" prefWidth="82.0"
+                                                     text="Prezime"/>
+                                        <TableColumn fx:id="professorJmbgCol" prefWidth="99.0" text="Jmbg"/>
+                                        <TableColumn fx:id="professorAdressCol" prefWidth="74.0" text="Adresa"/>
+                                        <TableColumn fx:id="professorEmailCol" prefWidth="74.0" text="Email"/>
+                                        <TableColumn fx:id="professorTitleCol" prefWidth="111.0" text="Titula"/>
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                </TableView>
+                            </center>
+                            <right>
+                                <VBox prefHeight="416.0" prefWidth="136.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#addProfessor" prefHeight="25.0"
+                                                prefWidth="161.0" text="Dodaj profesora">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#updateProfessor" prefHeight="25.0"
+                                                prefWidth="161.0" text="Ažuriraj profesora">
+                                            <VBox.margin>
+                                                <Insets left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#deleteProfessor" prefHeight="25.0"
+                                                prefWidth="161.0" text="Izbriši profesora">
+                                            <VBox.margin>
+                                                <Insets left="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Broj studenata">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="30.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noProfessorStudentField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="avgProfessorGradeField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Upisalo ocjenu">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noProfessorGradedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Nije upisalo ocjenu">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noProfessorNotGradedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Prolaznost">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="percentProfessorPassedField" alignment="CENTER"
+                                               maxWidth="Infinity" text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </right>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab text="Studenti">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <center>
+                                <TableView fx:id="studentTable" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="studentIdCol" prefWidth="62.0" text="Id"/>
+                                        <TableColumn fx:id="studentFirstNameCol" prefWidth="44.0" text="Ime"/>
+                                        <TableColumn fx:id="studentLastNameCol" minWidth="0.0" prefWidth="64.0"
+                                                     text="Prezime"/>
+                                        <TableColumn fx:id="studentJmbgCol" prefWidth="46.0" text="Jmbg"/>
+                                        <TableColumn fx:id="studentAdressCol" prefWidth="53.0" text="Adresa"/>
+                                        <TableColumn fx:id="studentEmailCol" prefWidth="53.0" text="Email"/>
+                                        <TableColumn fx:id="studentBirthDateCol" prefWidth="130.0"
+                                                     text="Datum rođenja"/>
+                                        <TableColumn fx:id="studentSemesterCol" prefWidth="64.0" text="Semestar"/>
+                                        <TableColumn fx:id="studentCourseCol" prefWidth="91.0" text="Smjer"/>
+                                        <TableColumn fx:id="studentPauseDateCol" prefWidth="91.0" text="Zaledio"/>
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                </TableView>
+                            </center>
+                            <right>
+                                <VBox prefHeight="416.0" prefWidth="130.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#addStudent" prefHeight="25.0"
+                                                prefWidth="161.0" text="Dodaj studenta">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#updateStudent" prefHeight="25.0"
+                                                prefWidth="161.0" text="Ažuriraj studenta">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#deleteStudent" prefHeight="25.0"
+                                                prefWidth="161.0" text="Izbriši studenta">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Smjer">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <ChoiceBox fx:id="courseChoiceBox" prefWidth="150.0">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </ChoiceBox>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Ciklus">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <ChoiceBox fx:id="cycleChoiceBox" prefWidth="150.0">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </ChoiceBox>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Semestar">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <ChoiceBox fx:id="semeseterChoiceBox" prefWidth="150.0">
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </ChoiceBox>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="avgStudentGradeField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Broj upisanih ocjena">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noStudentGradedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Broj neupisanih ocjena">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noStudentNotGradedField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refreshStudent"
+                                                prefHeight="25.0" prefWidth="161.0" text="Osvježi">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                            </right>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab text="Smjerovi">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <center>
+                                <TableView fx:id="courseTable" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="courseIdCol" prefWidth="62.0" text="Id"/>
+                                        <TableColumn fx:id="courseNameCol" prefWidth="188.0" text="Naziv"/>
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                </TableView>
+                            </center>
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <right>
+                                <VBox prefHeight="416.0" prefWidth="138.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#addCourse" prefHeight="25.0"
+                                                prefWidth="153.0" text="Dodaj smjer">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#updateCourse" prefHeight="25.0"
+                                                prefWidth="161.0" text="Ažuriraj smjer">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#deleteCourse" prefHeight="25.0"
+                                                prefWidth="161.0" text="Izbriši smjer">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Prosječna ocjena">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="30.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="avgCourseGradeField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" maxWidth="Infinity" text="Broj studenata">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                        <Label fx:id="noStudentOnCourseField" alignment="CENTER" maxWidth="Infinity"
+                                               text="0">
+                                            <VBox.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </VBox.margin>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </right>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab text="Plan i program">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <center>
+                                <TableView fx:id="curriculumTable" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="curriculumIdCol" prefWidth="62.0" text="Id"/>
+                                        <TableColumn fx:id="curriculumCourseCol" prefWidth="188.0" text="Smjer"/>
+                                        <TableColumn fx:id="curriculumSemesterCol" minWidth="0.0" prefWidth="84.0"
+                                                     text="Semestar"/>
+                                        <TableColumn fx:id="curriculumSubjectCol" prefWidth="120.0" text="Predmet"/>
+                                        <TableColumn fx:id="curriculumRequiredSubjectCol" prefWidth="143.0"
+                                                     text="Obavezan predmet"/>
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                </TableView>
+                            </center>
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <right>
+                                <VBox prefHeight="416.0" prefWidth="123.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#addCurriculum" prefHeight="25.0"
+                                                prefWidth="129.0" text="Dodaj stavku">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#updateCurriculum" prefHeight="25.0"
+                                                prefWidth="161.0" text="Ažuriraj stavku">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#deleteCurriculum" prefHeight="25.0"
+                                                prefWidth="161.0" text="Izbriši stavku">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                            </right>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab text="Administratori">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <center>
+                                <TableView fx:id="adminTable" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <columns>
+                                        <TableColumn fx:id="adminIdCol" prefWidth="62.0" text="Id"/>
+                                        <TableColumn fx:id="adminFirstNameCol" prefWidth="44.0" text="Ime"/>
+                                        <TableColumn fx:id="adminLastNameCol" minWidth="0.0" prefWidth="82.0"
+                                                     text="Prezime"/>
+                                        <TableColumn fx:id="adminJmbgCol" prefWidth="99.0" text="Jmbg"/>
+                                        <TableColumn fx:id="adminAdressCol" prefWidth="74.0" text="Adresa"/>
+                                        <TableColumn fx:id="adminEmailCol" prefWidth="74.0" text="Email"/>
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                </TableView>
+                            </center>
+                            <right>
+                                <VBox prefHeight="430.0" prefWidth="151.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0"
+                                                prefWidth="161.0" text="Dodaj administratora">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#updateAdmin" prefHeight="25.0"
+                                                prefWidth="161.0" text="Ažuriraj administratora">
+                                            <VBox.margin>
+                                                <Insets left="5.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#deleteAdmin" prefHeight="25.0"
+                                                prefWidth="161.0" text="Izbriši administratora">
+                                            <VBox.margin>
+                                                <Insets left="5.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                            </right>
+                        </BorderPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#logOutClick" text="Log out..."/>
+                        <MenuItem mnemonicParsing="false" onAction="#closeClick" text="Close"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#addClick" text="Add"/>
+                        <MenuItem mnemonicParsing="false" onAction="#updateClick" text="Update"/>
+                        <MenuItem mnemonicParsing="false" onAction="#deleteClick" text="Delete"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#aboutClick" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
 </BorderPane>
