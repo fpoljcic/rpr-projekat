@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>ba.unsa.etf.rpr.projekat</OriginalElement>
+  <nodes>
+    <node x="1722.461348967298" y="1631.0">ba.unsa.etf.rpr.projekat.AddPersonController</node>
+    <node x="1212.3368832472743" y="1329.0">ba.unsa.etf.rpr.projekat.BazaDAO</node>
+    <node x="45.04021801491683" y="1642.0">ba.unsa.etf.rpr.projekat.StudentController</node>
+    <node x="342.83333333333326" y="880.0">ba.unsa.etf.rpr.projekat.Student</node>
+    <node x="1401.4313898450941" y="1642.0">ba.unsa.etf.rpr.projekat.ProfessorController</node>
+    <node x="947.2354166666667" y="0.0">ba.unsa.etf.rpr.projekat.Login</node>
+    <node x="2081.4613489672975" y="1642.0">ba.unsa.etf.rpr.projekat.LoginController</node>
+    <node x="653.2662112736655" y="1631.0">ba.unsa.etf.rpr.projekat.AddSubjectController</node>
+    <node x="1515.3368832472743" y="781.0">ba.unsa.etf.rpr.projekat.StudentGradeSubjectWrapper</node>
+    <node x="650.7939113597245" y="858.0">ba.unsa.etf.rpr.projekat.Subject</node>
+    <node x="528.5833333333333" y="487.0">ba.unsa.etf.rpr.projekat.Professor</node>
+    <node x="459.2662112736655" y="1642.0">ba.unsa.etf.rpr.projekat.AdministratorController</node>
+    <node x="238.5" y="498.0">ba.unsa.etf.rpr.projekat.Administrator</node>
+    <node x="179.0" y="1727.0">ba.unsa.etf.rpr.projekat.Main</node>
+    <node x="1156.7708333333333" y="476.0">ba.unsa.etf.rpr.projekat.Course</node>
+    <node x="1901.461348967298" y="1631.0">ba.unsa.etf.rpr.projekat.AddCourseController</node>
+    <node x="1023.7708333333333" y="454.0">ba.unsa.etf.rpr.projekat.Semester</node>
+    <node x="0.0" y="1727.0">ba.unsa.etf.rpr.projekat.AboutController</node>
+    <node x="1329.3368832472743" y="1252.0">ba.unsa.etf.rpr.projekat.SubjectWrapper</node>
+    <node x="425.07291666666663" y="221.0">ba.unsa.etf.rpr.projekat.Person</node>
+    <node x="998.0069456397009" y="1631.0">ba.unsa.etf.rpr.projekat.AddCurriculumController</node>
+    <node x="703.5439113597245" y="1252.0">ba.unsa.etf.rpr.projekat.Grade</node>
+    <node x="885.5439113597245" y="1274.0">ba.unsa.etf.rpr.projekat.Curriculum</node>
+    <node x="21.5" y="1186.0">ba.unsa.etf.rpr.projekat.SubjectGradeWrapper</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="19.33333333333337" y="-14.5" />
+      <point x="565.5995446069988" y="1571.0" />
+      <point x="578.8939113597245" y="1571.0" />
+      <point x="578.8939113597245" y="751.0" />
+      <point x="1178.7083333333333" y="751.0" />
+      <point x="-36.5625" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCourseController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="-40.0" y="-25.5" />
+      <point x="1941.461348967298" y="1551.0" />
+      <point x="1291.1493832472743" y="1551.0" />
+      <point x="30.3125" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Grade" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="54.0" y="-91.5" />
+      <point x="838.5439113597245" y="1166.0" />
+      <point x="883.4256346815835" y="1166.0" />
+      <point x="883.4256346815835" y="681.0" />
+      <point x="602.1458333333333" y="681.0" />
+      <point x="20.0625" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Student" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="0.0" y="-58.5" />
+      <point x="424.33333333333326" y="711.0" />
+      <point x="1031.842261904762" y="711.0" />
+      <point x="-48.42857142857133" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Login">
+      <point x="-77.33333333333326" y="-14.5" />
+      <point x="468.9328779403322" y="1571.0" />
+      <point x="228.0" y="1571.0" />
+      <point x="228.0" y="191.0" />
+      <point x="992.2354166666667" y="191.0" />
+      <point x="-45.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.SubjectGradeWrapper" target="ba.unsa.etf.rpr.projekat.Student">
+      <point x="0.0" y="-157.5" />
+      <point x="114.0" y="1116.0" />
+      <point x="363.20833333333326" y="1116.0" />
+      <point x="-61.125" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCurriculumController" target="ba.unsa.etf.rpr.projekat.Curriculum">
+      <point x="-36.59999999999991" y="-25.5" />
+      <point x="1052.906945639701" y="1521.0" />
+      <point x="1013.0439113597245" y="1521.0" />
+      <point x="42.5" y="69.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="-21.42857142857156" y="-14.5" />
+      <point x="1455.0028184165226" y="1571.0" />
+      <point x="1493.8368832472743" y="1571.0" />
+      <point x="1493.8368832472743" y="661.0" />
+      <point x="628.8958333333333" y="661.0" />
+      <point x="46.8125" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Student">
+      <point x="-19.333333333333258" y="-14.5" />
+      <point x="526.9328779403322" y="1541.0" />
+      <point x="444.70833333333326" y="1541.0" />
+      <point x="20.375" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentController" target="ba.unsa.etf.rpr.projekat.Login">
+      <point x="-56.80000000000007" y="-14.5" />
+      <point x="59.24021801491676" y="1611.0" />
+      <point x="0.0" y="1611.0" />
+      <point x="0.0" y="181.0" />
+      <point x="962.2354166666667" y="181.0" />
+      <point x="-75.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Student" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="54.333333333333314" y="-58.5" />
+      <point x="478.6666666666665" y="741.0" />
+      <point x="1164.0833333333333" y="741.0" />
+      <point x="-51.1875" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCurriculumController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="73.20000000000005" y="-25.5" />
+      <point x="1162.706945639701" y="1611.0" />
+      <point x="1254.7743832472743" y="1611.0" />
+      <point x="-6.0625" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentGradeSubjectWrapper" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="-68.0" y="-157.5" />
+      <point x="1549.3368832472743" y="641.0" />
+      <point x="1112.5565476190475" y="641.0" />
+      <point x="32.28571428571422" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddSubjectController" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="-54.0" y="-25.5" />
+      <point x="680.2662112736655" y="1551.0" />
+      <point x="589.8939113597244" y="1551.0" />
+      <point x="589.8939113597244" y="701.0" />
+      <point x="575.3958333333333" y="701.0" />
+      <point x="-6.6875" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Curriculum" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="0.0" y="-69.5" />
+      <point x="970.5439113597245" y="731.0" />
+      <point x="1064.1279761904761" y="731.0" />
+      <point x="-16.14285714285711" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="-64.28571428571422" y="-14.5" />
+      <point x="1412.14567555938" y="1611.0" />
+      <point x="1266.8993832472743" y="1611.0" />
+      <point x="6.0625" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentController" target="ba.unsa.etf.rpr.projekat.SubjectGradeWrapper">
+      <point x="0.0" y="-14.5" />
+      <point x="116.04021801491683" y="1611.0" />
+      <point x="114.0" y="1611.0" />
+      <point x="0.0" y="157.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Curriculum" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="-56.66666666666663" y="-69.5" />
+      <point x="913.8772446930577" y="1156.0" />
+      <point x="771.7939113597245" y="1156.0" />
+      <point x="44.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="77.33333333333337" y="-14.5" />
+      <point x="623.5995446069988" y="1591.0" />
+      <point x="1230.5243832472743" y="1591.0" />
+      <point x="-30.3125" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentGradeSubjectWrapper" target="ba.unsa.etf.rpr.projekat.Login">
+      <point x="68.0" y="-157.5" />
+      <point x="1685.3368832472743" y="761.0" />
+      <point x="1678.5846242111295" y="761.0" />
+      <point x="1678.5846242111295" y="201.0" />
+      <point x="1052.2354166666667" y="201.0" />
+      <point x="15.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Person" target="ba.unsa.etf.rpr.projekat.Login">
+      <point x="0.0" y="-91.5" />
+      <point x="494.57291666666663" y="201.0" />
+      <point x="1022.2354166666667" y="201.0" />
+      <point x="-15.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddSubjectController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="54.0" y="-25.5" />
+      <point x="788.2662112736655" y="1601.0" />
+      <point x="1242.6493832472743" y="1601.0" />
+      <point x="-18.1875" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.StudentGradeSubjectWrapper">
+      <point x="21.42857142857133" y="-14.5" />
+      <point x="1497.8599612736655" y="1591.0" />
+      <point x="1617.3368832472743" y="1591.0" />
+      <point x="0.0" y="157.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.LoginController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="-32.75" y="-14.5" />
+      <point x="2114.2113489672975" y="1541.0" />
+      <point x="1303.2743832472743" y="1541.0" />
+      <point x="42.4375" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.Login">
+      <point x="64.28571428571422" y="-14.5" />
+      <point x="1540.7171041308084" y="1611.0" />
+      <point x="1740.8368832472743" y="1611.0" />
+      <point x="1740.8368832472743" y="191.0" />
+      <point x="1082.2354166666667" y="191.0" />
+      <point x="45.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Curriculum">
+      <point x="58.0" y="-14.5" />
+      <point x="604.2662112736655" y="1571.0" />
+      <point x="928.0439113597245" y="1571.0" />
+      <point x="-42.5" y="69.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCurriculumController" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="36.59999999999991" y="-25.5" />
+      <point x="1126.1069456397008" y="1571.0" />
+      <point x="1201.8368832472743" y="1571.0" />
+      <point x="1201.8368832472743" y="761.0" />
+      <point x="1207.9583333333333" y="761.0" />
+      <point x="-7.3125" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="56.80000000000001" y="-14.5" />
+      <point x="172.8402180149169" y="1581.0" />
+      <point x="1218.3993832472743" y="1581.0" />
+      <point x="-42.4375" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.SubjectWrapper">
+      <point x="-42.85714285714289" y="-14.5" />
+      <point x="1433.5742469879513" y="1601.0" />
+      <point x="1406.3368832472743" y="1601.0" />
+      <point x="0.0" y="91.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="42.85714285714289" y="-14.5" />
+      <point x="1519.288532702237" y="1601.0" />
+      <point x="1729.8368832472743" y="1601.0" />
+      <point x="1729.8368832472743" y="621.0" />
+      <point x="1237.2083333333333" y="621.0" />
+      <point x="21.9375" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentController" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="-28.399999999999977" y="-14.5" />
+      <point x="87.64021801491685" y="1601.0" />
+      <point x="11.0" y="1601.0" />
+      <point x="11.0" y="681.0" />
+      <point x="535.2708333333333" y="681.0" />
+      <point x="-46.8125" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Curriculum" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="56.66666666666674" y="-69.5" />
+      <point x="1027.2105780263912" y="1166.0" />
+      <point x="1018.2939113597245" y="1166.0" />
+      <point x="1018.2939113597245" y="761.0" />
+      <point x="1193.3333333333333" y="761.0" />
+      <point x="-21.9375" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Administrator">
+      <point x="-58.0" y="-14.5" />
+      <point x="488.2662112736655" y="1561.0" />
+      <point x="299.0" y="1561.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Professor" target="ba.unsa.etf.rpr.projekat.Person">
+      <point x="0.0" y="-25.5" />
+      <point x="582.0833333333333" y="434.0" />
+      <point x="511.94791666666663" y="434.0" />
+      <point x="17.375" y="91.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.LoginController" target="ba.unsa.etf.rpr.projekat.Login">
+      <point x="32.75" y="-14.5" />
+      <point x="2179.7113489672975" y="181.0" />
+      <point x="1112.2354166666667" y="181.0" />
+      <point x="75.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.SubjectGradeWrapper" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="61.66666666666666" y="-157.5" />
+      <point x="175.66666666666663" y="1136.0" />
+      <point x="661.7939113597245" y="1136.0" />
+      <point x="-66.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCourseController" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="40.0" y="-25.5" />
+      <point x="2021.461348967298" y="591.0" />
+      <point x="1266.4583333333333" y="591.0" />
+      <point x="51.1875" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.ProfessorController" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="0.0" y="-14.5" />
+      <point x="1476.4313898450941" y="1581.0" />
+      <point x="1504.8368832472743" y="1581.0" />
+      <point x="1504.8368832472743" y="651.0" />
+      <point x="1096.4136904761904" y="651.0" />
+      <point x="16.14285714285711" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddPersonController" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="-19.875" y="-25.5" />
+      <point x="1782.086348967298" y="611.0" />
+      <point x="1128.6994047619046" y="611.0" />
+      <point x="48.42857142857133" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.SubjectWrapper" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="38.5" y="-91.5" />
+      <point x="1444.8368832472743" y="671.0" />
+      <point x="615.5208333333333" y="671.0" />
+      <point x="33.4375" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Subject" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="0.0" y="-80.5" />
+      <point x="727.7939113597245" y="691.0" />
+      <point x="588.7708333333333" y="691.0" />
+      <point x="6.6875" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="-38.66666666666663" y="-14.5" />
+      <point x="507.59954460699885" y="1551.0" />
+      <point x="321.16666666666663" y="1551.0" />
+      <point x="321.16666666666663" y="701.0" />
+      <point x="562.0208333333333" y="701.0" />
+      <point x="-20.0625" y="25.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddPersonController" target="ba.unsa.etf.rpr.projekat.Person">
+      <point x="59.625" y="-25.5" />
+      <point x="1861.586348967298" y="1611.0" />
+      <point x="1848.3779761904761" y="1611.0" />
+      <point x="1848.3779761904761" y="424.0" />
+      <point x="546.6979166666666" y="424.0" />
+      <point x="52.125" y="91.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Administrator" target="ba.unsa.etf.rpr.projekat.Person">
+      <point x="0.0" y="-14.5" />
+      <point x="299.0" y="424.0" />
+      <point x="442.44791666666663" y="424.0" />
+      <point x="-52.125" y="91.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.SubjectWrapper" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="-38.5" y="-91.5" />
+      <point x="1367.8368832472743" y="1146.0" />
+      <point x="793.7939113597245" y="1146.0" />
+      <point x="66.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentController" target="ba.unsa.etf.rpr.projekat.Student">
+      <point x="28.399999999999977" y="-14.5" />
+      <point x="144.4402180149168" y="1571.0" />
+      <point x="217.0" y="1571.0" />
+      <point x="217.0" y="1126.0" />
+      <point x="403.95833333333326" y="1126.0" />
+      <point x="-20.375" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Grade" target="ba.unsa.etf.rpr.projekat.Student">
+      <point x="-54.0" y="-91.5" />
+      <point x="730.5439113597245" y="1126.0" />
+      <point x="485.45833333333326" y="1126.0" />
+      <point x="61.125" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCurriculumController" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="-73.20000000000005" y="-25.5" />
+      <point x="1016.3069456397009" y="1531.0" />
+      <point x="693.0439113597245" y="1531.0" />
+      <point x="693.0439113597245" y="1166.0" />
+      <point x="727.7939113597245" y="1166.0" />
+      <point x="0.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddPersonController" target="ba.unsa.etf.rpr.projekat.BazaDAO">
+      <point x="-59.625" y="-25.5" />
+      <point x="1742.336348967298" y="1561.0" />
+      <point x="1279.0243832472743" y="1561.0" />
+      <point x="18.1875" y="14.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="38.66666666666663" y="-14.5" />
+      <point x="584.9328779403321" y="1561.0" />
+      <point x="602.2569456397009" y="1561.0" />
+      <point x="602.2569456397009" y="1146.0" />
+      <point x="683.7939113597245" y="1146.0" />
+      <point x="-44.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AdministratorController" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="0.0" y="-14.5" />
+      <point x="546.2662112736655" y="1531.0" />
+      <point x="516.3333333333333" y="1531.0" />
+      <point x="516.3333333333333" y="721.0" />
+      <point x="1047.985119047619" y="721.0" />
+      <point x="-32.28571428571422" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddSubjectController" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="0.0" y="-25.5" />
+      <point x="734.2662112736655" y="1541.0" />
+      <point x="613.2569456397009" y="1541.0" />
+      <point x="613.2569456397009" y="1156.0" />
+      <point x="705.7939113597245" y="1156.0" />
+      <point x="-22.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.StudentGradeSubjectWrapper" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="0.0" y="-157.5" />
+      <point x="1617.3368832472743" y="631.0" />
+      <point x="1222.5833333333333" y="631.0" />
+      <point x="7.3125" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddCurriculumController" target="ba.unsa.etf.rpr.projekat.Semester">
+      <point x="0.0" y="-25.5" />
+      <point x="1089.506945639701" y="1571.0" />
+      <point x="1080.2708333333333" y="1571.0" />
+      <point x="0.0" y="58.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Grade" target="ba.unsa.etf.rpr.projekat.Subject">
+      <point x="0.0" y="-91.5" />
+      <point x="784.5439113597245" y="1166.0" />
+      <point x="749.7939113597245" y="1166.0" />
+      <point x="22.0" y="80.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.AddPersonController" target="ba.unsa.etf.rpr.projekat.Course">
+      <point x="19.875" y="-25.5" />
+      <point x="1821.836348967298" y="1611.0" />
+      <point x="1793.086348967298" y="1611.0" />
+      <point x="1793.086348967298" y="601.0" />
+      <point x="1251.8333333333333" y="601.0" />
+      <point x="36.5625" y="36.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.Student" target="ba.unsa.etf.rpr.projekat.Person">
+      <point x="-54.33333333333337" y="-58.5" />
+      <point x="369.9999999999999" y="671.0" />
+      <point x="400.64021801491685" y="671.0" />
+      <point x="400.64021801491685" y="434.0" />
+      <point x="477.19791666666663" y="434.0" />
+      <point x="-17.375" y="91.5" />
+    </edge>
+    <edge source="ba.unsa.etf.rpr.projekat.SubjectGradeWrapper" target="ba.unsa.etf.rpr.projekat.Professor">
+      <point x="-61.66666666666663" y="-157.5" />
+      <point x="52.33333333333337" y="1166.0" />
+      <point x="67.80688468158348" y="1166.0" />
+      <point x="67.80688468158348" y="691.0" />
+      <point x="548.6458333333333" y="691.0" />
+      <point x="-33.4375" y="25.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.32995495495495497" x="1106.5" y="878.0" />
+  <SelectedNodes>
+    <node>ba.unsa.etf.rpr.projekat.SubjectGradeWrapper</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

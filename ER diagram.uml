@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.ADMINISTRATOR</OriginalElement>
+  <nodes>
+    <node x="101.62840179110623" y="49.13351531957625">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.CURRICULUM</node>
+    <node x="564.1810423126856" y="111.33900399085172">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.STUDENT</node>
+    <node x="625.8113815784727" y="353.03970759265746">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PERSON</node>
+    <node x="517.475787893723" y="612.0239075982722">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PROFESSOR</node>
+    <node x="1009.7984613501685" y="339.57489028867394">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.ADMINISTRATOR</node>
+    <node x="258.45560190434617" y="629.1980708891035">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SUBJECT</node>
+    <node x="1000.1135555172427" y="524.4378325345374">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.LOGIN</node>
+    <node x="0.0" y="279.8782053532253">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.COURSE</node>
+    <node x="22.171217875046864" y="465.40753095293104">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.GRADE</node>
+    <node x="364.0854763084591" y="0.0">ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SEMESTER</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.GRADE" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.STUDENT">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.GRADE" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PROFESSOR">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.CURRICULUM" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.COURSE">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.CURRICULUM" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SEMESTER">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.GRADE" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SUBJECT">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PROFESSOR" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PERSON">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PERSON" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.LOGIN">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.CURRICULUM" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SUBJECT">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.STUDENT" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SEMESTER">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SUBJECT" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SUBJECT">
+      <point x="-51.5" y="81.0" />
+      <point x="309.95560190434617" y="806.1980708891035" />
+      <point x="303.95560190434617" y="812.1980708891035" />
+      <point x="243.45560190434617" y="812.1980708891035" />
+      <point x="237.45560190434617" y="806.1980708891035" />
+      <point x="237.45560190434617" y="756.6980708891035" />
+      <point x="243.45560190434617" y="750.6980708891035" />
+      <point x="-103.0" y="40.5" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.STUDENT" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.COURSE">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.STUDENT" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PERSON">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.ADMINISTRATOR" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PERSON">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.SUBJECT" target="ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.PROFESSOR">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7802313354363828" x="528.5" y="455.5" />
+  <SelectedNodes>
+    <node>ebcaf7ba-70e6-4a2a-9fb5-9a4da72a4964.TABLE:FP18120.ADMINISTRATOR</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+  </Categories>
+</Diagram>
+
