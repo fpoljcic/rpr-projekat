@@ -20,6 +20,7 @@ public class AddSubjectController {
     private boolean[] validField;
     private BazaDAO dataBase;
     private Subject subject;
+    private boolean okClicked;
 
     public AddSubjectController(Subject subject) {
         validField = new boolean[2];
@@ -46,8 +47,27 @@ public class AddSubjectController {
             try {
                 var professors = FXCollections.observableArrayList(dataBase.professors());
                 var subjects = FXCollections.observableArrayList(dataBase.subjects());
-                Platform.runLater(() -> professorChoiceBox.setItems(professors));
-                Platform.runLater(() -> reqSubjectChoiceBox.setItems(subjects));
+                Subject subject = new Subject();
+                subject.setName("Bez uslovnog predmeta");
+                subjects.add(0, subject);
+                Platform.runLater(() -> {
+                    professorChoiceBox.setItems(professors);
+                    if (this.subject == null)
+                        professorChoiceBox.getSelectionModel().select(0);
+                    else
+                        professorChoiceBox.getSelectionModel().select(this.subject.getProfessor());
+                });
+                Platform.runLater(() -> {
+                    if (this.subject != null)
+                        subjects.remove(this.subject);
+                    reqSubjectChoiceBox.setItems(subjects);
+                    if (this.subject == null)
+                        reqSubjectChoiceBox.getSelectionModel().select(0);
+                    else if (this.subject.getReqSubject() == null)
+                        reqSubjectChoiceBox.getSelectionModel().select(0);
+                    else
+                        reqSubjectChoiceBox.getSelectionModel().select(this.subject.getReqSubject());
+                });
             } catch (SQLException error) {
                 showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             }
@@ -82,8 +102,6 @@ public class AddSubjectController {
             nameField.setText(subject.getName());
             codeField.setText(subject.getCode());
             ectsSpinner.getValueFactory().setValue(subject.getEcts());
-            professorChoiceBox.setValue(subject.getProfessor());
-            reqSubjectChoiceBox.setValue(subject.getReqSubject());
         }
     }
 
@@ -101,22 +119,26 @@ public class AddSubjectController {
 
     private void addSubject() throws SQLException {
         Subject subject = new Subject();
-        subject.setName(nameField.getText());
-        subject.setCode(codeField.getText());
-        subject.setEcts(ectsSpinner.getValue());
-        subject.setProfessor(professorChoiceBox.getValue());
+        editSubject(subject);
         dataBase.addSubject(subject);
         showAlert("Uspjeh", "Uspješno dodat predmet", Alert.AlertType.INFORMATION);
     }
 
     private void updateSubject() throws SQLException {
+        editSubject(subject);
+        dataBase.updateSubject(subject);
+        showAlert("Uspjeh", "Uspješno ažuriran predmet", Alert.AlertType.INFORMATION);
+    }
+
+    private void editSubject(Subject subject) {
         subject.setName(nameField.getText());
         subject.setCode(codeField.getText());
         subject.setEcts(ectsSpinner.getValue());
         subject.setProfessor(professorChoiceBox.getValue());
-        subject.setReqSubject(reqSubjectChoiceBox.getValue());
-        dataBase.updateSubject(subject);
-        showAlert("Uspjeh", "Uspješno ažuriran predmet", Alert.AlertType.INFORMATION);
+        if (reqSubjectChoiceBox.getValue().getName().equals("Bez uslovnog predmeta"))
+            subject.setReqSubject(null);
+        else
+            subject.setReqSubject(reqSubjectChoiceBox.getValue());
     }
 
 
@@ -138,8 +160,13 @@ public class AddSubjectController {
                 return;
             }
         }
+        okClicked = true;
         Stage currentStage = (Stage) nameField.getScene().getWindow();
         currentStage.close();
+    }
+
+    public boolean isOkClicked () {
+        return okClicked;
     }
 
     public void spinnerStep(KeyEvent keyEvent) {

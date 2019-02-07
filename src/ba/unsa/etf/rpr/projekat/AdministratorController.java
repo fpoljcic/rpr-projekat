@@ -184,7 +184,6 @@ public class AdministratorController {
                             percentSubjectPassedField.setText(percentSubjectPassed + " %");
                         });
                     } catch (SQLException error) {
-                        error.printStackTrace();
                         Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
                     }
                 });
@@ -326,25 +325,82 @@ public class AdministratorController {
         refreshButton.setGraphic(new ImageView(refreshImage));
     }
 
-    private void editSubject(Subject subject) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addSubject.fxml"));
-            loader.setController(new AddSubjectController(subject));
-            Parent root = loader.load();
-            Stage secondaryStage = new Stage();
-            if (subject == null)
-                secondaryStage.setTitle("Dodaj predmet");
-            else
-                secondaryStage.setTitle("Ažuriraj predmet");
-            secondaryStage.getIcons().add(new Image("/img/subject.png"));
-            secondaryStage.setResizable(false);
-            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-            secondaryStage.initModality(Modality.APPLICATION_MODAL);
-            secondaryStage.showAndWait();
-            subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects()));
-        } catch (IOException | SQLException error) {
-            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
-        }
+    private void refreshSubjectTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<Subject> subjects = dataBase.subjects();
+                Platform.runLater(() -> subjectTable.setItems(FXCollections.observableArrayList(subjects)));
+                Platform.runLater(() -> subjectTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    private void refreshProfessorTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<Professor> professors = dataBase.professors();
+                Platform.runLater(() -> professorTable.setItems(FXCollections.observableArrayList(professors)));
+                Platform.runLater(() -> professorTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    private void refreshStudentTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<Student> students = dataBase.students();
+                Platform.runLater(() -> studentTable.setItems(FXCollections.observableArrayList(students)));
+                Platform.runLater(() -> studentTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    private void refreshCourseTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<Course> courses = dataBase.courses();
+                Platform.runLater(() -> courseTable.setItems(FXCollections.observableArrayList(courses)));
+                Platform.runLater(() -> courseTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    private void refreshCurriculumTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<Curriculum> curriculums = dataBase.curriculums();
+                Platform.runLater(() -> curriculumTable.setItems(FXCollections.observableArrayList(curriculums)));
+                Platform.runLater(() -> curriculumTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    private void refreshAdminTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<Administrator> admins = dataBase.admins();
+                Platform.runLater(() -> adminTable.setItems(FXCollections.observableArrayList(admins)));
+                Platform.runLater(() -> adminTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
     }
 
     private void clearSelectedSubject() {
@@ -377,9 +433,35 @@ public class AdministratorController {
         selectedAdmin = null;
     }
 
+    private boolean editSubject(Subject subject) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addSubject.fxml"));
+            AddSubjectController controller = new AddSubjectController(subject);
+            loader.setController(controller);
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            if (subject == null)
+                secondaryStage.setTitle("Dodaj predmet");
+            else
+                secondaryStage.setTitle("Ažuriraj predmet");
+            secondaryStage.getIcons().add(new Image("/img/subject.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return false;
+        }
+    }
+
     public void addSubject(ActionEvent actionEvent) {
-        clearSelectedSubject();
-        editSubject(null);
+        boolean okClicked = editSubject(null);
+        if (okClicked) {
+            clearSelectedSubject();
+            refreshSubjectTable();
+        }
     }
 
     public void updateSubject(ActionEvent actionEvent) {
@@ -387,8 +469,11 @@ public class AdministratorController {
             showAlert("Greška", "Prvo odaberite predmet", Alert.AlertType.ERROR);
             return;
         }
-        editSubject(selectedSubject);
-        clearSelectedSubject();
+        boolean okClicked = editSubject(selectedSubject);
+        if (okClicked) {
+            clearSelectedSubject();
+            refreshSubjectTable();
+        }
     }
 
     public void deleteSubject(ActionEvent actionEvent) {
@@ -404,7 +489,7 @@ public class AdministratorController {
             if (confirmationAlert.getResult() != ButtonType.OK)
                 return;
             dataBase.deleteSubject(selectedSubject);
-            subjectTable.setItems(FXCollections.observableArrayList(dataBase.subjects()));
+            refreshSubjectTable();
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             clearSelectedSubject();
@@ -414,10 +499,11 @@ public class AdministratorController {
         clearSelectedSubject();
     }
 
-    private void editProfessor(Professor professor) {
+    private boolean editProfessor(Professor professor) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(selectedProfessor, "Profesor"));
+            AddPersonController controller = new AddPersonController(selectedProfessor, "Profesor");
+            loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (professor == null)
@@ -429,15 +515,19 @@ public class AdministratorController {
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
-            professorTable.setItems(FXCollections.observableArrayList(dataBase.professors()));
-        } catch (IOException | SQLException error) {
+            return controller.isOkClicked();
+        } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return false;
         }
     }
 
     public void addProfessor(ActionEvent actionEvent) {
-        clearSelectedProfessor();
-        editProfessor(selectedProfessor);
+        boolean okClicked = editProfessor(selectedProfessor);
+        if (okClicked) {
+            clearSelectedProfessor();
+            refreshProfessorTable();
+        }
     }
 
     public void updateProfessor(ActionEvent actionEvent) {
@@ -445,8 +535,11 @@ public class AdministratorController {
             showAlert("Greška", "Prvo odaberite profesora", Alert.AlertType.ERROR);
             return;
         }
-        editProfessor(selectedProfessor);
-        clearSelectedProfessor();
+        boolean okClicked = editProfessor(selectedProfessor);
+        if (okClicked) {
+            clearSelectedProfessor();
+            refreshProfessorTable();
+        }
     }
 
     public void deleteProfessor(ActionEvent actionEvent) {
@@ -462,7 +555,7 @@ public class AdministratorController {
             if (confirmationAlert.getResult() != ButtonType.OK)
                 return;
             dataBase.deleteProfessor(selectedProfessor);
-            professorTable.setItems(FXCollections.observableArrayList(dataBase.professors()));
+            refreshProfessorTable();
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             clearSelectedProfessor();
@@ -472,10 +565,11 @@ public class AdministratorController {
         clearSelectedProfessor();
     }
 
-    private void editStudent(Student student) {
+    private boolean editStudent(Student student) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(selectedStudent, "Student"));
+            AddPersonController controller = new AddPersonController(selectedStudent, "Student");
+            loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (student == null)
@@ -487,15 +581,19 @@ public class AdministratorController {
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
-            studentTable.setItems(FXCollections.observableArrayList(dataBase.students()));
-        } catch (IOException | SQLException error) {
+            return controller.isOkClicked();
+        } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return false;
         }
     }
 
     public void addStudent(ActionEvent actionEvent) {
-        clearSelectedStudent();
-        editStudent(selectedStudent);
+        boolean okClicked = editStudent(selectedStudent);
+        if (okClicked) {
+            clearSelectedStudent();
+            refreshStudentTable();
+        }
     }
 
     public void updateStudent(ActionEvent actionEvent) {
@@ -503,8 +601,11 @@ public class AdministratorController {
             showAlert("Greška", "Prvo odaberite studenta", Alert.AlertType.ERROR);
             return;
         }
-        editStudent(selectedStudent);
-        clearSelectedStudent();
+        boolean okClicked = editStudent(selectedStudent);
+        if (okClicked) {
+            clearSelectedStudent();
+            refreshStudentTable();
+        }
     }
 
     public void deleteStudent(ActionEvent actionEvent) {
@@ -520,7 +621,7 @@ public class AdministratorController {
             if (confirmationAlert.getResult() != ButtonType.OK)
                 return;
             dataBase.deleteStudent(selectedStudent);
-            studentTable.setItems(FXCollections.observableArrayList(dataBase.students()));
+            refreshStudentTable();
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             clearSelectedStudent();
@@ -638,8 +739,11 @@ public class AdministratorController {
     }
 
     public void addCourse(ActionEvent actionEvent) {
-        clearSelectedCourse();
-        editCourse(null);
+        boolean okClicked = editCourse(null);
+        if (okClicked) {
+            clearSelectedCourse();
+            refreshCourseTable();
+        }
     }
 
     public void updateCourse(ActionEvent actionEvent) {
@@ -647,14 +751,18 @@ public class AdministratorController {
             showAlert("Greška", "Prvo odaberite smjer", Alert.AlertType.ERROR);
             return;
         }
-        editCourse(selectedCourse);
-        clearSelectedCourse();
+        boolean okClicked = editCourse(selectedCourse);
+        if (okClicked) {
+            clearSelectedCourse();
+            refreshCourseTable();
+        }
     }
 
-    private void editCourse(Course course) {
+    private boolean editCourse(Course course) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addCourse.fxml"));
-            loader.setController(new AddCourseController(selectedCourse));
+            AddCourseController controller = new AddCourseController(selectedCourse);
+            loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (course == null)
@@ -666,9 +774,10 @@ public class AdministratorController {
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
-            courseTable.setItems(FXCollections.observableArrayList(dataBase.courses()));
-        } catch (IOException | SQLException error) {
+            return controller.isOkClicked();
+        } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return false;
         }
     }
 
@@ -686,7 +795,7 @@ public class AdministratorController {
             if (confirmationAlert.getResult() != ButtonType.OK)
                 return;
             dataBase.deleteCourse(selectedCourse);
-            courseTable.setItems(FXCollections.observableArrayList(dataBase.courses()));
+            refreshCourseTable();
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             clearSelectedCourse();
@@ -698,8 +807,11 @@ public class AdministratorController {
 
 
     public void addCurriculum(ActionEvent actionEvent) {
-        clearSelectedCurriculum();
-        editCurriculum(null);
+        boolean okClicked = editCurriculum(null);
+        if (okClicked) {
+            clearSelectedCurriculum();
+            refreshCurriculumTable();
+        }
     }
 
 
@@ -708,14 +820,18 @@ public class AdministratorController {
             showAlert("Greška", "Prvo odaberite stavku", Alert.AlertType.ERROR);
             return;
         }
-        editCurriculum(selectedCurriculum);
-        clearSelectedCurriculum();
+        boolean okClicked = editCurriculum(selectedCurriculum);
+        if (okClicked) {
+            clearSelectedCurriculum();
+            refreshCurriculumTable();
+        }
     }
 
-    private void editCurriculum(Curriculum curriculum) {
+    private boolean editCurriculum(Curriculum curriculum) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addCurriculum.fxml"));
-            loader.setController(new AddCurriculumController(selectedCurriculum));
+            AddCurriculumController controller = new AddCurriculumController(selectedCurriculum);
+            loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (curriculum == null)
@@ -727,9 +843,10 @@ public class AdministratorController {
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
-            curriculumTable.setItems(FXCollections.observableArrayList(dataBase.curriculums()));
-        } catch (IOException | SQLException error) {
+            return controller.isOkClicked();
+        } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return false;
         }
     }
 
@@ -746,7 +863,7 @@ public class AdministratorController {
             if (confirmationAlert.getResult() != ButtonType.OK)
                 return;
             dataBase.deleteCurriculum(selectedCurriculum);
-            curriculumTable.setItems(FXCollections.observableArrayList(dataBase.curriculums()));
+            refreshCurriculumTable();
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             clearSelectedCurriculum();
@@ -756,10 +873,11 @@ public class AdministratorController {
         clearSelectedCurriculum();
     }
 
-    private void editAdmin(Administrator admin) {
+    private boolean editAdmin(Administrator admin) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(selectedAdmin, "Administrator"));
+            AddPersonController controller = new AddPersonController(selectedAdmin, "Administrator");
+            loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             if (admin == null)
@@ -771,16 +889,20 @@ public class AdministratorController {
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
-            adminTable.setItems(FXCollections.observableArrayList(dataBase.admins()));
-        } catch (IOException | SQLException error) {
+            return controller.isOkClicked();
+        } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return false;
         }
     }
 
 
     public void addAdmin(ActionEvent actionEvent) {
-        clearSelectedAdmin();
-        editAdmin(selectedAdmin);
+        boolean okClicked = editAdmin(selectedAdmin);
+        if (okClicked) {
+            clearSelectedAdmin();
+            refreshAdminTable();
+        }
     }
 
     public void updateAdmin(ActionEvent actionEvent) {
@@ -788,8 +910,11 @@ public class AdministratorController {
             showAlert("Greška", "Prvo odaberite administratora", Alert.AlertType.ERROR);
             return;
         }
-        editAdmin(selectedAdmin);
-        clearSelectedAdmin();
+        boolean okClicked = editAdmin(selectedAdmin);
+        if (okClicked) {
+            clearSelectedAdmin();
+            refreshAdminTable();
+        }
     }
 
     public void deleteAdmin(ActionEvent actionEvent) {
@@ -805,7 +930,7 @@ public class AdministratorController {
             if (confirmationAlert.getResult() != ButtonType.OK)
                 return;
             dataBase.deleteAdmin(selectedAdmin);
-            adminTable.setItems(FXCollections.observableArrayList(dataBase.admins()));
+            refreshAdminTable();
         } catch (SQLException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             clearSelectedAdmin();

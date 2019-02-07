@@ -32,6 +32,7 @@ public class AddPersonController {
     private BazaDAO dataBase;
     private Person person;
     private String userType;
+    private boolean okClicked;
 
     public AddPersonController(Person person, String userType) {
         dataBase = BazaDAO.getInstance();
@@ -114,6 +115,7 @@ public class AddPersonController {
 
         if (person != null) {
             usernameField.setText(person.getLogin().getUsername());
+            usernameField.setDisable(true);
 
             firstNameField.setText(person.getFirstName());
             lastNameField.setText(person.getLastName());
@@ -143,17 +145,25 @@ public class AddPersonController {
         error.show();
     }
 
+    private void getLoginInfo(Login login) {
+        login.setUsername(usernameField.getText());
+        login.setPassword(LoginController.getEncodedPassword(usernameField.getText(), passwordField.getText()));
+        login.setDateCreated(LocalDate.now());
+        login.setUserType(userTypeChoiceBox.getValue());
+    }
+
     private void getPersonInfo(Person person) {
         person.setFirstName(firstNameField.getText());
         person.setLastName(lastNameField.getText());
         person.setJmbg(jmbgField.getText());
         person.setAddress(addressField.getText());
         person.setEmail(emailField.getText());
-        Login login = new Login();
-        login.setUsername(usernameField.getText());
-        login.setPassword(LoginController.getEncodedPassword(usernameField.getText(), passwordField.getText()));
-        login.setDateCreated(LocalDate.now());
-        login.setUserType(userTypeChoiceBox.getValue());
+        Login login;
+        if (this.person != person)
+            login = new Login();
+        else
+            login = person.getLogin();
+        getLoginInfo(login);
         person.setLogin(login);
     }
 
@@ -163,7 +173,7 @@ public class AddPersonController {
             case "Administrator":
                 person = new Administrator();
                 break;
-            case "Professor":
+            case "Profesor":
                 person = new Professor();
                 break;
             case "Student":
@@ -191,7 +201,7 @@ public class AddPersonController {
         getPersonInfo(person);
         if (userType.equals("Administrator"))
             dataBase.updateAdministrator((Administrator) person);
-        else if (userType.equals("Professor")) {
+        else if (userType.equals("Profesor")) {
             ((Professor) person).setTitle(titleField.getText());
             dataBase.updateProfessor((Professor) person);
         } else {
@@ -335,8 +345,12 @@ public class AddPersonController {
                 return;
             }
         }
+        okClicked = true;
         Stage currentStage = (Stage) firstNameField.getScene().getWindow();
         currentStage.close();
     }
 
+    public boolean isOkClicked() {
+        return okClicked;
+    }
 }

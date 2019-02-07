@@ -19,6 +19,7 @@ public class AddCurriculumController {
     private String reqSubject;
     private Curriculum curriculum;
     private BazaDAO dataBase;
+    private boolean okClicked;
 
     public AddCurriculumController(Curriculum curriculum) {
         this.curriculum = curriculum;
@@ -84,6 +85,7 @@ public class AddCurriculumController {
                 return;
             }
         }
+        okClicked = true;
         Stage currentStage = (Stage) courseChoiceBox.getScene().getWindow();
         currentStage.close();
     }
@@ -105,5 +107,9 @@ public class AddCurriculumController {
         curriculum.setRequiredSubject(reqSubject);
         dataBase.updateCurriculum(curriculum);
         showAlert("Uspjeh", "Uspješno ažurirana stavka", Alert.AlertType.INFORMATION);
+    }
+
+    public boolean isOkClicked() {
+        return okClicked;
     }
 }

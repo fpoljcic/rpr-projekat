@@ -13,6 +13,7 @@ public class AddCourseController {
     private Course course;
     private boolean validField;
     private BazaDAO dataBase;
+    private boolean okClicked;
 
     public AddCourseController(Course course) {
         this.course = course;
@@ -80,8 +81,13 @@ public class AddCourseController {
                 return;
             }
         }
+        okClicked = true;
         Stage currentStage = (Stage) nameField.getScene().getWindow();
         currentStage.close();
+    }
+
+    public boolean isOkClicked() {
+        return okClicked;
     }
 
     private void updateCourse() throws SQLException {

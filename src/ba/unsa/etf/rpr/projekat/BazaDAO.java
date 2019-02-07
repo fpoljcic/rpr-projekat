@@ -5,12 +5,14 @@ import javafx.scene.control.Alert;
 import java.sql.*;
 import java.util.ArrayList;
 
+import static oracle.jdbc.OracleTypes.INTEGER;
+
 public class BazaDAO {
     private static BazaDAO instance = null;
     private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getAdminStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt;
-    private PreparedStatement deleteSubjectStmt, deleteProfessorStmt, deleteStudentStmt, deleteCourseStmt, deleteCurriculumStmt, deleteAdminStmt;
+    private PreparedStatement deleteSubjectStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt, deleteLoginSmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt, allAdminStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement allSubjectProfessorStmt, allStudentProfessorStmt;
@@ -59,7 +61,7 @@ public class BazaDAO {
             getStudentsStmt = conn.prepareStatement("SELECT STUDENT.ID FROM FP18120.PERSON, FP18120.STUDENT, FP18120.COURSE, FP18120.SEMESTER WHERE PERSON.ID = STUDENT.ID AND COURSE_ID = COURSE.ID AND SEMESTER.ID = SEMESTER_ID");
 
             addSubjectStmt = conn.prepareStatement("INSERT INTO FP18120.SUBJECT VALUES (FP18120.SUBJECT_SEQ.NEXTVAL, ?, ?, ?, ?, ?)");
-            addPersonStmt = conn.prepareStatement("INSERT INTO FP18120.PERSON VALUES (FP18120.PERSON_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?)");
+            addPersonStmt = conn.prepareStatement("INSERT INTO FP18120.PERSON VALUES (FP18120.PERSON_SEQ.NEXTVAL, ?, ?, ?, ?, ?, FP18120.LOGIN_SEQ.CURRVAL)");
             addProfessorStmt = conn.prepareStatement("INSERT INTO FP18120.PROFESSOR VALUES (FP18120.PERSON_SEQ.CURRVAL, ?)");
             addStudentStmt = conn.prepareStatement("INSERT INTO FP18120.STUDENT VALUES (FP18120.PERSON_SEQ.CURRVAL, ?, ?, ?, ?)");
             addAdministratorStmt = conn.prepareStatement("INSERT INTO FP18120.ADMINISTRATOR VALUES (FP18120.PERSON_SEQ.CURRVAL)");
@@ -76,9 +78,8 @@ public class BazaDAO {
             updateLoginStmt = conn.prepareStatement("UPDATE FP18120.LOGIN SET USERNAME=?, PASSWORD=?, DATE_CREATED=?, USER_TYPE=?, LAST_LOGIN_DATE=? WHERE ID=?");
 
             deleteSubjectStmt = conn.prepareStatement("DELETE FROM FP18120.SUBJECT WHERE ID=?");
-            deleteProfessorStmt = conn.prepareStatement("DELETE FROM FP18120.PROFESSOR WHERE ID=?");
-            deleteStudentStmt = conn.prepareStatement("DELETE FROM FP18120.STUDENT WHERE ID=?");
-            deleteAdminStmt = conn.prepareStatement("DELETE FROM FP18120.ADMINISTRATOR WHERE ID=?");
+            deletePersonStmt = conn.prepareStatement("DELETE FROM FP18120.PERSON WHERE ID=?");
+            deleteLoginSmt= conn.prepareStatement("DELETE FROM FP18120.LOGIN WHERE ID=?");
             deleteCourseStmt = conn.prepareStatement("DELETE FROM FP18120.COURSE WHERE ID=?");
             deleteCurriculumStmt = conn.prepareStatement("DELETE FROM FP18120.CURRICULUM WHERE ID=?");
 
@@ -321,7 +322,10 @@ public class BazaDAO {
         addSubjectStmt.setString(2, subject.getCode());
         addSubjectStmt.setInt(3, subject.getEcts());
         addSubjectStmt.setInt(4, subject.getProfessor().getId());
-        addSubjectStmt.setInt(5, subject.getReqSubject().getId());
+        if (subject.getReqSubject() == null)
+            addSubjectStmt.setNull(5, INTEGER);
+        else
+            addSubjectStmt.setInt(5, subject.getReqSubject().getId());
         addSubjectStmt.executeUpdate();
     }
 
@@ -347,7 +351,6 @@ public class BazaDAO {
         addPersonStmt.setString(3, person.getJmbg());
         addPersonStmt.setString(4, person.getAddress());
         addPersonStmt.setString(5, person.getEmail());
-        addPersonStmt.setInt(6, person.getLogin().getId());
         addPersonStmt.executeUpdate();
     }
 
@@ -383,8 +386,11 @@ public class BazaDAO {
         updateSubjectStmt.setString(2, subject.getCode());
         updateSubjectStmt.setInt(3, subject.getEcts());
         updateSubjectStmt.setInt(4, subject.getProfessor().getId());
-        updateSubjectStmt.setInt(5, subject.getId());
-        updateCourseStmt.setInt(6, subject.getReqSubject().getId());
+        if (subject.getReqSubject() == null)
+            updateSubjectStmt.setNull(5, INTEGER);
+        else
+            updateSubjectStmt.setInt(5, subject.getReqSubject().getId());
+        updateSubjectStmt.setInt(6, subject.getId());
         updateSubjectStmt.executeUpdate();
     }
 
@@ -449,19 +455,27 @@ public class BazaDAO {
         deleteSubjectStmt.executeUpdate();
     }
 
+    private void deletePerson(Person person) throws SQLException {
+        deletePersonStmt.setInt(1, person.getId());
+        deletePersonStmt.executeUpdate();
+        deleteLogin(person.getLogin());
+    }
+
+    private void deleteLogin(Login login) throws SQLException {
+        deleteLoginSmt.setInt(1, login.getId());
+        deleteLoginSmt.executeUpdate();
+    }
+
     public void deleteProfessor(Professor professor) throws SQLException {
-        deleteProfessorStmt.setInt(1, professor.getId());
-        deleteProfessorStmt.executeUpdate();
+        deletePerson(professor);
     }
 
     public void deleteStudent(Student student) throws SQLException {
-        deleteStudentStmt.setInt(1, student.getId());
-        deleteStudentStmt.executeUpdate();
+        deletePerson(student);
     }
 
     public void deleteAdmin(Administrator administrator) throws SQLException {
-        deleteAdminStmt.setInt(1, administrator.getId());
-        deleteAdminStmt.executeUpdate();
+        deletePerson(administrator);
     }
 
     public void deleteCourse(Course course) throws SQLException {
