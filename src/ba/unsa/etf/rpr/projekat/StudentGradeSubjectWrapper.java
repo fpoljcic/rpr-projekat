@@ -3,23 +3,11 @@ package ba.unsa.etf.rpr.projekat;
 import java.time.LocalDate;
 
 public class StudentGradeSubjectWrapper {
-    // Person attributes
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String jmbg;
-    private String address;
-    private String email;
-    private Login login;
-
-    // Student attributes
-    private LocalDate birthDate;
-    private Semester semester;
-    private Course course;
-    private LocalDate pauseDate;
+    // Person, Student attributes
+    private Student student;
 
     // Grade attributes
-    private float points;
+    private Grade grade;
 
     // Subject attributes
     private String subjectName;
@@ -28,117 +16,114 @@ public class StudentGradeSubjectWrapper {
     }
 
     public StudentGradeSubjectWrapper(Student student, Grade grade) {
-        if (student != null) {
-            id = student.getId();
-            firstName = student.getFirstName();
-            lastName = student.getLastName();
-            jmbg = student.getJmbg();
-            address = student.getAddress();
-            email = student.getEmail();
-            login = student.getLogin();
-            birthDate = student.getBirthDate();
-            semester = student.getSemester();
-            course = student.getCourse();
-            pauseDate = student.getPauseDate();
-        }
-        points = grade.getPoints();
-        subjectName = grade.getSubject().getName();
+        this.student = student;
+        this.grade = grade;
+        if (grade != null)
+            subjectName = grade.getSubject().getName();
+    }
+
+    public Student getStudent() {
+        return student;
     }
 
     public int getId() {
-        return id;
+        return student.getId();
     }
 
     public void setId(int id) {
-        this.id = id;
+        student.setId(id);
     }
 
     public String getFirstName() {
-        return firstName;
+        return student.getFirstName();
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        student.setFirstName(firstName);
     }
 
     public String getLastName() {
-        return lastName;
+        return student.getLastName();
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        student.setLastName(lastName);
     }
 
     public String getJmbg() {
-        return jmbg;
+        return student.getJmbg();
     }
 
     public void setJmbg(String jmbg) {
-        this.jmbg = jmbg;
+        student.setJmbg(jmbg);
     }
 
     public String getAddress() {
-        return address;
+        return student.getAddress();
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        student.setAddress(address);
     }
 
     public String getEmail() {
-        return email;
+        return student.getEmail();
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        student.setEmail(email);
     }
 
     public Login getLogin() {
-        return login;
+        return student.getLogin();
     }
 
     public void setLogin(Login login) {
-        this.login = login;
+        student.setLogin(login);
     }
 
     public LocalDate getBirthDate() {
-        return birthDate;
+        return student.getBirthDate();
     }
 
     public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+        student.setBirthDate(birthDate);
     }
 
     public Semester getSemester() {
-        return semester;
+        return student.getSemester();
     }
 
     public void setSemester(Semester semester) {
-        this.semester = semester;
+        student.setSemester(semester);
     }
 
     public Course getCourse() {
-        return course;
+        return student.getCourse();
     }
 
     public void setCourse(Course course) {
-        this.course = course;
+        student.setCourse(course);
     }
 
     public LocalDate getPauseDate() {
-        return pauseDate;
+        return student.getPauseDate();
     }
 
     public void setPauseDate(LocalDate pauseDate) {
-        this.pauseDate = pauseDate;
+        student.setPauseDate(pauseDate);
     }
 
     public float getPoints() {
-        return points;
+        return grade.getPoints();
     }
 
     public void setPoints(float points) {
-        this.points = points;
+        grade.setPoints(points);
+    }
+
+    public Grade getGrade() {
+        return grade;
     }
 
     public String getSubjectName() {

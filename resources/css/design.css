@@ -15,3 +15,15 @@
     -fx-border-width: 1;
     -fx-border-radius: 5px;
 }
+
+.greenText {
+    -fx-text-fill: #0a8007;
+}
+
+.redText {
+    -fx-text-fill: #ff3f38;
+}
+
+.blueText {
+    -fx-text-fill: #2828ff;
+}

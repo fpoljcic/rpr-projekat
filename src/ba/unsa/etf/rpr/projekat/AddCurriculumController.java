@@ -40,21 +40,34 @@ public class AddCurriculumController {
                 var courses = FXCollections.observableArrayList(dataBase.courses());
                 var semesters = FXCollections.observableArrayList(dataBase.semesters());
                 var subjects = FXCollections.observableArrayList(dataBase.subjects());
-                Platform.runLater(() -> courseChoiceBox.setItems(courses));
-                Platform.runLater(() -> semesterChoiceBox.setItems(semesters));
-                Platform.runLater(() -> subjectChoiceBox.setItems(subjects));
+                Platform.runLater(() -> {
+                    courseChoiceBox.setItems(courses);
+                    if (curriculum != null)
+                        courseChoiceBox.setValue(curriculum.getCourse());
+                    else
+                        courseChoiceBox.getSelectionModel().select(0);
+                });
+                Platform.runLater(() -> {
+                    semesterChoiceBox.setItems(semesters);
+                    if (curriculum != null)
+                        semesterChoiceBox.setValue(curriculum.getSemester());
+                    else
+                        semesterChoiceBox.getSelectionModel().select(0);
+                });
+                Platform.runLater(() -> {
+                    subjectChoiceBox.setItems(subjects);
+                    if (curriculum != null)
+                        subjectChoiceBox.setValue(curriculum.getSubject());
+                    else
+                        subjectChoiceBox.getSelectionModel().select(0);
+                });
             } catch (SQLException error) {
                 showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             }
         });
         thread.start();
-        if (curriculum != null) {
-            courseChoiceBox.setValue(curriculum.getCourse());
-            semesterChoiceBox.setValue(curriculum.getSemester());
-            subjectChoiceBox.setValue(curriculum.getSubject());
-            if (curriculum.getRequiredSubject().equals("Da"))
-                reqSubjectCheckBox.setSelected(true);
-        }
+        if (curriculum != null && curriculum.getRequiredSubject().equals("Da"))
+            reqSubjectCheckBox.setSelected(true);
     }
 
     public void cancelClick(ActionEvent actionEvent) {

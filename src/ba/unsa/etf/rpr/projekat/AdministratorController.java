@@ -502,7 +502,7 @@ public class AdministratorController {
     private boolean editProfessor(Professor professor) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            AddPersonController controller = new AddPersonController(selectedProfessor, "Profesor");
+            AddPersonController controller = new AddPersonController(professor, "Profesor");
             loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
@@ -523,7 +523,7 @@ public class AdministratorController {
     }
 
     public void addProfessor(ActionEvent actionEvent) {
-        boolean okClicked = editProfessor(selectedProfessor);
+        boolean okClicked = editProfessor(null);
         if (okClicked) {
             clearSelectedProfessor();
             refreshProfessorTable();
@@ -568,7 +568,7 @@ public class AdministratorController {
     private boolean editStudent(Student student) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            AddPersonController controller = new AddPersonController(selectedStudent, "Student");
+            AddPersonController controller = new AddPersonController(student, "Student");
             loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
@@ -589,7 +589,7 @@ public class AdministratorController {
     }
 
     public void addStudent(ActionEvent actionEvent) {
-        boolean okClicked = editStudent(selectedStudent);
+        boolean okClicked = editStudent(null);
         if (okClicked) {
             clearSelectedStudent();
             refreshStudentTable();
@@ -761,7 +761,7 @@ public class AdministratorController {
     private boolean editCourse(Course course) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addCourse.fxml"));
-            AddCourseController controller = new AddCourseController(selectedCourse);
+            AddCourseController controller = new AddCourseController(course);
             loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
@@ -830,7 +830,7 @@ public class AdministratorController {
     private boolean editCurriculum(Curriculum curriculum) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addCurriculum.fxml"));
-            AddCurriculumController controller = new AddCurriculumController(selectedCurriculum);
+            AddCurriculumController controller = new AddCurriculumController(curriculum);
             loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
@@ -876,7 +876,7 @@ public class AdministratorController {
     private boolean editAdmin(Administrator admin) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            AddPersonController controller = new AddPersonController(selectedAdmin, "Administrator");
+            AddPersonController controller = new AddPersonController(admin, "Administrator");
             loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
@@ -898,7 +898,7 @@ public class AdministratorController {
 
 
     public void addAdmin(ActionEvent actionEvent) {
-        boolean okClicked = editAdmin(selectedAdmin);
+        boolean okClicked = editAdmin(null);
         if (okClicked) {
             clearSelectedAdmin();
             refreshAdminTable();

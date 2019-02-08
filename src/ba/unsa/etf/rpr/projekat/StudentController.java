@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -19,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -47,9 +45,15 @@ public class StudentController {
     public Label jmbgLabel;
     public Label addressLabel;
     public Label emailLabel;
+    public Label statusLabel;
+    public Button updateButton;
+    public Button pauseButton;
+    public MenuItem updateMenuItem;
+    public MenuItem pauseMenuItem;
     public Login login;
     private BazaDAO dataBase;
     private Student student;
+    private LocalDate pauseDate;
 
     public StudentController(Login login) {
         this.login = login;
@@ -83,9 +87,27 @@ public class StudentController {
         subjectArchiveScoreCol.setCellValueFactory(new PropertyValueFactory<>("score"));
     }
 
+    private void addListeners() {
+        statusLabel.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.equals("Aktivan")) {
+                    statusLabel.getStyleClass().removeAll("redText", "blueText");
+                    statusLabel.getStyleClass().add("greenText");
+                } else if (newValue.equals("Neaktivan")) {
+                    statusLabel.getStyleClass().removeAll("greenText", "blueText");
+                    statusLabel.getStyleClass().add("redText");
+                } else {
+                    statusLabel.getStyleClass().removeAll("redText", "greenText");
+                    statusLabel.getStyleClass().add("blueText");
+                }
+            }
+        });
+    }
+
     @FXML
     public void initialize() {
         student = dataBase.getStudent(login);
+        pauseDate = student.getPauseDate();
         try {
             fillSubjects();
             fillArchiveSubjects();
@@ -99,6 +121,33 @@ public class StudentController {
         jmbgLabel.setText(student.getJmbg());
         addressLabel.setText(student.getAddress());
         emailLabel.setText(student.getEmail());
+        addListeners();
+        if (pauseDate != null) {
+            disableUI(true);
+            if (ChronoUnit.YEARS.between(pauseDate, LocalDate.now()) >= 1) {
+                pauseButton.setDisable(true);
+                pauseMenuItem.setDisable(true);
+                statusLabel.setText("Neaktivan");
+            }
+        } else
+            statusLabel.setText("Aktivan");
+    }
+
+    private void disableUI(boolean isPaused) {
+        if (isPaused) {
+            pauseButton.setText("Odledi godinu");
+            pauseMenuItem.setText("Continue year");
+            statusLabel.setText("Zaleđen");
+        } else {
+            pauseButton.setText("Zaledi godinu");
+            pauseMenuItem.setText("Pause year");
+            statusLabel.setText("Aktivan");
+        }
+        subjectTable.setDisable(isPaused);
+        subjectNameCol.setEditable(isPaused);
+        subjectArchiveTable.setDisable(isPaused);
+        updateButton.setDisable(isPaused);
+        updateMenuItem.setDisable(isPaused);
     }
 
     public void updateInfoClick(ActionEvent actionEvent) {
@@ -119,7 +168,31 @@ public class StudentController {
     }
 
     public void pauseClick(ActionEvent actionEvent) {
-
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Potvrda");
+        if (pauseDate == null)
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite zalediti godinu ?");
+        else
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite odlediti godinu ?");
+        confirmationAlert.showAndWait();
+        if (confirmationAlert.getResult() != ButtonType.OK)
+            return;
+        if (pauseDate == null)
+            student.setPauseDate(LocalDate.now());
+        else
+            student.setPauseDate(null);
+        try {
+            dataBase.updateStudent(student);
+        } catch (SQLException error) {
+            student.setPauseDate(pauseDate);
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return;
+        }
+        if (pauseDate == null)
+            disableUI(true);
+        else
+            disableUI(false);
+        pauseDate = student.getPauseDate();
     }
 
     public void logOutClick(ActionEvent actionEvent) {

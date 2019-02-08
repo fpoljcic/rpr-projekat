@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -50,7 +51,8 @@ public class ProfessorController {
     public Label emailLabel;
     private BazaDAO dataBase;
     private Professor professor;
-
+    private Student selectedStudent;
+    private Grade selectedGrade;
     private Login login;
 
     public ProfessorController(Login login) {
@@ -89,6 +91,15 @@ public class ProfessorController {
         studentSubjectCol.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
     }
 
+    private void addListeners() {
+        studentsOnSubjectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedStudent = newValue.getStudent();
+                selectedGrade = newValue.getGrade();
+            }
+        });
+    }
+
     @FXML
     public void initialize() {
         professor = dataBase.getProfessor(login);
@@ -98,6 +109,7 @@ public class ProfessorController {
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
         }
+        addListeners();
         loginLabel.setText(login.getUsername() + " (" + professor.getFirstName() + " " + professor.getLastName() + ")");
         jmbgLabel.setText(professor.getJmbg());
         addressLabel.setText(professor.getAddress());
@@ -157,6 +169,51 @@ public class ProfessorController {
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.showAndWait();
         } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void clearSelectedStudent() {
+        studentsOnSubjectTable.getSelectionModel().clearSelection();
+        selectedStudent = null;
+    }
+
+    private void refreshStudentTable() {
+        Thread thread = new Thread(() -> {
+            try {
+                ArrayList<StudentGradeSubjectWrapper> students = dataBase.students(professor);
+                Platform.runLater(() -> studentsOnSubjectTable.setItems(FXCollections.observableArrayList(students)));
+                Platform.runLater(() -> studentsOnSubjectTable.refresh());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    public void updateStudentClick(ActionEvent actionEvent) {
+        if (selectedStudent == null) {
+            showAlert("Greška", "Prvo odaberite studenta", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gradeStudent.fxml"));
+            GradeStudentController controller = new GradeStudentController(selectedStudent, selectedGrade);
+            loader.setController(controller);
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("Ažuriraj studenta");
+            secondaryStage.getIcons().add(new Image("/img/student.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            if (controller.isOkClicked()) {
+                clearSelectedStudent();
+                refreshStudentTable();
+            }
+        } catch (IOException error) {
+            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
     }

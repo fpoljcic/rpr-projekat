@@ -16,21 +16,21 @@
         <URL value="@/css/design.css"/>
     </stylesheets>
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="94.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="144.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="78.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="160.0"/>
     </columnConstraints>
     <rowConstraints>
         <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0"/>
     </rowConstraints>
     <children>
-        <Label text="Naziv:"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="121.0" text="Naziv:"/>
         <TextField fx:id="nameField" GridPane.columnIndex="1"/>
-        <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2"
+        <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2"
                    GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
             <buttons>
-                <Button mnemonicParsing="false" onAction="#cancelClick" text="Cancel"/>
                 <Button onAction="#okClick" text="Ok"/>
+                <Button mnemonicParsing="false" onAction="#cancelClick" text="Cancel"/>
             </buttons>
         </ButtonBar>
     </children>

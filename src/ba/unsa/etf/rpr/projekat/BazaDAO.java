@@ -5,13 +5,14 @@ import javafx.scene.control.Alert;
 import java.sql.*;
 import java.util.ArrayList;
 
+import static oracle.jdbc.OracleTypes.DATE;
 import static oracle.jdbc.OracleTypes.INTEGER;
 
 public class BazaDAO {
     private static BazaDAO instance = null;
     private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getAdminStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
-    private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt;
+    private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt, updateGradeStmt;
     private PreparedStatement deleteSubjectStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt, deleteLoginSmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt, allAdminStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
@@ -76,6 +77,7 @@ public class BazaDAO {
             updateCourseStmt = conn.prepareStatement("UPDATE FP18120.COURSE SET NAME=? WHERE ID=?");
             updateCurriculumStmt = conn.prepareStatement("UPDATE FP18120.CURRICULUM SET COURSE_ID=?, SEMESTER_ID=?, SUBJECT_ID=?, REQUIRED_SUBJECT=? WHERE ID=?");
             updateLoginStmt = conn.prepareStatement("UPDATE FP18120.LOGIN SET USERNAME=?, PASSWORD=?, DATE_CREATED=?, USER_TYPE=?, LAST_LOGIN_DATE=? WHERE ID=?");
+            updateGradeStmt = conn.prepareStatement("UPDATE FP18120.GRADE SET STUDENT_ID=?, SUBJECT_ID=?, POINTS=?, SCORE=?, GRADE_DATE=?, PROFESSOR_ID=? WHERE ID=?");
 
             deleteSubjectStmt = conn.prepareStatement("DELETE FROM FP18120.SUBJECT WHERE ID=?");
             deletePersonStmt = conn.prepareStatement("DELETE FROM FP18120.PERSON WHERE ID=?");
@@ -334,7 +336,10 @@ public class BazaDAO {
         addLoginStmt.setString(2, login.getPassword());
         addLoginStmt.setDate(3, Date.valueOf(login.getDateCreated()));
         addLoginStmt.setString(4, login.getUserType());
-        addLoginStmt.setDate(5, (login.getLastLoginDate() == null) ? null : Date.valueOf(login.getLastLoginDate()));
+        if (login.getLastLoginDate() == null)
+            addLoginStmt.setNull(5, DATE);
+        else
+            addLoginStmt.setDate(5, (Date.valueOf(login.getLastLoginDate())));
         addLoginStmt.executeUpdate();
     }
 
@@ -359,7 +364,10 @@ public class BazaDAO {
         addStudentStmt.setDate(1, Date.valueOf(student.getBirthDate()));
         addStudentStmt.setInt(2, student.getSemester().getId());
         addStudentStmt.setInt(3, student.getCourse().getId());
-        addStudentStmt.setDate(4, (student.getPauseDate() == null) ? null : Date.valueOf(student.getPauseDate()));
+        if (student.getPauseDate() == null)
+            addStudentStmt.setNull(4, DATE);
+        else
+            addStudentStmt.setDate(4, (Date.valueOf(student.getPauseDate())));
         addStudentStmt.executeUpdate();
     }
 
@@ -421,8 +429,11 @@ public class BazaDAO {
         updateStudentStmt.setDate(1, Date.valueOf(student.getBirthDate()));
         updateStudentStmt.setInt(2, student.getSemester().getId());
         updateStudentStmt.setInt(3, student.getCourse().getId());
-        updateStudentStmt.setInt(4, student.getId());
-        updateStudentStmt.setDate(5, (student.getPauseDate() == null) ? null : Date.valueOf(student.getPauseDate()));
+        if (student.getPauseDate() == null)
+            updateStudentStmt.setNull(4, DATE);
+        else
+            updateStudentStmt.setDate(4, Date.valueOf(student.getPauseDate()));
+        updateStudentStmt.setInt(5, student.getId());
         updateStudentStmt.executeUpdate();
     }
 
@@ -437,15 +448,36 @@ public class BazaDAO {
         updateCurriculumStmt.setInt(2, curriculum.getSemester().getId());
         updateCurriculumStmt.setInt(3, curriculum.getSubject().getId());
         updateCurriculumStmt.setString(4, curriculum.getRequiredSubject());
+        updateCurriculumStmt.setInt(5, curriculum.getId());
         updateCurriculumStmt.executeUpdate();
+    }
+
+    public void updateGrade(Grade grade) throws SQLException {
+        updateGradeStmt.setInt(1, grade.getStudent().getId());
+        updateGradeStmt.setInt(2, grade.getSubject().getId());
+        updateGradeStmt.setFloat(3, grade.getPoints());
+        updateGradeStmt.setInt(4, grade.getScore());
+        if (grade.getGradeDate() == null)
+            updateGradeStmt.setNull(5, DATE);
+        else
+            updateGradeStmt.setDate(5, Date.valueOf(grade.getGradeDate()));
+        updateGradeStmt.setInt(6, grade.getProfessor().getId());
+        updateGradeStmt.setInt(7, grade.getId());
+        updateGradeStmt.executeUpdate();
     }
 
     public void updateLogin(Login login) throws SQLException {
         updateLoginStmt.setString(1, login.getUsername());
         updateLoginStmt.setString(2, login.getPassword());
-        updateLoginStmt.setDate(3, (login.getDateCreated() == null) ? null : Date.valueOf(login.getDateCreated()));
+        if (login.getDateCreated() == null)
+            updateLoginStmt.setNull(3, DATE);
+        else
+            updateLoginStmt.setDate(3, Date.valueOf(login.getDateCreated()));
         updateLoginStmt.setString(4, login.getUserType());
-        updateLoginStmt.setDate(5, (login.getDateCreated() == null) ? null : Date.valueOf(login.getLastLoginDate()));
+        if (login.getLastLoginDate() == null)
+            updateLoginStmt.setNull(5, DATE);
+        else
+            updateLoginStmt.setDate(5, Date.valueOf(login.getLastLoginDate()));
         updateLoginStmt.setInt(6, login.getId());
         updateLoginStmt.executeUpdate();
     }

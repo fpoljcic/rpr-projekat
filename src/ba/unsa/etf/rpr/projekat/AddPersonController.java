@@ -103,8 +103,20 @@ public class AddPersonController {
                 try {
                     var semesters = FXCollections.observableArrayList(dataBase.semesters());
                     var courses = FXCollections.observableArrayList(dataBase.courses());
-                    Platform.runLater(() -> semesterChoiceBox.setItems(semesters));
-                    Platform.runLater(() -> courseChoiceBox.setItems(courses));
+                    Platform.runLater(() -> {
+                        semesterChoiceBox.setItems(semesters);
+                        if (person != null)
+                            semesterChoiceBox.setValue(((Student) person).getSemester());
+                        else
+                            semesterChoiceBox.getSelectionModel().select(0);
+                    });
+                    Platform.runLater(() -> {
+                        courseChoiceBox.setItems(courses);
+                        if (person != null)
+                            courseChoiceBox.setValue(((Student) person).getCourse());
+                        else
+                            courseChoiceBox.getSelectionModel().select(0);
+                    });
                 } catch (SQLException error) {
                     showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
                 }
@@ -125,11 +137,8 @@ public class AddPersonController {
 
             if (person instanceof Professor)
                 titleField.setText(((Professor) person).getTitle());
-            else if (person instanceof Student) {
+            else if (person instanceof Student)
                 birthDatePicker.setValue(((Student) person).getBirthDate());
-                semesterChoiceBox.setValue(((Student) person).getSemester());
-                courseChoiceBox.setValue(((Student) person).getCourse());
-            }
         }
     }
 
