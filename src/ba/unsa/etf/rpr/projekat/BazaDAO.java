@@ -81,7 +81,7 @@ public class BazaDAO {
 
             deleteSubjectStmt = conn.prepareStatement("DELETE FROM FP18120.SUBJECT WHERE ID=?");
             deletePersonStmt = conn.prepareStatement("DELETE FROM FP18120.PERSON WHERE ID=?");
-            deleteLoginSmt= conn.prepareStatement("DELETE FROM FP18120.LOGIN WHERE ID=?");
+            deleteLoginSmt = conn.prepareStatement("DELETE FROM FP18120.LOGIN WHERE ID=?");
             deleteCourseStmt = conn.prepareStatement("DELETE FROM FP18120.COURSE WHERE ID=?");
             deleteCurriculumStmt = conn.prepareStatement("DELETE FROM FP18120.CURRICULUM WHERE ID=?");
 
@@ -456,12 +456,18 @@ public class BazaDAO {
         updateGradeStmt.setInt(1, grade.getStudent().getId());
         updateGradeStmt.setInt(2, grade.getSubject().getId());
         updateGradeStmt.setFloat(3, grade.getPoints());
-        updateGradeStmt.setInt(4, grade.getScore());
+        if (grade.getScore() <= 5)
+            updateGradeStmt.setNull(4, INTEGER);
+        else
+            updateGradeStmt.setInt(4, grade.getScore());
         if (grade.getGradeDate() == null)
             updateGradeStmt.setNull(5, DATE);
         else
             updateGradeStmt.setDate(5, Date.valueOf(grade.getGradeDate()));
-        updateGradeStmt.setInt(6, grade.getProfessor().getId());
+        if (grade.getProfessor() == null)
+            updateGradeStmt.setInt(6, INTEGER);
+        else
+            updateGradeStmt.setInt(6, grade.getProfessor().getId());
         updateGradeStmt.setInt(7, grade.getId());
         updateGradeStmt.executeUpdate();
     }

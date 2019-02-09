@@ -62,7 +62,8 @@ public class AddPersonController {
 
     private void disableProfessor() {
         professorLabel.setDisable(true);
-        disableProfessorUpdate();
+        titleLabel.setDisable(true);
+        titleField.setDisable(true);
     }
 
     private void disableStudentUpdate() {
@@ -70,11 +71,6 @@ public class AddPersonController {
         semesterChoiceBox.setDisable(true);
         courseLabel.setDisable(true);
         courseChoiceBox.setDisable(true);
-    }
-
-    private void disableProfessorUpdate() {
-        titleLabel.setDisable(true);
-        titleField.setDisable(true);
     }
 
     @FXML
@@ -91,8 +87,6 @@ public class AddPersonController {
                 break;
             case "Profesor":
                 disableStudent();
-                if (person != null)
-                    disableProfessorUpdate();
                 break;
         }
 

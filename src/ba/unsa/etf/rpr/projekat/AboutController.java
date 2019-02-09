@@ -3,7 +3,6 @@ package ba.unsa.etf.rpr.projekat;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -11,14 +10,12 @@ import javafx.stage.Stage;
 
 public class AboutController {
 
-    public Label aboutText;
     public Button buttonOk;
     public ImageView imageView;
 
     @FXML
     public void initialize() {
-        imageView.setImage(new Image("/img/about.png"));
-        aboutText.setText("Naziv: E-index\nAutor: Faris Poljčić");
+        imageView.setImage(new Image("/img/user.png"));
     }
 
     public void buttonOkClick(ActionEvent actionEvent) {

@@ -5,8 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
+import java.time.LocalDate;
 
 public class GradeStudentController {
     public Label studentLabel;
@@ -16,13 +18,15 @@ public class GradeStudentController {
     public RadioButton noGradeRadioBtn;
     private Student student;
     private Grade grade;
+    private Professor professor;
     private Integer calculatedGrade;
     private boolean okClicked;
     private BazaDAO dataBase;
 
-    public GradeStudentController(Student student, Grade grade) {
+    public GradeStudentController(Student student, Grade grade, Professor professor) {
         this.student = student;
         this.grade = grade;
+        this.professor = professor;
         dataBase = BazaDAO.getInstance();
     }
 
@@ -46,14 +50,10 @@ public class GradeStudentController {
         gradeRadioBtn.setToggleGroup(toggleGroup);
         noGradeRadioBtn.setToggleGroup(toggleGroup);
         noGradeRadioBtn.setSelected(true);
+        studentLabel.setText(studentLabel.getText() + student.toString());
+        float minValue = grade.getPoints();
         pointsSpinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                /*
-                if (newValue.length() == 0 || newValue.length() > 3 || Float.valueOf(newValue) > 110) {
-                    addColor(pointsSpinner.getEditor(), false);
-                    return;
-                }
-                */
+            if (newValue != null && !newValue.isEmpty()) {
                 Float value = Float.valueOf(newValue);
                 if (value < 55)
                     calculatedGrade = 5;
@@ -67,9 +67,16 @@ public class GradeStudentController {
                     calculatedGrade = 9;
                 else if (value >= 95)
                     calculatedGrade = 10;
+                if (value < minValue || value > 110)
+                    addColor(pointsSpinner.getEditor(), false);
+                else
+                    addColor(pointsSpinner.getEditor(), true);
                 scoreSpinner.getEditor().setText(String.valueOf(calculatedGrade));
-            }
+            } else
+                addColor(pointsSpinner.getEditor(), false);
         });
+
+        // Omogucava unos samo float vrijednosti u textField pointsSpinnera
         DecimalFormat format = new DecimalFormat("#.0");
         pointsSpinner.getEditor().setTextFormatter(new TextFormatter<>((c -> {
             if (c.getControlNewText().isEmpty())
@@ -82,18 +89,25 @@ public class GradeStudentController {
                 return c;
         })));
 
-        pointsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(grade.getPoints(), 110, grade.getPoints(), 0.1));
+        pointsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(minValue, 110, minValue, 0.1));
         scoreSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 10, calculatedGrade, 1));
     }
 
 
     public void okClick(ActionEvent actionEvent) {
-        grade.setPoints(pointsSpinner.getValue().floatValue());
-        if (gradeRadioBtn.isSelected())
+        if (gradeRadioBtn.isSelected()) {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Potvrda");
+            confirmationAlert.setHeaderText("Da li ste sigurni da želite upisati ocjenu " + scoreSpinner.getEditor().getText() + " (" + pointsSpinner.getEditor().getText() + ") studentu: " + student.toString() + " ?");
+            confirmationAlert.showAndWait();
+            if (confirmationAlert.getResult() != ButtonType.OK)
+                return;
             grade.setScore(Integer.valueOf(scoreSpinner.getEditor().getText()));
-        else
+            grade.setGradeDate(LocalDate.now());
+            grade.setProfessor(professor);
+        } else
             grade.setScore(0);
-        /*
+        grade.setPoints(pointsSpinner.getValue().floatValue());
         try {
             dataBase.updateGrade(grade);
         } catch (SQLException error) {
@@ -103,9 +117,6 @@ public class GradeStudentController {
         okClicked = true;
         Stage currentStage = (Stage) pointsSpinner.getScene().getWindow();
         currentStage.close();
-        */
-        System.out.println(grade.getPoints());
-        System.out.println(grade.getScore());
     }
 
     public boolean isOkClicked() {

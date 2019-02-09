@@ -198,7 +198,7 @@ public class ProfessorController {
         }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gradeStudent.fxml"));
-            GradeStudentController controller = new GradeStudentController(selectedStudent, selectedGrade);
+            GradeStudentController controller = new GradeStudentController(selectedStudent, selectedGrade, professor);
             loader.setController(controller);
             Parent root = loader.load();
             Stage secondaryStage = new Stage();

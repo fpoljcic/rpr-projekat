@@ -667,8 +667,11 @@ public class AdministratorController {
             case "Smjerovi":
                 addCourse(null);
                 break;
-            case "Programi":
+            case "Plan i program":
                 addCurriculum(null);
+                break;
+            case "Administratori":
+                addAdmin(null);
                 break;
         }
     }
@@ -687,8 +690,11 @@ public class AdministratorController {
             case "Smjerovi":
                 updateCourse(null);
                 break;
-            case "Programi":
+            case "Plan i program":
                 updateCurriculum(null);
+                break;
+            case "Administratori":
+                updateAdmin(null);
                 break;
         }
     }
@@ -701,15 +707,17 @@ public class AdministratorController {
             case "Profesori":
                 deleteProfessor(null);
                 break;
-
             case "Studenti":
                 deleteStudent(null);
                 break;
             case "Smjerovi":
                 deleteCourse(null);
                 break;
-            case "Programi":
+            case "Plan i program":
                 deleteCurriculum(null);
+                break;
+            case "Administratori":
+                deleteAdmin(null);
                 break;
         }
     }
