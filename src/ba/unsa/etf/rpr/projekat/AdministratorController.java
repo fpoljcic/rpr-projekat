@@ -14,7 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,6 +76,18 @@ public class AdministratorController {
     public Label noStudentNotGradedField;
     public Label avgCourseGradeField;
     public Label noStudentOnCourseField;
+    public CheckMenuItem subjectsMenuItem;
+    public CheckMenuItem professorsMenuItem;
+    public CheckMenuItem studentsMenuItem;
+    public CheckMenuItem coursesMenuItem;
+    public CheckMenuItem curriculumMenuItem;
+    public CheckMenuItem adminsMenuItem;
+    public Tab subjectsTab;
+    public Tab professorsTab;
+    public Tab studentsTab;
+    public Tab coursesTab;
+    public Tab curriculumTab;
+    public Tab adminsTab;
     private Login login;
     private BazaDAO dataBase;
     private Subject selectedSubject;
@@ -298,15 +310,75 @@ public class AdministratorController {
         });
     }
 
+    private void setViewListeners() {
+        subjectsMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            setTabDisable(subjectsTab, newValue);
+        });
+        professorsMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            setTabDisable(professorsTab, newValue);
+        });
+        studentsMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            setTabDisable(studentsTab, newValue);
+        });
+        coursesMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            setTabDisable(coursesTab, newValue);
+        });
+        curriculumMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            setTabDisable(curriculumTab, newValue);
+        });
+        adminsMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            setTabDisable(adminsTab, newValue);
+        });
+    }
+
+    private void setTabDisable(Tab tab, boolean disabled) {
+        tab.setDisable(!disabled);
+        if (disabled) {
+            try {
+                if (tab == subjectsTab)
+                    fillSubjects();
+                else if (tab == professorsTab)
+                    fillProfessors();
+                else if (tab == studentsTab)
+                    fillStudents();
+                else if (tab == coursesTab)
+                    fillCourses();
+                else if (tab == curriculumTab)
+                    fillCurriculums();
+                else if (tab == adminsTab)
+                    fillAdmins();
+            } catch (SQLException error) {
+                showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
+    }
+
+    public ArrayList<Boolean> getTabsConfig() {
+        ArrayList<Boolean> tabsConfig = new ArrayList<>();
+        tabsConfig.add(subjectsMenuItem.isSelected());
+        tabsConfig.add(professorsMenuItem.isSelected());
+        tabsConfig.add(studentsMenuItem.isSelected());
+        tabsConfig.add(coursesMenuItem.isSelected());
+        tabsConfig.add(curriculumMenuItem.isSelected());
+        tabsConfig.add(adminsMenuItem.isSelected());
+        return tabsConfig;
+    }
+
     @FXML
     public void initialize() {
         try {
-            fillSubjects();
-            fillProfessors();
-            fillStudents();
-            fillCourses();
-            fillCurriculums();
-            fillAdmins();
+            setViewListeners();
+            DataInputStream input = new DataInputStream(new FileInputStream("resources/config.dat"));
+            boolean[] tabsConfig = new boolean[6];
+            for (int i = 0; i < tabsConfig.length; i++)
+                tabsConfig[i] = input.readBoolean();
+            input.close();
+            subjectsMenuItem.setSelected(tabsConfig[0]);
+            professorsMenuItem.setSelected(tabsConfig[1]);
+            studentsMenuItem.setSelected(tabsConfig[2]);
+            coursesMenuItem.setSelected(tabsConfig[3]);
+            curriculumMenuItem.setSelected(tabsConfig[4]);
+            adminsMenuItem.setSelected(tabsConfig[5]);
             ArrayList<String> cycles = dataBase.cycles();
             cycles.add(0, "Svi ciklusi");
             cycleChoiceBox.setItems(FXCollections.observableArrayList(cycles));
@@ -319,6 +391,10 @@ public class AdministratorController {
             semeseterChoiceBox.getSelectionModel().select(0);
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+            return;
+        } catch (IOException error) {
+            showAlert("Greška", "Problem sa čitanjem config datoteke: " + error.getMessage(), Alert.AlertType.ERROR);
+            return;
         }
         setListenersOnSelectedItems();
         Image refreshImage = new Image("img/refresh.png", 20, 20, true, true);

@@ -15,11 +15,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -121,7 +122,19 @@ public class LoginController {
                 case "Administrator":
                     loader = new FXMLLoader(getClass().getResource("/fxml/administrator.fxml"));
                     mainStage.getIcons().add(new Image("/img/administrator.png"));
-                    loader.setController(new AdministratorController(login));
+                    AdministratorController controller = new AdministratorController(login);
+                    loader.setController(controller);
+                    mainStage.setOnHidden(event -> {
+                        try {
+                            DataOutputStream output = new DataOutputStream(new FileOutputStream("resources/config.dat"));
+                            ArrayList<Boolean> tabsConfig = controller.getTabsConfig();
+                            for (Boolean value : tabsConfig)
+                                output.writeBoolean(value);
+                            output.close();
+                        } catch (IOException error) {
+                            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+                        }
+                    });
                     break;
                 case "Student":
                     loader = new FXMLLoader(getClass().getResource("/fxml/student.fxml"));

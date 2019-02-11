@@ -135,8 +135,8 @@
                                         <Font size="13.0"/>
                                     </font>
                                 </Label>
-                                <Label fx:id="statusLabel" styleClass="greenText" layoutX="10.0" layoutY="10.0"
-                                       minWidth="80.0" prefHeight="25.0" prefWidth="118.0" text="status">
+                                <Label fx:id="statusLabel" layoutX="10.0" layoutY="10.0" minWidth="80.0"
+                                       prefHeight="25.0" prefWidth="118.0" styleClass="greenText" text="status">
                                     <font>
                                         <Font size="13.0"/>
                                     </font>
@@ -197,23 +197,21 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu text="_File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#logOutClick" text="Log out..."/>
-                        <MenuItem mnemonicParsing="false" onAction="#closeClick" text="Close"/>
+                        <MenuItem onAction="#logOutClick" text="_Log out..."/>
+                        <MenuItem onAction="#closeClick" text="_Close"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu text="_Edit">
                     <items>
-                        <MenuItem fx:id="updateMenuItem" mnemonicParsing="false" onAction="#updateInfoClick"
-                                  text="Update info"/>
-                        <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseClick"
-                                  text="Pause year"/>
+                        <MenuItem fx:id="updateMenuItem" onAction="#updateInfoClick" text="_Update info"/>
+                        <MenuItem fx:id="pauseMenuItem" onAction="#pauseClick" text="_Pause year"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu text="_Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#aboutClick" text="About"/>
+                        <MenuItem onAction="#aboutClick" text="_About"/>
                     </items>
                 </Menu>
             </menus>

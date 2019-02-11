@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -21,7 +22,7 @@
         <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
                  BorderPane.alignment="CENTER">
             <tabs>
-                <Tab text="Predmeti">
+                <Tab fx:id="subjectsTab" disable="true" text="Predmeti">
                     <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <padding>
@@ -129,7 +130,7 @@
                         </BorderPane>
                     </content>
                 </Tab>
-                <Tab text="Profesori">
+                <Tab fx:id="professorsTab" disable="true" text="Profesori">
                     <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <padding>
@@ -235,7 +236,7 @@
                         </BorderPane>
                     </content>
                 </Tab>
-                <Tab text="Studenti">
+                <Tab fx:id="studentsTab" disable="true" text="Studenti">
                     <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <padding>
@@ -359,7 +360,7 @@
                         </BorderPane>
                     </content>
                 </Tab>
-                <Tab text="Smjerovi">
+                <Tab fx:id="coursesTab" disable="true" text="Smjerovi">
                     <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <center>
@@ -426,7 +427,7 @@
                         </BorderPane>
                     </content>
                 </Tab>
-                <Tab text="Plan i program">
+                <Tab fx:id="curriculumTab" disable="true" text="Plan i program">
                     <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <center>
@@ -476,7 +477,7 @@
                         </BorderPane>
                     </content>
                 </Tab>
-                <Tab text="Administratori">
+                <Tab fx:id="adminsTab" disable="true" text="Administratori">
                     <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <padding>
@@ -532,22 +533,32 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu text="_File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#logOutClick" text="Log out..."/>
-                        <MenuItem mnemonicParsing="false" onAction="#closeClick" text="Close"/>
+                        <MenuItem onAction="#logOutClick" text="_Log out..."/>
+                        <MenuItem onAction="#closeClick" text="_Close"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu text="_Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#addClick" text="Add"/>
-                        <MenuItem mnemonicParsing="false" onAction="#updateClick" text="Update"/>
-                        <MenuItem mnemonicParsing="false" onAction="#deleteClick" text="Delete"/>
+                        <MenuItem onAction="#addClick" text="_Add"/>
+                        <MenuItem onAction="#updateClick" text="_Update"/>
+                        <MenuItem onAction="#deleteClick" text="_Delete"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu text="_View">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#aboutClick" text="About"/>
+                        <CheckMenuItem fx:id="subjectsMenuItem" text="_Subjects"/>
+                        <CheckMenuItem fx:id="professorsMenuItem" text="_Professors"/>
+                        <CheckMenuItem fx:id="studentsMenuItem" text="S_tudents"/>
+                        <CheckMenuItem fx:id="coursesMenuItem" text="_Courses"/>
+                        <CheckMenuItem fx:id="curriculumMenuItem" text="Cu_rriculum"/>
+                        <CheckMenuItem fx:id="adminsMenuItem" text="_Admins"/>
+                    </items>
+                </Menu>
+                <Menu text="_Help">
+                    <items>
+                        <MenuItem onAction="#aboutClick" text="_About"/>
                     </items>
                 </Menu>
             </menus>

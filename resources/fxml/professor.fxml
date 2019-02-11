@@ -166,20 +166,20 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu text="_File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#logOutClick" text="Log out..."/>
-                        <MenuItem mnemonicParsing="false" onAction="#closeClick" text="Close"/>
+                        <MenuItem onAction="#logOutClick" text="_Log out..."/>
+                        <MenuItem onAction="#closeClick" text="_Close"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu text="_Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#updateInfoClick" text="Update info"/>
+                        <MenuItem onAction="#updateInfoClick" text="_Update info"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu text="_Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#aboutClick" text="About"/>
+                        <MenuItem onAction="#aboutClick" text="_About"/>
                     </items>
                 </Menu>
             </menus>
