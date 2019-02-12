@@ -55,18 +55,24 @@ public class GradeStudentController {
         pointsSpinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !newValue.isEmpty()) {
                 Float value = Float.valueOf(newValue);
-                if (value < 55)
+                if (value < 55) {
                     calculatedGrade = 5;
-                else if (value >= 55 && value < 65)
-                    calculatedGrade = 6;
-                else if (value >= 65 && value < 75)
-                    calculatedGrade = 7;
-                else if (value >= 75 && value < 85)
-                    calculatedGrade = 8;
-                else if (value >= 85 && value < 95)
-                    calculatedGrade = 9;
-                else if (value >= 95)
-                    calculatedGrade = 10;
+                    if (gradeRadioBtn.isSelected())
+                        noGradeRadioBtn.setSelected(true);
+                    gradeRadioBtn.setDisable(true);
+                } else {
+                    gradeRadioBtn.setDisable(false);
+                    if (value >= 55 && value < 65)
+                        calculatedGrade = 6;
+                    else if (value >= 65 && value < 75)
+                        calculatedGrade = 7;
+                    else if (value >= 75 && value < 85)
+                        calculatedGrade = 8;
+                    else if (value >= 85 && value < 95)
+                        calculatedGrade = 9;
+                    else if (value >= 95)
+                        calculatedGrade = 10;
+                }
                 if (value < minValue || value > 110)
                     addColor(pointsSpinner.getEditor(), false);
                 else

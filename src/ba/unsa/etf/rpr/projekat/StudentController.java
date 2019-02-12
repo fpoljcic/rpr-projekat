@@ -109,8 +109,12 @@ public class StudentController {
         student = dataBase.getStudent(login);
         pauseDate = student.getPauseDate();
         try {
-            fillSubjects();
             fillArchiveSubjects();
+            fillSubjects();
+            if (subjectTable.getItems().isEmpty()) {
+                if (advanceStudent())
+                    fillSubjects();
+            }
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
         }
@@ -131,6 +135,26 @@ public class StudentController {
             }
         } else
             statusLabel.setText("Aktivan");
+    }
+
+    private boolean advanceStudent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/advanceStudent.fxml"));
+            AdvanceStudentController controller = new AdvanceStudentController(student, subjectArchiveTable.getItems());
+            loader.setController(controller);
+            Parent root = loader.load();
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("Čestitamo");
+            secondaryStage.getIcons().add(new Image("/img/student.png"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+        return false;
     }
 
     private void disableUI(boolean isPaused) {

@@ -1,5 +1,6 @@
 package ba.unsa.etf.rpr.projekat;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 
 import java.sql.*;
@@ -11,13 +12,13 @@ import static oracle.jdbc.OracleTypes.INTEGER;
 public class BazaDAO {
     private static BazaDAO instance = null;
     private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getAdminStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
-    private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt;
+    private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt, addGradeStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt, updateGradeStmt;
     private PreparedStatement deleteSubjectStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt, deleteLoginSmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt, allAdminStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement allSubjectProfessorStmt, allStudentProfessorStmt;
-    private PreparedStatement getStudentsStmt;
+    private PreparedStatement getStudentsStmt, getSubjectSemesterStmt;
     private PreparedStatement getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
     private PreparedStatement getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
     private PreparedStatement getavgStudentGradeStmt, getNoStudentGradedStmt, getNoStudentNotGradedStmt;
@@ -57,6 +58,7 @@ public class BazaDAO {
             getCourseStmt = conn.prepareStatement("SELECT * FROM FP18120.COURSE WHERE ID=?");
             getSemesterStmt = conn.prepareStatement("SELECT * FROM FP18120.SEMESTER WHERE ID=?");
             getSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT WHERE ID=?");
+            getSubjectSemesterStmt = conn.prepareStatement("SELECT SUBJECT.ID FROM FP18120.SUBJECT, FP18120.CURRICULUM WHERE CURRICULUM.SUBJECT_ID=SUBJECT.ID AND SEMESTER_ID=? AND REQUIRED_SUBJECT=? AND COURSE_ID=?");
             getGradeStmt = conn.prepareStatement("SELECT * FROM FP18120.GRADE WHERE ID=?");
             getSemestersCycleStmt = conn.prepareStatement("SELECT NO FROM FP18120.SEMESTER WHERE CYCLE_NO=?");
             getStudentsStmt = conn.prepareStatement("SELECT STUDENT.ID FROM FP18120.PERSON, FP18120.STUDENT, FP18120.COURSE, FP18120.SEMESTER WHERE PERSON.ID = STUDENT.ID AND COURSE_ID = COURSE.ID AND SEMESTER.ID = SEMESTER_ID");
@@ -69,6 +71,7 @@ public class BazaDAO {
             addCourseStmt = conn.prepareStatement("INSERT INTO FP18120.COURSE VALUES (FP18120.COURSE_SEQ.NEXTVAL, ?)");
             addCurriculumStmt = conn.prepareStatement("INSERT INTO FP18120.CURRICULUM VALUES (FP18120.CURRICULUM_SEQ.NEXTVAL, ?, ?, ?, ?)");
             addLoginStmt = conn.prepareStatement("INSERT INTO FP18120.LOGIN VALUES (FP18120.LOGIN_SEQ.NEXTVAL, ?, ?, ?, ?, ?)");
+            addGradeStmt = conn.prepareStatement("INSERT INTO FP18120.GRADE VALUES (FP18120.GRADE_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?)");
 
             updateSubjectStmt = conn.prepareStatement("UPDATE FP18120.SUBJECT SET NAME=?, CODE=?, ECTS=?, PROFESSOR_ID=?, REQ_SUBJECT_ID=? WHERE ID=?");
             updatePersonStmt = conn.prepareStatement("UPDATE FP18120.PERSON SET FIRST_NAME=?, LAST_NAME=?, JMBG=?, ADDRESS=?, EMAIL=?, LOGIN_ID=? WHERE ID=?");
@@ -788,5 +791,33 @@ public class BazaDAO {
             students.add(student);
         }
         return students;
+    }
+
+    public ArrayList<Subject> getSubjects(Semester semester, Course course, boolean required) throws SQLException {
+        ArrayList<Subject> subjects = new ArrayList<>();
+        getSubjectSemesterStmt.setInt(1, semester.getId());
+        if (required)
+            getSubjectSemesterStmt.setString(2, "Da");
+        else
+            getSubjectSemesterStmt.setString(2, "Ne");
+        getSubjectSemesterStmt.setInt(3, course.getId());
+        var resultSet = getSubjectSemesterStmt.executeQuery();
+        while (resultSet.next()) {
+            Subject subject = getSubject(resultSet.getInt(1));
+            subjects.add(subject);
+        }
+        return subjects;
+    }
+
+    public void advanceStudent(Student student, ObservableList<Subject> subjects) throws SQLException {
+        addGradeStmt.setInt(1, student.getId());
+        addGradeStmt.setInt(3, 10);
+        addGradeStmt.setNull(4, INTEGER);
+        addGradeStmt.setNull(5, DATE);
+        addGradeStmt.setNull(6, INTEGER);
+        for (Subject subject : subjects) {
+            addGradeStmt.setInt(2, subject.getId());
+            addGradeStmt.executeUpdate();
+        }
     }
 }
