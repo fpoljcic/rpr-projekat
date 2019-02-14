@@ -145,7 +145,7 @@ public class StudentController {
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             secondaryStage.setTitle("Čestitamo");
-            secondaryStage.getIcons().add(new Image("/img/student.png"));
+            secondaryStage.getIcons().add(new Image("/img/advance.png"));
             secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);

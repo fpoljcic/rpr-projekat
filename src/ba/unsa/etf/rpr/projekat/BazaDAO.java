@@ -18,7 +18,7 @@ public class BazaDAO {
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt, allAdminStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement allSubjectProfessorStmt, allStudentProfessorStmt;
-    private PreparedStatement getStudentsStmt, getSubjectSemesterStmt;
+    private PreparedStatement getStudentsStmt, getSubjectSemesterStmt, getLoginIdStmt;
     private PreparedStatement getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
     private PreparedStatement getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
     private PreparedStatement getavgStudentGradeStmt, getNoStudentGradedStmt, getNoStudentNotGradedStmt;
@@ -48,6 +48,7 @@ public class BazaDAO {
         }
         try {
             fetchLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE USERNAME=? AND USER_TYPE=?");
+            getLoginIdStmt = conn.prepareStatement("SELECT LOGIN.ID FROM FP18120.LOGIN, FP18120.PERSON WHERE LOGIN.ID = LOGIN_ID AND FIRST_NAME=? AND LAST_NAME=? AND EMAIL=? AND USER_TYPE=?");
 
             getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE ID=?");
             getProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PROFESSOR.ID=? AND PERSON.ID = PROFESSOR.ID");
@@ -406,6 +407,7 @@ public class BazaDAO {
     }
 
     public void updatePerson(Person person) throws SQLException {
+        updateLogin(person.getLogin());
         updatePersonStmt.setString(1, person.getFirstName());
         updatePersonStmt.setString(2, person.getLastName());
         updatePersonStmt.setString(3, person.getJmbg());
@@ -819,5 +821,17 @@ public class BazaDAO {
             addGradeStmt.setInt(2, subject.getId());
             addGradeStmt.executeUpdate();
         }
+    }
+
+    public int getLoginId(String firstName, String lastName, String email, String userType) throws SQLException {
+        getLoginIdStmt.setString(1, firstName);
+        getLoginIdStmt.setString(2, lastName);
+        getLoginIdStmt.setString(3, email);
+        getLoginIdStmt.setString(4, userType);
+        var resultSet = getLoginIdStmt.executeQuery();
+        int id = -1;
+        while (resultSet.next())
+            id = resultSet.getInt(1);
+        return id;
     }
 }

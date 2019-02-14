@@ -28,13 +28,13 @@
         <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0"/>
     </rowConstraints>
     <children>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="94.0" text="Kurs:"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="94.0" text="Kurs"/>
         <ChoiceBox fx:id="courseChoiceBox" layoutX="114.0" layoutY="105.0" prefHeight="25.0" prefWidth="171.0"
                    GridPane.columnIndex="1"/>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="106.0" text="Semestar:" GridPane.rowIndex="1"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="106.0" text="Semestar" GridPane.rowIndex="1"/>
         <ChoiceBox fx:id="semesterChoiceBox" layoutX="114.0" layoutY="105.0" prefHeight="25.0" prefWidth="175.0"
                    GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="84.0" text="Predmet:" GridPane.rowIndex="2"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="84.0" text="Predmet" GridPane.rowIndex="2"/>
         <ChoiceBox fx:id="subjectChoiceBox" prefHeight="25.0" prefWidth="170.0" GridPane.columnIndex="1"
                    GridPane.rowIndex="2"/>
         <CheckBox fx:id="reqSubjectCheckBox" mnemonicParsing="false" text="Obavezan predmet" GridPane.columnIndex="1"
