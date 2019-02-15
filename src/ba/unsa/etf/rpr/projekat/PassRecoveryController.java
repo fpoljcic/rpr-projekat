@@ -102,12 +102,7 @@ public class PassRecoveryController {
             }
             generateCode();
             email.setSubject("Zahtjev za resetovanje šifre");
-            email.setBody("Poštovanje,\n\n" +
-                    "Primili smo zahtjev za pristup vašem računu " + getAccountInfo() +
-                    " putem aplikacije E-index. Ispod se nalazi vaš kontrolni kod:\n\n" + getCode() +
-                    "\n\nAko niste zatražili ovaj kod, možda netko drugi pokušava pristupiti vašem računu. Ne prosljeđujte ovaj kod i ne otkrivajte ga nikome.\n\n" +
-                    "Lijep pozdrav,\n" +
-                    "Faris Poljčić");
+            setEmailBody(email);
             email.addRecipient(getEmail());
             Thread thread = new Thread(() -> {
                 try {
@@ -118,7 +113,6 @@ public class PassRecoveryController {
             });
             thread.start();
         } catch (SQLException error) {
-            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
@@ -143,6 +137,18 @@ public class PassRecoveryController {
         } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    private void setEmailBody(Email email) {
+        String html = "Poštovanje,<br/><br/>" +
+                "Primili smo zahtjev za pristup vašem računu " + getAccountInfo() +
+                " putem aplikacije E-index. Ispod se nalazi vaš kontrolni kod:<br/><br/>" +
+                "<div style=\"text-align:center\"><strong style=\"font-size:24px; font-weight:bold\">" + getCode() +
+                "</strong></div>" +
+                "<br/><br/>Ako niste zatražili ovaj kod, možda netko drugi pokušava pristupiti vašem računu. Ne prosljeđujte ovaj kod i ne otkrivajte ga nikome.<br/><br/>" +
+                "Lijep pozdrav,<br/>" +
+                "Faris Poljčić";
+        email.setBody(html);
     }
 
     private String getAccountInfo() {
@@ -172,7 +178,7 @@ public class PassRecoveryController {
         SecureRandom secureRandom = new SecureRandom();
         byte[] token = new byte[6];
         secureRandom.nextBytes(token);
-        code = new BigInteger(1, token).toString(35).substring(0, 6); //hex encoding
+        code = new BigInteger(1, token).toString(32).substring(0, 6); //hex encoding
     }
 
     private void showAlert(String title, String headerText, Alert.AlertType type) {

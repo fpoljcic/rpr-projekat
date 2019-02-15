@@ -133,7 +133,7 @@
                                prefWidth="157.0" text="Smjer" GridPane.rowIndex="3"/>
                         <DatePicker fx:id="birthDatePicker" editable="false" GridPane.columnIndex="1"
                                     GridPane.rowIndex="1"/>
-                        <ChoiceBox fx:id="semesterChoiceBox" prefHeight="25.0" prefWidth="155.0"
+                        <ChoiceBox fx:id="semesterChoiceBox" disable="true" prefHeight="25.0" prefWidth="155.0"
                                    GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                         <ChoiceBox fx:id="courseChoiceBox" layoutX="105.0" layoutY="95.0" prefHeight="25.0"
                                    prefWidth="155.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>

@@ -119,16 +119,16 @@ CREATE SEQUENCE semester_seq START WITH 0 INCREMENT BY 1 MINVALUE 0 NOCACHE NOCY
 DROP SEQUENCE curriculum_seq;
 CREATE SEQUENCE curriculum_seq START WITH 0 INCREMENT BY 1 MINVALUE 0 NOCACHE NOCYCLE;
 
-INSERT INTO login VALUES(login_seq.nextval, 'aaa', 'rr1jcb53jgb8oqne5iowy9a9g4j5kip9ujt1wt156j12gug0b1', SYSDATE, 'Administrator', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'fpoljcic', 'wb9r3ue9it5mspc9wyinetkgfj6ufdmo59mcu7rep8pgrbrph8', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'fsisic', 'wbgrpup99p77v6q2r9yh0tfoys0u2bk5w2fe4krbdhhexgmuhx', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'epita', 'vbtrxuu96049vkps10dvxe86tt0tmr3j64x2pfqliupmi1fcbj', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'fmusic', 'wbnr1ug9152yusdf504kmjwq46oebep20tv665qsul1ap6mshf', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'aturkusic', 'rberku49e8xmbaajp0y81t30i64jm67mva0cd5emftpi5cvshg', SYSDATE, 'Student', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'vljubovic', 'dbwr1ud9dxsws9ap4eyxvw0i1clp6qiqakd31o3p6o6d3beehu', SYSDATE, 'Profesor', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'zjuric', 'hbtr4uy9s08wxrwr7bjay60kbuolbaguyu3r7b8rue6rask1hf', SYSDATE, 'Profesor', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'sribic', 'ab6rvut91n134c4v5r3jq033k50cib5yrxqgud7tgit0ut4phr', SYSDATE, 'Profesor', NULL);
-INSERT INTO login VALUES(login_seq.nextval, 'zsabanac', 'hb0rmu49ufll9k752nn19sluu1l4q3gwvugsr6yomgm58op8hu', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'aaa', '47bce5c74f589f4867dbd57e9ca9f808e016452bde46e14e5965c9e2aa236353', SYSDATE, 'Administrator', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fpoljcic', 'a704e4449e85db75e85ec44d1b390398a4f25cc12fa0b9222fd0e8de5eb19e24', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fsisic', 'c011ff177cac4f3c883ef75406ef2664f7a0cf0b4d19ea9a5792bea278415657', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'epita', '2940f2ec0ff69b02b23d0eee237fb7c37baaf361537fbd8a1aaa2c97a6d4ccc7', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'fmusic', 'bdcb7d21d1ce19fa4491e4c94dfa3a8eeaceed4875c5be9774352cb742562c0b', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'aturkusic', '889e8da2c3e2c50b82b6f9b2cbf838a607baf5ce585f76b7b0f77c1b24ff4656', SYSDATE, 'Student', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'vljubovic', '379ec24033465b12350598f8ac5ea1fbf408137e9a3f93deda21c06a6db4d8ea', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'zjuric', 'dda62d3156ef12084043b1088c2382232e1350fe94ec9f2220bec5245e5e9265', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'sribic', '9f520e402140b5c8906c689a459d06d1609f2a78ae2126d3a59f00be1b1a7d17', SYSDATE, 'Profesor', NULL);
+INSERT INTO login VALUES(login_seq.nextval, 'zsabanac', '924253b0fe5bfbf624fef626528a6cda7ed6ad62f57dcdddebb65bc52dce5870', SYSDATE, 'Profesor', NULL);
 
 INSERT INTO person VALUES(person_seq.nextval, 'Admin', 'Test', '2107998170067', 'Adresa', 'test@mail.ba', 1);
 INSERT INTO person VALUES(person_seq.nextval, 'Faris', 'Poljcic', '2207998170067', 'Tome Medje 3', 'fpoljcic@etf.unsa.ba', 2);

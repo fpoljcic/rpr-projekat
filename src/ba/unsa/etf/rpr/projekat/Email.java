@@ -75,14 +75,14 @@ public class Email {
         message.setFrom(new InternetAddress(from));
         InternetAddress[] toAddress = new InternetAddress[to.size()];
 
-        for( int i = 0; i < to.size(); i++ )
+        for (int i = 0; i < to.size(); i++)
             toAddress[i] = new InternetAddress(to.get(i));
 
         for (InternetAddress address : toAddress)
             message.addRecipient(Message.RecipientType.TO, address);
 
         message.setSubject(subject);
-        message.setText(body);
+        message.setContent(body, "text/html;charset=UTF-8");
         Transport transport = session.getTransport("smtp");
         transport.connect(host, from, pass);
         transport.sendMessage(message, message.getAllRecipients());

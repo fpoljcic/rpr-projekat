@@ -107,7 +107,7 @@ public class LoginController {
             showAlert("Greška", "Ne postoji korisnik sa datim podacima", Alert.AlertType.ERROR);
             return;
         }
-        if (!checkPasswordMatch(getUsername(), getPassword())) {
+        if (!checkPasswordMatch(getUsername(), getPassword(), login.getId())) {
             showAlert("Greška", "Ne postoji korisnik sa datim podacima", Alert.AlertType.ERROR);
             errorCount.set(errorCount.get() + 1);
             return;
@@ -179,13 +179,20 @@ public class LoginController {
             loginClick(null);
     }
 
-    private boolean checkPasswordMatch(String username, String password) {
-        String pass = getEncodedPassword(username, password);
+
+    private static String formPasswordId(int id, String password) {
+        StringBuilder stringBuilder = new StringBuilder(password);
+        stringBuilder.insert(id % password.length(), id);
+        return stringBuilder.toString();
+    }
+
+    private boolean checkPasswordMatch(String username, String password, int id) {
+        String pass = getEncodedPassword(username, password, id);
         return pass.equals(login.getPassword());
     }
 
-    public static String getEncodedPassword(String user, String pass) {
-        return encodePassword(user) + encodePassword(pass);
+    public static String getEncodedPassword(String user, String pass, int id) {
+        return encodePassword(user) + encodePassword(formPasswordId(id, pass));
     }
 
     private static String encodePassword(String pass) {

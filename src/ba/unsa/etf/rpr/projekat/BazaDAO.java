@@ -1,5 +1,6 @@
 package ba.unsa.etf.rpr.projekat;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 
@@ -14,11 +15,11 @@ public class BazaDAO {
     private PreparedStatement fetchLoginStmt, getLoginStmt, getProfessorStmt, getStudentStmt, getAdminStmt, getCourseStmt, getSemesterStmt, getSubjectStmt, getStudentLoginStmt, getProfessorLoginStmt, getGradeStmt, getSemestersCycleStmt;
     private PreparedStatement addSubjectStmt, addProfessorStmt, addStudentStmt, addCourseStmt, addCurriculumStmt, addPersonStmt, addLoginStmt, addAdministratorStmt, addGradeStmt;
     private PreparedStatement updateSubjectStmt, updateProfessorStmt, updateStudentStmt, updateCourseStmt, updateCurriculumStmt, updatePersonStmt, updateLoginStmt, updateGradeStmt;
-    private PreparedStatement deleteSubjectStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt, deleteLoginSmt;
+    private PreparedStatement deleteSubjectStmt, deleteCourseStmt, deleteCurriculumStmt, deletePersonStmt, deleteLoginSmt, deleteGradesStmt;
     private PreparedStatement allSubjectStmt, allProfessorStmt, allStudentStmt, allCourseStmt, allCurriculumStmt, allSemesterStmt, allCyclesStmt, allAdminStmt;
     private PreparedStatement allSubjectStudentStmt, allSubjectPassedStudentStmt;
     private PreparedStatement allSubjectProfessorStmt, allStudentProfessorStmt;
-    private PreparedStatement getStudentsStmt, getSubjectSemesterStmt, getLoginIdStmt;
+    private PreparedStatement getStudentsStmt, getSubjectSemesterStmt, getLoginIdStmt, getPersonIdStmt, getLastLoginId;
     private PreparedStatement getavgSubjectGradeStmt, getNoSubjectGradedStmt, getNoSubjectNotGradedStmt;
     private PreparedStatement getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
     private PreparedStatement getavgStudentGradeStmt, getNoStudentGradedStmt, getNoStudentNotGradedStmt;
@@ -49,6 +50,8 @@ public class BazaDAO {
         try {
             fetchLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE USERNAME=? AND USER_TYPE=?");
             getLoginIdStmt = conn.prepareStatement("SELECT LOGIN.ID FROM FP18120.LOGIN, FP18120.PERSON WHERE LOGIN.ID = LOGIN_ID AND FIRST_NAME=? AND LAST_NAME=? AND EMAIL=? AND USER_TYPE=?");
+            getPersonIdStmt = conn.prepareStatement("SELECT PERSON.ID FROM FP18120.PERSON, FP18120.LOGIN WHERE LOGIN_ID = LOGIN.ID AND USERNAME=?");
+            getLastLoginId = conn.prepareStatement("SELECT * FROM (SELECT ID FROM FP18120.LOGIN ORDER BY ID DESC) WHERE ROWNUM = 1");
 
             getLoginStmt = conn.prepareStatement("SELECT * FROM FP18120.LOGIN WHERE ID=?");
             getProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PROFESSOR.ID=? AND PERSON.ID = PROFESSOR.ID");
@@ -88,6 +91,7 @@ public class BazaDAO {
             deleteLoginSmt = conn.prepareStatement("DELETE FROM FP18120.LOGIN WHERE ID=?");
             deleteCourseStmt = conn.prepareStatement("DELETE FROM FP18120.COURSE WHERE ID=?");
             deleteCurriculumStmt = conn.prepareStatement("DELETE FROM FP18120.CURRICULUM WHERE ID=?");
+            deleteGradesStmt = conn.prepareStatement("DELETE FROM FP18120.GRADE WHERE STUDENT_ID=?");
 
             allSubjectStmt = conn.prepareStatement("SELECT * FROM FP18120.SUBJECT");
             allProfessorStmt = conn.prepareStatement("SELECT * FROM FP18120.PERSON, FP18120.PROFESSOR WHERE PERSON.ID = PROFESSOR.ID");
@@ -514,7 +518,13 @@ public class BazaDAO {
     }
 
     public void deleteStudent(Student student) throws SQLException {
+        deleteGrades(student);
         deletePerson(student);
+    }
+
+    private void deleteGrades(Student student) throws SQLException {
+        deleteGradesStmt.setInt(1, student.getId());
+        deleteGradesStmt.executeUpdate();
     }
 
     public void deleteAdmin(Administrator administrator) throws SQLException {
@@ -833,5 +843,28 @@ public class BazaDAO {
         while (resultSet.next())
             id = resultSet.getInt(1);
         return id;
+    }
+
+    public void enrollStudent(Student student) throws SQLException {
+        ArrayList<Subject> subjects = getSubjects(student.getSemester(), student.getCourse(), true);
+        student.setId(getPersonId(student.getLogin().getUsername()));
+        advanceStudent(student, FXCollections.observableArrayList(subjects));
+    }
+
+    private int getPersonId(String username) throws SQLException {
+        getPersonIdStmt.setString(1, username);
+        var resultSet = getPersonIdStmt.executeQuery();
+        int id = -1;
+        while (resultSet.next())
+            id = resultSet.getInt(1);
+        return id;
+    }
+
+    public int getLastLoginId() throws SQLException {
+        var resultSet = getLastLoginId.executeQuery();
+        int currval = -1;
+        while (resultSet.next())
+            currval = resultSet.getInt(1);
+        return currval;
     }
 }

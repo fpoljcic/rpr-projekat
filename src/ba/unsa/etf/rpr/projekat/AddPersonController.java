@@ -57,7 +57,7 @@ public class AddPersonController {
         studentLabel.setDisable(true);
         birthDateLabel.setDisable(true);
         birthDatePicker.setDisable(true);
-        disableStudentUpdate();
+        disableStudentCourseUpdate();
     }
 
     private void disableProfessor() {
@@ -66,9 +66,7 @@ public class AddPersonController {
         titleField.setDisable(true);
     }
 
-    private void disableStudentUpdate() {
-        semesterLabel.setDisable(true);
-        semesterChoiceBox.setDisable(true);
+    private void disableStudentCourseUpdate() {
         courseLabel.setDisable(true);
         courseChoiceBox.setDisable(true);
     }
@@ -82,8 +80,6 @@ public class AddPersonController {
                 break;
             case "Student":
                 disableProfessor();
-                if (person != null)
-                    disableStudentUpdate();
                 break;
             case "Profesor":
                 disableStudent();
@@ -122,6 +118,7 @@ public class AddPersonController {
         if (person != null) {
             usernameField.setText(person.getLogin().getUsername());
             usernameField.setDisable(true);
+            passwordField.setPromptText("(nepromijenjena)");
 
             firstNameField.setText(person.getFirstName());
             lastNameField.setText(person.getLastName());
@@ -131,8 +128,10 @@ public class AddPersonController {
 
             if (person instanceof Professor)
                 titleField.setText(((Professor) person).getTitle());
-            else if (person instanceof Student)
+            else if (person instanceof Student) {
                 birthDatePicker.setValue(((Student) person).getBirthDate());
+                disableStudentCourseUpdate();
+            }
         }
     }
 
@@ -150,7 +149,8 @@ public class AddPersonController {
 
     private void getLoginInfo(Login login) {
         login.setUsername(usernameField.getText());
-        login.setPassword(LoginController.getEncodedPassword(usernameField.getText(), passwordField.getText()));
+        if (!passwordField.getText().isEmpty())
+            login.setPassword(LoginController.getEncodedPassword(usernameField.getText(), passwordField.getText(), login.getId()));
         login.setDateCreated(LocalDate.now());
         login.setUserType(userTypeChoiceBox.getValue());
     }
@@ -196,7 +196,11 @@ public class AddPersonController {
             ((Student) person).setSemester(semesterChoiceBox.getValue());
             ((Student) person).setCourse(courseChoiceBox.getValue());
             dataBase.addStudent((Student) person);
+            dataBase.enrollStudent((Student) person);
         }
+        person.getLogin().setId(dataBase.getLastLoginId());
+        person.getLogin().setPassword(LoginController.getEncodedPassword(usernameField.getText(), passwordField.getText(), person.getLogin().getId()));
+        dataBase.updateLogin(person.getLogin());
         showAlert("Uspjeh", "Uspješno dodata osoba", Alert.AlertType.INFORMATION);
     }
 
@@ -299,7 +303,7 @@ public class AddPersonController {
             return false;
         }
         addColor(usernameField, true);
-        if (passwordField.getText().isEmpty() || passwordField.getText().length() > 50 || passwordField.getText().length() < 4) {
+        if ((person == null && passwordField.getText().isEmpty()) || !passwordField.getText().isEmpty() && (passwordField.getText().length() > 50 || passwordField.getText().length() < 4)) {
             addColor(passwordField, false);
             return false;
         }

@@ -41,7 +41,7 @@ public class PassNewController {
 
     public void okClick(ActionEvent actionEvent) throws SQLException {
         if (passField.getStyleClass().contains("validField")) {
-            login.setPassword(LoginController.getEncodedPassword(login.getUsername(), passField.getText()));
+            login.setPassword(LoginController.getEncodedPassword(login.getUsername(), passField.getText(), login.getId()));
             dataBase.updateLogin(login);
             showAlert("Uspjeh", "Uspješno izmijenjena šifra", Alert.AlertType.INFORMATION);
             cancelClick(null);
