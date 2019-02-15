@@ -31,6 +31,10 @@ public class ProfessorController {
     public TableColumn<SubjectWrapper, Integer> subjectEctsCol;
     public TableColumn<SubjectWrapper, SubjectWrapper> subjectReqSubjectCol;
     public TableColumn<SubjectWrapper, Integer> subjectNoStudentsCol;
+    public TableColumn<SubjectWrapper, Integer> subjectNoStudentsGradedCol;
+    public TableColumn<SubjectWrapper, Integer> subjectNoStudentsNotGradedCol;
+    public TableColumn<SubjectWrapper, Float> subjectAvgGradeCol;
+    public TableColumn<SubjectWrapper, String> subjectPercentPassedCol;
 
     public TableView<StudentGradeSubjectWrapper> studentsOnSubjectTable;
     public TableColumn<StudentGradeSubjectWrapper, String> studentFirstNameCol;
@@ -73,7 +77,11 @@ public class ProfessorController {
         subjectCodeCol.setCellValueFactory(new PropertyValueFactory<>("code"));
         subjectEctsCol.setCellValueFactory(new PropertyValueFactory<>("ects"));
         subjectReqSubjectCol.setCellValueFactory(new PropertyValueFactory<>("reqSubject"));
+        subjectNoStudentsGradedCol.setCellValueFactory(new PropertyValueFactory<>("noStudentsGraded"));
+        subjectNoStudentsNotGradedCol.setCellValueFactory(new PropertyValueFactory<>("noStudentsNotGraded"));
         subjectNoStudentsCol.setCellValueFactory(new PropertyValueFactory<>("noStudents"));
+        subjectAvgGradeCol.setCellValueFactory(new PropertyValueFactory<>("avgGrade"));
+        subjectPercentPassedCol.setCellValueFactory(new PropertyValueFactory<>("percentPassed"));
     }
 
     private void fillStudentsOnSubject() throws SQLException {

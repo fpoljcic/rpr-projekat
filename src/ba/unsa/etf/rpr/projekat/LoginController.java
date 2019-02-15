@@ -129,6 +129,61 @@ public class LoginController {
         mainStage.show();
     }
 
+
+    private void writeAdminView(ArrayList<Boolean> tabsConfig) {
+        try {
+            boolean studentView = readStudentView();
+            tabsConfig.add(0, studentView);
+            writeBoolArray(tabsConfig);
+        } catch (IOException error) {
+            error.printStackTrace();
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private boolean readStudentView() {
+        boolean tabConfig = true;
+        try {
+            DataInputStream input = new DataInputStream(new FileInputStream("resources/config.dat"));
+            tabConfig = input.readBoolean();
+            input.close();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+        return tabConfig;
+    }
+
+    private ArrayList<Boolean> readAdminView() {
+        ArrayList<Boolean> tabsConfig = new ArrayList<>();
+        try {
+            DataInputStream input = new DataInputStream(new FileInputStream("resources/config.dat"));
+            input.readBoolean();
+            for (int i = 0; i < 6; i++)
+                tabsConfig.add(input.readBoolean());
+            input.close();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+        return tabsConfig;
+    }
+
+    private void writeStudentView(boolean tabConfig) {
+        try {
+            ArrayList<Boolean> adminView = readAdminView();
+            adminView.add(0, tabConfig);
+            writeBoolArray(adminView);
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void writeBoolArray(ArrayList<Boolean> values) throws IOException {
+        DataOutputStream output = new DataOutputStream(new FileOutputStream("resources/config.dat"));
+        for (Boolean bool : values)
+            output.writeBoolean(bool);
+        output.close();
+    }
+
     private Stage getNewStage(String stageName) {
         try {
             FXMLLoader loader;
@@ -140,21 +195,17 @@ public class LoginController {
                     AdministratorController controller = new AdministratorController(login);
                     loader.setController(controller);
                     mainStage.setOnHidden(event -> {
-                        try {
-                            DataOutputStream output = new DataOutputStream(new FileOutputStream("resources/config.dat"));
-                            ArrayList<Boolean> tabsConfig = controller.getTabsConfig();
-                            for (Boolean value : tabsConfig)
-                                output.writeBoolean(value);
-                            output.close();
-                        } catch (IOException error) {
-                            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
-                        }
+                        writeAdminView(controller.getTabsConfig());
                     });
                     break;
                 case "Student":
                     loader = new FXMLLoader(getClass().getResource("/fxml/student.fxml"));
                     mainStage.getIcons().add(new Image("/img/student.png"));
-                    loader.setController(new StudentController(login));
+                    StudentController studentController = new StudentController(login);
+                    loader.setController(studentController);
+                    mainStage.setOnHidden(event -> {
+                        writeStudentView(studentController.getTabConfig());
+                    });
                     break;
                 case "Profesor":
                     loader = new FXMLLoader(getClass().getResource("/fxml/professor.fxml"));

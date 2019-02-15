@@ -9,12 +9,14 @@ public class SubjectWrapper {
     private Professor professor;
     private Subject reqSubject;
 
-    private int noStudents;
+    private float avgGrade;
+    private int noStudentsGraded;
+    private int noStudentsNotGraded;
 
     public SubjectWrapper() {
     }
 
-    public SubjectWrapper(Subject subject, int noStudents) {
+    public SubjectWrapper(Subject subject, int noStudentsGraded, int noStudentsNotGraded, float avgGrade) {
         if (subject != null) {
             idSubject = subject.getId();
             name = subject.getName();
@@ -23,7 +25,9 @@ public class SubjectWrapper {
             professor = subject.getProfessor();
             reqSubject = subject.getReqSubject();
         }
-        this.noStudents = noStudents;
+        this.noStudentsGraded = noStudentsGraded;
+        this.noStudentsNotGraded = noStudentsNotGraded;
+        this.avgGrade = avgGrade;
     }
 
     public int getIdSubject() {
@@ -75,10 +79,34 @@ public class SubjectWrapper {
     }
 
     public int getNoStudents() {
-        return noStudents;
+        return noStudentsGraded + noStudentsNotGraded;
     }
 
-    public void setNoStudents(int noStudents) {
-        this.noStudents = noStudents;
+    public float getAvgGrade() {
+        return avgGrade;
+    }
+
+    public void setAvgGrade(float avgGrade) {
+        this.avgGrade = avgGrade;
+    }
+
+    public int getNoStudentsGraded() {
+        return noStudentsGraded;
+    }
+
+    public void setNoStudentsGraded(int noStudentsGraded) {
+        this.noStudentsGraded = noStudentsGraded;
+    }
+
+    public int getNoStudentsNotGraded() {
+        return noStudentsNotGraded;
+    }
+
+    public void setNoStudentsNotGraded(int noStudentsNotGraded) {
+        this.noStudentsNotGraded = noStudentsNotGraded;
+    }
+
+    public String getPercentPassed() {
+        return Math.round(noStudentsGraded * 10000f / (noStudentsGraded + noStudentsNotGraded)) / 100f + "%";
     }
 }

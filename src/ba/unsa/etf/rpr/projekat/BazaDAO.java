@@ -697,7 +697,7 @@ public class BazaDAO {
         var resultSet = allSubjectProfessorStmt.executeQuery();
         while (resultSet.next()) {
             Subject subject = getSubject(resultSet.getInt(1));
-            SubjectWrapper subjectWrapper = new SubjectWrapper(subject, getNoSubjectNotGraded(subject));
+            SubjectWrapper subjectWrapper = new SubjectWrapper(subject, getNoSubjectGraded(subject), getNoSubjectNotGraded(subject), getAvgSubjectGrade(subject));
             subjectWrappers.add(subjectWrapper);
         }
         return subjectWrappers;

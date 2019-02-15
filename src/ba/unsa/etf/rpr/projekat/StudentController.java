@@ -13,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -50,6 +52,8 @@ public class StudentController {
     public Button pauseButton;
     public MenuItem updateMenuItem;
     public MenuItem pauseMenuItem;
+    public CheckMenuItem archiveSubjectsMenuItem;
+    public Tab archiveSubjectsTab;
     public Login login;
     private BazaDAO dataBase;
     private Student student;
@@ -104,19 +108,42 @@ public class StudentController {
         });
     }
 
+    private void setViewListener() {
+        archiveSubjectsMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            archiveSubjectsTab.setDisable(!newValue);
+            if (newValue) {
+                try {
+                    fillArchiveSubjects();
+                } catch (SQLException error) {
+                    showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        });
+    }
+
     @FXML
     public void initialize() {
         student = dataBase.getStudent(login);
         pauseDate = student.getPauseDate();
+        setViewListener();
         try {
-            fillArchiveSubjects();
+            DataInputStream input = new DataInputStream(new FileInputStream("resources/config.dat"));
+            boolean tabConfig = input.readBoolean();
+            input.close();
+            archiveSubjectsMenuItem.setSelected(tabConfig);
             fillSubjects();
             if (subjectTable.getItems().isEmpty()) {
+                if (!archiveSubjectsMenuItem.isSelected())
+                    fillArchiveSubjects();
                 if (advanceStudent())
                     fillSubjects();
             }
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+            return;
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            return;
         }
         loginLabel.setText(login.getUsername() + " (" + student.getFirstName() + " " + student.getLastName() + ")");
         semesterLabel.setText(student.getSemester().toString());
@@ -255,5 +282,9 @@ public class StudentController {
     public void closeClick(ActionEvent actionEvent) {
         BazaDAO.removeInstance();
         Platform.exit();
+    }
+
+    public boolean getTabConfig() {
+        return archiveSubjectsMenuItem.isSelected();
     }
 }

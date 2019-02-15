@@ -369,6 +369,7 @@ public class AdministratorController {
         try {
             setViewListeners();
             DataInputStream input = new DataInputStream(new FileInputStream("resources/config.dat"));
+            input.readBoolean(); // First value is for another form
             boolean[] tabsConfig = new boolean[6];
             for (int i = 0; i < tabsConfig.length; i++)
                 tabsConfig[i] = input.readBoolean();
@@ -393,6 +394,7 @@ public class AdministratorController {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         } catch (IOException error) {
+            error.printStackTrace();
             showAlert("Greška", "Problem sa čitanjem config datoteke: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
