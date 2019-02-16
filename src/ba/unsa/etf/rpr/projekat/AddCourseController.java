@@ -20,7 +20,6 @@ public class AddCourseController {
         dataBase = BazaDAO.getInstance();
     }
 
-
     private void addColor(TextField textField, boolean valid) {
         if (textField.getText().isEmpty()) {
             textField.getStyleClass().removeAll("invalidField", "validField");

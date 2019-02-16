@@ -129,7 +129,6 @@ public class LoginController {
         mainStage.show();
     }
 
-
     private void writeAdminView(ArrayList<Boolean> tabsConfig) {
         try {
             boolean studentView = readStudentView();
@@ -229,7 +228,6 @@ public class LoginController {
         if (keyEvent.getCode() == KeyCode.ENTER)
             loginClick(null);
     }
-
 
     private static String formPasswordId(int id, String password) {
         StringBuilder stringBuilder = new StringBuilder(password);

@@ -10,10 +10,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JRException;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,7 +27,6 @@ import java.time.temporal.ChronoUnit;
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class StudentController {
-
     public TableView<SubjectGradeWrapper> subjectTable;
     public TableColumn<SubjectGradeWrapper, String> subjectNameCol;
     public TableColumn<SubjectGradeWrapper, String> subjectCodeCol;
@@ -54,6 +57,11 @@ public class StudentController {
     public MenuItem pauseMenuItem;
     public CheckMenuItem archiveSubjectsMenuItem;
     public Tab archiveSubjectsTab;
+    public Label avgGradeField;
+    public Label noGradedField;
+    public Label noNotGradedField;
+    public Button saveButton;
+    public Button printButton;
     public Login login;
     private BazaDAO dataBase;
     private Student student;
@@ -138,6 +146,7 @@ public class StudentController {
                 if (advanceStudent())
                     fillSubjects();
             }
+            setStudentStats();
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
@@ -162,6 +171,32 @@ public class StudentController {
             }
         } else
             statusLabel.setText("Aktivan");
+        setButtonIcons();
+    }
+
+    private void setStudentStats() {
+        Thread thread = new Thread(() -> {
+            try {
+                String avgStudentGrade = String.valueOf(dataBase.getAvgStudentGrade(student));
+                String noStudentGraded = String.valueOf(dataBase.getNoStudentGraded(student));
+                String noStudentNotGraded = String.valueOf(dataBase.getNoStudentNotGraded(student));
+                Platform.runLater(() -> {
+                    avgGradeField.setText(avgStudentGrade);
+                    noGradedField.setText(noStudentGraded);
+                    noNotGradedField.setText(noStudentNotGraded);
+                });
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
+        thread.start();
+    }
+
+    private void setButtonIcons() {
+        Image saveImage = new Image("img/save.png", 32, 32, true, true);
+        saveButton.setGraphic(new ImageView(saveImage));
+        Image printImage = new Image("img/print.png", 32, 32, true, true);
+        printButton.setGraphic(new ImageView(printImage));
     }
 
     private boolean advanceStudent() {
@@ -282,9 +317,50 @@ public class StudentController {
     public void closeClick(ActionEvent actionEvent) {
         BazaDAO.removeInstance();
         Platform.exit();
+        System.exit(0);
     }
 
     public boolean getTabConfig() {
         return archiveSubjectsMenuItem.isSelected();
+    }
+
+    public void printClick(ActionEvent actionEvent) {
+        if (noGradedField.getText().equals("0")) {
+            showAlert("Greška", "Nemate položenih predmeta...", Alert.AlertType.ERROR);
+            return;
+        }
+        Report report = new Report();
+        try {
+            report.showStudentReport(dataBase.getConn(), student);
+        } catch (JRException error) {
+            error.printStackTrace();
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public void saveClick(ActionEvent actionEvent) {
+        if (noGradedField.getText().equals("0")) {
+            showAlert("Greška", "Nemate položenih predmeta...", Alert.AlertType.ERROR);
+            return;
+        }
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter1 = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
+        FileChooser.ExtensionFilter extFilter2 = new FileChooser.ExtensionFilter("DOCX files (*.docx)", "*.docx");
+        FileChooser.ExtensionFilter extFilter3 = new FileChooser.ExtensionFilter("XSLX files (*.xslx)", "*.xslx");
+        fileChooser.getExtensionFilters().addAll(extFilter1, extFilter2, extFilter3);
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null)
+            doSave(file);
+    }
+
+    private void doSave(File datoteka) {
+        try {
+            Report report = new Report();
+            report.saveStudentReport(datoteka.getAbsolutePath(), dataBase.getConn(), student);
+        } catch (JRException | IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

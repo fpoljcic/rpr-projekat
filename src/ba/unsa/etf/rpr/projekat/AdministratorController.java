@@ -867,7 +867,6 @@ public class AdministratorController {
         }
     }
 
-
     public void deleteCourse(ActionEvent actionEvent) {
         if (selectedCourse == null) {
             showAlert("Greška", "Prvo odaberite smjer", Alert.AlertType.ERROR);
@@ -891,7 +890,6 @@ public class AdministratorController {
         clearSelectedCourse();
     }
 
-
     public void addCurriculum(ActionEvent actionEvent) {
         boolean okClicked = editCurriculum(null);
         if (okClicked) {
@@ -899,7 +897,6 @@ public class AdministratorController {
             refreshCurriculumTable();
         }
     }
-
 
     public void updateCurriculum(ActionEvent actionEvent) {
         if (selectedCurriculum == null) {
@@ -981,7 +978,6 @@ public class AdministratorController {
             return false;
         }
     }
-
 
     public void addAdmin(ActionEvent actionEvent) {
         boolean okClicked = editAdmin(null);

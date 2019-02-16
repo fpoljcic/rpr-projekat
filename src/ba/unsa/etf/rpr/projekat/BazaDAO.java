@@ -36,6 +36,10 @@ public class BazaDAO {
         instance = null;
     }
 
+    public Connection getConn() {
+        return conn;
+    }
+
     private BazaDAO() {
         String url = "jdbc:oracle:thin:@ora.db.lab.ri.etf.unsa.ba:1521:ETFLAB";
         String username = "FP18120";

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class ProfessorController {
-
     public TableView<SubjectWrapper> subjectTable;
     public TableColumn<SubjectWrapper, String> subjectNameCol;
     public TableColumn<SubjectWrapper, String> subjectCodeCol;

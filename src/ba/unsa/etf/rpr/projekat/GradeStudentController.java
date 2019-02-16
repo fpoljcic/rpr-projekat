@@ -30,7 +30,6 @@ public class GradeStudentController {
         dataBase = BazaDAO.getInstance();
     }
 
-
     private void addColor(TextField textField, boolean valid) {
         if (textField.getText().isEmpty()) {
             textField.getStyleClass().removeAll("invalidField", "validField");
@@ -98,7 +97,6 @@ public class GradeStudentController {
         pointsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(minValue, 110, minValue, 0.1));
         scoreSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 10, calculatedGrade, 1));
     }
-
 
     public void okClick(ActionEvent actionEvent) {
         if (gradeRadioBtn.isSelected()) {

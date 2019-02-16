@@ -17,27 +17,29 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="443.0" prefWidth="691.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+<BorderPane prefHeight="458.0" prefWidth="771.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
             xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/design.css"/>
     </stylesheets>
     <center>
-        <GridPane prefHeight="393.0" prefWidth="691.0">
+        <GridPane hgap="5.0" prefHeight="454.0" prefWidth="734.0" vgap="5.0">
             <!--                     fx:controller="ba.unsa.etf.rpr.projekat.StudentController"                  -->
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="10.0" prefWidth="345.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="358.0" minWidth="10.0" prefWidth="346.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="10.0" prefWidth="385.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="381.0" minWidth="10.0" prefWidth="381.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="262.0" minHeight="10.0" prefHeight="156.0" vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="272.0" minHeight="10.0" prefHeight="262.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="262.0" minHeight="10.0" prefHeight="155.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="262.0" minHeight="10.0" prefHeight="17.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="272.0" minHeight="10.0" prefHeight="256.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <TabPane prefHeight="227.0" prefWidth="691.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="2"
-                         GridPane.rowIndex="1">
+                         GridPane.rowIndex="2">
                     <tabs>
                         <Tab text="Predmeti">
                             <content>
@@ -93,10 +95,10 @@
                         </Tab>
                     </tabs>
                 </TabPane>
-                <GridPane hgap="10.0" prefHeight="171.0" prefWidth="281.0" vgap="5.0">
+                <GridPane hgap="10.0" prefHeight="155.0" prefWidth="398.0" vgap="5.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="95.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="141.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="191.0" minWidth="10.0" prefWidth="169.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="196.0"/>
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
@@ -106,31 +108,32 @@
                         <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="182.0" text="Trenutno prijavljen/a"
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="198.0" text="Trenutno prijavljen/a"
                                GridPane.rowIndex="1"/>
                         <Label alignment="CENTER" prefHeight="19.0" prefWidth="330.0" text="Dobro došli">
                             <font>
                                 <Font size="13.0"/>
                             </font>
                         </Label>
-                        <Label fx:id="loginLabel" alignment="CENTER" prefHeight="17.0" prefWidth="182.0"
+                        <Label fx:id="loginLabel" alignment="CENTER" prefHeight="17.0" prefWidth="208.0"
                                text="korisničko ime (ime + prezime)" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="124.0" text="Semestar"
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="247.0" text="Semestar"
                                GridPane.rowIndex="2"/>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="157.0" text="Smjer"
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="215.0" text="Smjer"
                                GridPane.rowIndex="3"/>
                         <Label fx:id="semesterLabel" alignment="CENTER" prefHeight="17.0" prefWidth="236.0"
                                text="semestar" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                        <Label fx:id="courseLabel" alignment="CENTER" prefHeight="17.0" prefWidth="191.0" text="smjer"
+                        <Label fx:id="courseLabel" alignment="CENTER" prefHeight="17.0" prefWidth="221.0" text="smjer"
                                GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                         <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateInfoClick"
-                                prefHeight="25.0" prefWidth="130.0" text="Ažuriraj informacije" GridPane.rowIndex="4"/>
+                                prefHeight="25.0" prefWidth="130.0" text="Ažuriraj informacije"
+                                GridPane.halignment="CENTER" GridPane.rowIndex="4"/>
                         <Button fx:id="pauseButton" layoutX="15.0" layoutY="135.0" mnemonicParsing="false"
                                 onAction="#pauseClick" prefHeight="25.0" prefWidth="185.0" text="Zaledi godinu"
-                                GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4"/>
                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                             <children>
-                                <Label alignment="CENTER_RIGHT" minWidth="79.0" prefHeight="25.0" prefWidth="79.0"
+                                <Label alignment="CENTER_RIGHT" minWidth="79.0" prefHeight="25.0" prefWidth="123.0"
                                        text="Status: ">
                                     <font>
                                         <Font size="13.0"/>
@@ -149,46 +152,132 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                     </padding>
                 </GridPane>
-                <GridPane hgap="10.0" prefHeight="121.0" prefWidth="345.0" vgap="5.0" GridPane.columnIndex="1">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="127.0" minWidth="10.0" prefWidth="107.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="141.0"/>
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    </rowConstraints>
+                <BorderPane GridPane.columnIndex="1">
+                    <center>
+                        <GridPane hgap="10.0" prefHeight="121.0" prefWidth="345.0" vgap="5.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0"
+                                                   prefWidth="129.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0"
+                                                   prefWidth="174.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Label alignment="CENTER" prefHeight="17.0" prefWidth="276.0" text="Datum rođenja"
+                                       GridPane.rowIndex="1"/>
+                                <Label alignment="CENTER" prefHeight="17.0" prefWidth="300.0" text="Vaše informacije"
+                                       GridPane.columnSpan="2">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <Label alignment="CENTER" prefHeight="17.0" prefWidth="132.0" text="JMBG"
+                                       GridPane.rowIndex="2"/>
+                                <Label alignment="CENTER" prefHeight="17.0" prefWidth="144.0" text="Adresa"
+                                       GridPane.rowIndex="3"/>
+                                <Label alignment="CENTER" prefHeight="17.0" prefWidth="157.0" text="Email"
+                                       GridPane.rowIndex="4"/>
+                                <Label fx:id="birthDateLabel" alignment="CENTER" prefHeight="17.0" prefWidth="193.0"
+                                       text="datum rođenja" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label fx:id="jmbgLabel" alignment="CENTER" layoutX="15.0" layoutY="79.0"
+                                       prefHeight="17.0" prefWidth="208.0" text="jmbg" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="2"/>
+                                <Label fx:id="addressLabel" alignment="CENTER" layoutX="15.0" layoutY="109.0"
+                                       prefHeight="17.0" prefWidth="179.0" text="adresa" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="3"/>
+                                <Label fx:id="emailLabel" alignment="CENTER" layoutX="15.0" layoutY="139.0"
+                                       prefHeight="17.0" prefWidth="201.0" text="email" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="4"/>
+                            </children>
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </GridPane>
+                    </center>
+                    <right>
+                        <VBox alignment="TOP_CENTER" prefHeight="155.0" prefWidth="51.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Button fx:id="saveButton" alignment="CENTER" contentDisplay="CENTER"
+                                        mnemonicParsing="false" onAction="#saveClick" prefHeight="40.0"
+                                        prefWidth="40.0">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+                                <Button fx:id="printButton" alignment="CENTER" contentDisplay="CENTER" layoutX="26.0"
+                                        layoutY="15.0" mnemonicParsing="false" onAction="#printClick" prefHeight="40.0"
+                                        prefWidth="40.0">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                    <VBox.margin>
+                                        <Insets top="10.0"/>
+                                    </VBox.margin>
+                                </Button>
+                            </children>
+                            <padding>
+                                <Insets top="5.0"/>
+                            </padding>
+                        </VBox>
+                    </right>
+                    <GridPane.margin>
+                        <Insets right="5.0"/>
+                    </GridPane.margin>
+                </BorderPane>
+                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
                     <children>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="116.0" text="Datum rođenja"
-                               GridPane.rowIndex="1"/>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="300.0" text="Vaše informacije"
-                               GridPane.columnSpan="2">
+                        <Label alignment="CENTER" prefHeight="19.0" prefWidth="117.0" text="Prosječna ocjena:">
+                            <font>
+                                <Font size="13.0"/>
+                            </font>
+                            <HBox.margin>
+                                <Insets left="50.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="avgGradeField" layoutX="10.0" layoutY="10.0" prefHeight="19.0" prefWidth="50.0"
+                               text="0">
                             <font>
                                 <Font size="13.0"/>
                             </font>
                         </Label>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="107.0" text="JMBG"
-                               GridPane.rowIndex="2"/>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="108.0" text="Adresa"
-                               GridPane.rowIndex="3"/>
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="105.0" text="Email"
-                               GridPane.rowIndex="4"/>
-                        <Label fx:id="birthDateLabel" alignment="CENTER" prefHeight="17.0" prefWidth="193.0"
-                               text="datum rođenja" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        <Label fx:id="jmbgLabel" alignment="CENTER" layoutX="15.0" layoutY="79.0" prefHeight="17.0"
-                               prefWidth="208.0" text="jmbg" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                        <Label fx:id="addressLabel" alignment="CENTER" layoutX="15.0" layoutY="109.0" prefHeight="17.0"
-                               prefWidth="179.0" text="adresa" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                        <Label fx:id="emailLabel" alignment="CENTER" layoutX="15.0" layoutY="139.0" prefHeight="17.0"
-                               prefWidth="201.0" text="email" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="19.0" prefWidth="133.0"
+                               text="Broj upisanih ocjena:">
+                            <font>
+                                <Font size="13.0"/>
+                            </font>
+                            <HBox.margin>
+                                <Insets left="80.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="noGradedField" layoutX="127.0" layoutY="10.0" prefHeight="19.0" prefWidth="50.0"
+                               text="0">
+                            <font>
+                                <Font size="13.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="161.0" layoutY="10.0" prefHeight="19.0" prefWidth="140.0"
+                               text="Broj neupisanih ocjena:">
+                            <font>
+                                <Font size="13.0"/>
+                            </font>
+                            <HBox.margin>
+                                <Insets left="80.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="noNotGradedField" layoutX="278.0" layoutY="10.0" prefHeight="19.0"
+                               prefWidth="50.0" text="0">
+                            <font>
+                                <Font size="13.0"/>
+                            </font>
+                        </Label>
                     </children>
-                    <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </padding>
-                </GridPane>
+                </HBox>
             </children>
             <padding>
                 <Insets top="5.0"/>

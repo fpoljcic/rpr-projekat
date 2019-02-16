@@ -7,7 +7,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-
 public class PassCodeController {
     public TextField codeField;
     private String originalCode;

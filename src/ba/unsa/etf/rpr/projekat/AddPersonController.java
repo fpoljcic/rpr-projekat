@@ -114,7 +114,6 @@ public class AddPersonController {
             thread.start();
         }
 
-
         if (person != null) {
             usernameField.setText(person.getLogin().getUsername());
             usernameField.setDisable(true);

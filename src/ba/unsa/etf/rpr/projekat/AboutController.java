@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 
 public class AboutController {
-
     public Button buttonOk;
     public ImageView imageView;
 

@@ -11,5 +11,6 @@
     <orderEntry type="library" name="ojdbc6" level="project" />
     <orderEntry type="library" name="javax.mail" level="project" />
     <orderEntry type="library" name="activation" level="project" />
+    <orderEntry type="library" name="net.sf.jasperreports:jasperreports:6.7.0" level="project" />
   </component>
 </module>
