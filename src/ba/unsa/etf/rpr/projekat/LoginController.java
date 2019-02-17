@@ -93,11 +93,11 @@ public class LoginController {
     }
 
     public void loginClick(ActionEvent actionEvent) {
-        if (getUsername().isEmpty() || getUsername().length() < 3) {
+        if (getUsername() == null || getUsername().isEmpty() || getUsername().length() < 3) {
             showAlert("Greška", "Unesite korisničko ime", Alert.AlertType.ERROR);
             return;
         }
-        if (getPassword().isEmpty() || getPassword().length() < 4) {
+        if (getPassword() == null || getPassword().isEmpty() || getPassword().length() < 4) {
             showAlert("Greška", "Unesite šifru", Alert.AlertType.ERROR);
             return;
         }

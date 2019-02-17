@@ -1,29 +1,135 @@
 .validField {
-    -fx-control-inner-background: greenyellow;
+    -fx-effect: dropshadow(three-pass-box, #148f0a, 7, 0, 0, 0);
 }
 
 .invalidField {
-    -fx-control-inner-background: lightpink;
+    -fx-effect: dropshadow(three-pass-box, #bc1010, 7, 0, 0, 0);
 }
 
 .blankField {
-    -fx-control-inner-background: white;
+    -fx-effect: dropshadow(three-pass-box, white, 0, 0, 0, 0);
 }
 
 .groupBoxStyle {
-    -fx-border-color: grey;
+    -fx-border-color: white;
     -fx-border-width: 1;
     -fx-border-radius: 5px;
 }
 
 .greenText {
-    -fx-text-fill: #0a8007;
+    -fx-text-fill: #5feb8d;
 }
 
 .redText {
-    -fx-text-fill: #ff3f38;
+    -fx-text-fill: #eb262b;
 }
 
 .blueText {
-    -fx-text-fill: #2828ff;
+    -fx-text-fill: #43b6eb;
+}
+
+.lightBackground {
+    -fx-background-color: #434343;
+}
+
+.background {
+    -fx-background-color: #313335;
+}
+
+.darkBackground {
+    -fx-background-color: #1d1d1d;
+}
+
+.darkBlueBackground {
+    -fx-background-color: #203040;
+}
+
+.darkGreenBackground {
+    -fx-background-color: #205050;
+}
+
+.textField {
+    -fx-border-radius: 4 4 4 4;
+    -fx-background-radius: 4 4 4 4;
+}
+
+.radio-button .radio:hover {
+    -fx-effect: dropshadow(three-pass-box, #0093ff, 4, 0, 0, 0);
+}
+
+.table-view {
+    -fx-base: #1d1d1d;
+    -fx-control-inner-background: #1d1d1d;
+    -fx-background-color: #1d1d1d;
+
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 2;
+}
+
+.list-view {
+    -fx-base: #1d1d1d;
+    -fx-control-inner-background: #1d1d1d;
+    -fx-background-color: #1d1d1d;
+
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 2;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 14px;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent derive(-fx-base, 80%) transparent;
+    -fx-border-insets: 0 10 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 10pt;
+    -fx-text-fill: white;
+    -fx-alignment: center-left;
+    -fx-opacity: 1;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane {
+    -fx-tab-min-width: 90px;
+    -fx-background-color: #313335;
+}
+
+.tab {
+    -fx-background-insets: 0 1 0 1, 0, 0;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #313335;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #1d1d1d;
+}
+
+.tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #c3bbb9;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: white;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.416667em 0.166667em 0.0em 0.0em;
 }

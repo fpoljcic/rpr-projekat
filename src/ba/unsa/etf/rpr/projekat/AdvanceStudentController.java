@@ -8,11 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -26,6 +24,8 @@ public class AdvanceStudentController {
     public ListView<Subject> requiredSubjectsList;
     public Label welcomeLabel;
     public Label totalEcts;
+    public Button rightButton;
+    public Button leftButton;
     private Subject selectedOptSubject;
     private Subject selectedReqSubject;
     private Student student;
@@ -67,6 +67,10 @@ public class AdvanceStudentController {
         welcomeLabel.setText("Ostvarili ste uslove za prelazak na sljedeći semestar.\n" +
                 "Za upis u sljedeći semestar vam je potrebno " + nextSemester.getEcts() + " ECTS bodova.\n" +
                 "Odaberite željene izborne predmete koristeći opcije navedene ispod.");
+        Image rightImage = new Image("img/right.png", 32, 32, true, true);
+        rightButton.setGraphic(new ImageView(rightImage));
+        Image leftImage = new Image("img/left.png", 32, 32, true, true);
+        leftButton.setGraphic(new ImageView(leftImage));
     }
 
     private void logOut() {

@@ -12,14 +12,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="5.0" prefHeight="190.0" prefWidth="253.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
-          xmlns:fx="http://javafx.com/fxml/1">
+<GridPane hgap="5.0" prefHeight="200.0" prefWidth="285.0" styleClass="background" vgap="7.0"
+          xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/design.css"/>
     </stylesheets>
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="94.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="144.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="116.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="154.0"/>
     </columnConstraints>
     <rowConstraints>
         <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
@@ -30,12 +30,23 @@
         <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0"/>
     </rowConstraints>
     <children>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="114.0" text="Naziv"/>
-        <TextField fx:id="nameField" GridPane.columnIndex="1"/>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="101.0" text="Šifra" GridPane.rowIndex="1"/>
-        <TextField fx:id="codeField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="107.0" text="Ects" GridPane.rowIndex="2"/>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="148.0" text="Profesor" GridPane.rowIndex="3"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="124.0" text="Naziv" textFill="WHITE"/>
+        <TextField fx:id="nameField" styleClass="textField" GridPane.columnIndex="1"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="137.0" text="Šifra" textFill="WHITE"
+               GridPane.rowIndex="1"/>
+        <TextField fx:id="codeField" styleClass="textField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="134.0" text="Ects" textFill="WHITE"
+               GridPane.rowIndex="2"/>
+        <Spinner fx:id="ectsSpinner" onKeyTyped="#spinnerStep" prefHeight="25.0" prefWidth="166.0"
+                 GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="129.0" text="Profesor" textFill="WHITE"
+               GridPane.rowIndex="3"/>
+        <ChoiceBox fx:id="professorChoiceBox" prefHeight="25.0" prefWidth="169.0" GridPane.columnIndex="1"
+                   GridPane.rowIndex="3"/>
+        <Label alignment="CENTER" layoutX="15.0" layoutY="109.0" prefHeight="17.0" prefWidth="120.0"
+               text="Uslovni predmet" textFill="WHITE" GridPane.rowIndex="4"/>
+        <ChoiceBox fx:id="reqSubjectChoiceBox" layoutX="100.0" layoutY="105.0" prefHeight="25.0" prefWidth="168.0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="4"/>
         <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2"
                    GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
             <buttons>
@@ -43,14 +54,6 @@
                 <Button onAction="#okClick" text="Ok"/>
             </buttons>
         </ButtonBar>
-        <ChoiceBox fx:id="professorChoiceBox" prefHeight="25.0" prefWidth="155.0" GridPane.columnIndex="1"
-                   GridPane.rowIndex="3"/>
-        <Spinner fx:id="ectsSpinner" onKeyTyped="#spinnerStep" prefHeight="25.0" prefWidth="166.0"
-                 GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <Label alignment="CENTER" layoutX="15.0" layoutY="109.0" prefHeight="17.0" prefWidth="120.0"
-               text="Uslovni predmet" GridPane.rowIndex="4"/>
-        <ChoiceBox fx:id="reqSubjectChoiceBox" layoutX="100.0" layoutY="105.0" prefHeight="25.0" prefWidth="153.0"
-                   GridPane.columnIndex="1" GridPane.rowIndex="4"/>
     </children>
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

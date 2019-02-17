@@ -156,7 +156,7 @@ public class StudentController {
             input.close();
             archiveSubjectsMenuItem.setSelected(tabConfig);
             fillSubjects();
-            if (subjectTable.getItems().isEmpty()) {
+            if (student.getPauseDate() == null && subjectTable.getItems().isEmpty()) {
                 if (!archiveSubjectsMenuItem.isSelected())
                     fillArchiveSubjects();
                 if (advanceStudent())

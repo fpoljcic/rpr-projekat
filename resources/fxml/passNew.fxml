@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<?import java.net.URL?>
-<?import javafx.scene.control.PasswordField?>
-<GridPane hgap="5.0" prefHeight="59.0" prefWidth="253.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
-          xmlns:fx="http://javafx.com/fxml/1">
+<GridPane hgap="5.0" prefHeight="59.0" prefWidth="253.0" styleClass="background" vgap="7.0"
+          xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/design.css"/>
     </stylesheets>
@@ -25,8 +24,8 @@
         <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0"/>
     </rowConstraints>
     <children>
-        <Label alignment="CENTER" prefHeight="17.0" prefWidth="121.0" text="Nova šifra"/>
-        <PasswordField fx:id="passField" GridPane.columnIndex="1"/>
+        <Label alignment="CENTER" prefHeight="17.0" prefWidth="121.0" text="Nova šifra" textFill="WHITE"/>
+        <PasswordField fx:id="passField" styleClass="textField" GridPane.columnIndex="1"/>
         <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2"
                    GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
             <buttons>
