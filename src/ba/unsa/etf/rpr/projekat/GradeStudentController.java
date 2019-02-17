@@ -111,11 +111,16 @@ public class GradeStudentController {
             grade.setProfessor(professor);
         } else
             grade.setScore(0);
+        float points = grade.getPoints();
         grade.setPoints(pointsSpinner.getValue().floatValue());
         try {
             dataBase.updateGrade(grade);
         } catch (SQLException error) {
-            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            grade.setScore(0);
+            grade.setGradeDate(null);
+            grade.setProfessor(null);
+            grade.setPoints(points);
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
         okClicked = true;

@@ -113,14 +113,14 @@ public class LoginController {
             return;
         }
         Stage mainStage = getNewStage(selectedToggle.getText());
-        if (mainStage == null) {
-            showAlert("Greška", "Nepoznata greška", Alert.AlertType.ERROR);
+        if (mainStage == null)
             return;
-        }
+        LocalDate lastLoginDate = login.getLastLoginDate();
         login.setLastLoginDate(LocalDate.now());
         try {
             dataBase.updateLogin(login);
         } catch (SQLException error) {
+            login.setLastLoginDate(lastLoginDate);
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
@@ -135,7 +135,6 @@ public class LoginController {
             tabsConfig.add(0, studentView);
             writeBoolArray(tabsConfig);
         } catch (IOException error) {
-            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
     }
@@ -193,18 +192,14 @@ public class LoginController {
                     mainStage.getIcons().add(new Image("/img/administrator.png"));
                     AdministratorController controller = new AdministratorController(login);
                     loader.setController(controller);
-                    mainStage.setOnHidden(event -> {
-                        writeAdminView(controller.getTabsConfig());
-                    });
+                    mainStage.setOnHidden(event -> writeAdminView(controller.getTabsConfig()));
                     break;
                 case "Student":
                     loader = new FXMLLoader(getClass().getResource("/fxml/student.fxml"));
                     mainStage.getIcons().add(new Image("/img/student.png"));
                     StudentController studentController = new StudentController(login);
                     loader.setController(studentController);
-                    mainStage.setOnHidden(event -> {
-                        writeStudentView(studentController.getTabConfig());
-                    });
+                    mainStage.setOnHidden(event -> writeStudentView(studentController.getTabConfig()));
                     break;
                 case "Profesor":
                     loader = new FXMLLoader(getClass().getResource("/fxml/professor.fxml"));
@@ -245,7 +240,7 @@ public class LoginController {
     }
 
     private static String encodePassword(String pass) {
-        String generatedPassword = null;
+        String generatedPassword;
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(pass.getBytes());
@@ -256,6 +251,7 @@ public class LoginController {
             }
             generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException ignored) {
+            return null;
         }
         return generatedPassword;
     }

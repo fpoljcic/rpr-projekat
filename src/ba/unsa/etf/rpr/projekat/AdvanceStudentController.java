@@ -5,14 +5,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class AdvanceStudentController {
     public ListView<Subject> optionalSubjectsList;
@@ -52,13 +59,31 @@ public class AdvanceStudentController {
             requiredSubjectsList.setItems(FXCollections.observableArrayList(reqSubjects));
             optionalSubjectsList.setItems(FXCollections.observableArrayList(optSubjects));
         } catch (SQLException error) {
-            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+            logOut();
             return;
         }
         setListeners();
         welcomeLabel.setText("Ostvarili ste uslove za prelazak na sljedeći semestar.\n" +
                 "Za upis u sljedeći semestar vam je potrebno " + nextSemester.getEcts() + " ECTS bodova.\n" +
                 "Odaberite željene izborne predmete koristeći opcije navedene ispod.");
+    }
+
+    private void logOut() {
+        BazaDAO.removeInstance();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Prijava");
+            loginStage.getIcons().add(new Image("/img/login.png"));
+            loginStage.setResizable(false);
+            loginStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            Stage currentStage = (Stage) welcomeLabel.getScene().getWindow();
+            currentStage.close();
+            loginStage.show();
+        } catch (IOException error) {
+            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void setListeners() {
@@ -104,7 +129,7 @@ public class AdvanceStudentController {
             dataBase.updateStudent(student);
             dataBase.advanceStudent(student, requiredSubjectsList.getItems());
         } catch (SQLException error) {
-            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
         okClicked = true;

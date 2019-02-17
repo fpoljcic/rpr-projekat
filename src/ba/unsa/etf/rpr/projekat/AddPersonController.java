@@ -1,7 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -33,11 +33,15 @@ public class AddPersonController {
     private Person person;
     private String userType;
     private boolean okClicked;
+    private ObservableList<Semester> semesters;
+    private ObservableList<Course> courses;
 
-    public AddPersonController(Person person, String userType) {
+    public AddPersonController(Person person, String userType, ObservableList<Semester> semesters, ObservableList<Course> courses) {
         dataBase = BazaDAO.getInstance();
         this.person = person;
         this.userType = userType;
+        this.semesters = semesters;
+        this.courses = courses;
     }
 
     private void addColor(TextField textField, boolean valid) {
@@ -57,6 +61,8 @@ public class AddPersonController {
         studentLabel.setDisable(true);
         birthDateLabel.setDisable(true);
         birthDatePicker.setDisable(true);
+        semesterLabel.setDisable(true);
+        courseLabel.setDisable(true);
         disableStudentCourseUpdate();
     }
 
@@ -67,8 +73,17 @@ public class AddPersonController {
     }
 
     private void disableStudentCourseUpdate() {
-        courseLabel.setDisable(true);
         courseChoiceBox.setDisable(true);
+    }
+
+    private void setListeners() {
+        firstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> setAutoUsername(newValue));
+        lastNameField.focusedProperty().addListener((observable, oldValue, newValue) -> setAutoUsername(newValue));
+    }
+
+    private void setAutoUsername(boolean newValue) {
+        if (!newValue && person == null && validFirstName() && validLastName() && usernameField.getText().isEmpty())
+            usernameField.setText(Character.toLowerCase(firstNameField.getText().charAt(0)) + lastNameField.getText().toLowerCase());
     }
 
     @FXML
@@ -85,31 +100,26 @@ public class AddPersonController {
                 disableStudent();
                 break;
         }
+        setListeners();
 
         userTypeChoiceBox.getItems().add(userType);
         userTypeChoiceBox.setValue(userType);
         if (userType.equals("Student")) {
             Thread thread = new Thread(() -> {
-                try {
-                    var semesters = FXCollections.observableArrayList(dataBase.semesters());
-                    var courses = FXCollections.observableArrayList(dataBase.courses());
-                    Platform.runLater(() -> {
-                        semesterChoiceBox.setItems(semesters);
-                        if (person != null)
-                            semesterChoiceBox.setValue(((Student) person).getSemester());
-                        else
-                            semesterChoiceBox.getSelectionModel().select(0);
-                    });
-                    Platform.runLater(() -> {
-                        courseChoiceBox.setItems(courses);
-                        if (person != null)
-                            courseChoiceBox.setValue(((Student) person).getCourse());
-                        else
-                            courseChoiceBox.getSelectionModel().select(0);
-                    });
-                } catch (SQLException error) {
-                    showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
-                }
+                Platform.runLater(() -> {
+                    semesterChoiceBox.setItems(semesters);
+                    if (person != null)
+                        semesterChoiceBox.setValue(((Student) person).getSemester());
+                    else
+                        semesterChoiceBox.getSelectionModel().select(0);
+                });
+                Platform.runLater(() -> {
+                    courseChoiceBox.setItems(courses);
+                    if (person != null)
+                        courseChoiceBox.setValue(((Student) person).getCourse());
+                    else
+                        courseChoiceBox.getSelectionModel().select(0);
+                });
             });
             thread.start();
         }
@@ -267,19 +277,32 @@ public class AddPersonController {
         return m.matches();
     }
 
-    private boolean validBasicInfo() {
-        if (firstNameField.getText().isEmpty() || !firstNameField.getText().matches("[a-zA-Z]+") || firstNameField.getText().length() < 2 || firstNameField.getText().length() > 50) {
+    private boolean validFirstName() {
+        return !firstNameField.getText().isEmpty() && firstNameField.getText().matches("[a-zA-Z]+") && firstNameField.getText().length() >= 2 && firstNameField.getText().length() <= 50;
+    }
+
+    private boolean validLastName() {
+        return !lastNameField.getText().isEmpty() && lastNameField.getText().matches("[a-zA-Z]+") && lastNameField.getText().length() >= 2 && lastNameField.getText().length() <= 55;
+    }
+
+    private boolean validBasicInfo() throws SQLException {
+        if (!validFirstName()) {
             addColor(firstNameField, false);
             return false;
         }
         addColor(firstNameField, true);
-        if (lastNameField.getText().isEmpty() || !lastNameField.getText().matches("[a-zA-Z]+") || lastNameField.getText().length() < 2 || lastNameField.getText().length() > 55) {
+        if (!validLastName()) {
             addColor(lastNameField, false);
             return false;
         }
         addColor(lastNameField, true);
         if (!validJmbg()) {
             addColor(jmbgField, false);
+            return false;
+        }
+        if (person == null && dataBase.jmbgExists(jmbgField.getText())) {
+            addColor(jmbgField, false);
+            showAlert("Greška", "Postoji korisnik sa datim jmbg", Alert.AlertType.ERROR);
             return false;
         }
         addColor(jmbgField, true);
@@ -296,9 +319,14 @@ public class AddPersonController {
         return true;
     }
 
-    private boolean validLoginInfo() {
+    private boolean validLoginInfo() throws SQLException {
         if (usernameField.getText().isEmpty() || usernameField.getText().length() > 50 || usernameField.getText().length() < 3) {
             addColor(usernameField, false);
+            return false;
+        }
+        if (person == null && dataBase.usernameExists(usernameField.getText())) {
+            addColor(usernameField, false);
+            showAlert("Greška", "Korisničko ime je zauzeto", Alert.AlertType.ERROR);
             return false;
         }
         addColor(usernameField, true);
@@ -314,7 +342,12 @@ public class AddPersonController {
         if (birthDatePicker.isDisabled())
             return true;
         LocalDate birthDateValue = birthDatePicker.getValue();
-        if (birthDateValue == null || birthDateValue.isAfter(LocalDate.now()) || birthDateValue.getDayOfMonth() != getJmbgDay() || birthDateValue.getMonthValue() != getJmbgMonth() || birthDateValue.getYear() != getJmbgYear()) {
+        if (birthDateValue == null || birthDateValue.isAfter(LocalDate.now())) {
+            addColor(birthDatePicker.getEditor(), false);
+            return false;
+        }
+        if (birthDateValue.getDayOfMonth() != getJmbgDay() || birthDateValue.getMonthValue() != getJmbgMonth() || birthDateValue.getYear() != getJmbgYear()) {
+            addColor(jmbgField, false);
             addColor(birthDatePicker.getEditor(), false);
             return false;
         }
@@ -334,9 +367,14 @@ public class AddPersonController {
     }
 
     public void okClick(ActionEvent actionEvent) {
-        if (!validBasicInfo() || !validLoginInfo() || !validStudentInfo() || !validProfessorInfo())
+        try {
+            if (!validBasicInfo() || !validLoginInfo() || !validStudentInfo() || !validProfessorInfo())
+                return;
+        } catch (SQLException error) {
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
-        if (this.person == null) {
+        }
+        if (person == null) {
             try {
                 addPerson();
             } catch (SQLException error) {

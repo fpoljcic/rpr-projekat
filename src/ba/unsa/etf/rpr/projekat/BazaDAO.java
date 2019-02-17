@@ -24,6 +24,7 @@ public class BazaDAO {
     private PreparedStatement getavgProfessorGradeStmt, getNoProfessorGradedStmt, getNoProfessorNotGradedStmt;
     private PreparedStatement getavgStudentGradeStmt, getNoStudentGradedStmt, getNoStudentNotGradedStmt;
     private PreparedStatement getavgCourseGradeStmt, getNoStudentsOnCourseStmt;
+    private PreparedStatement usernameExistsStmt, jmbgExistsStmt, advanceYearStmt;
     private Connection conn;
 
     public static BazaDAO getInstance() {
@@ -126,6 +127,10 @@ public class BazaDAO {
 
             getavgCourseGradeStmt = conn.prepareStatement("SELECT ROUND(AVG(SCORE),2) FROM FP18120.COURSE, FP18120.GRADE, FP18120.STUDENT WHERE COURSE_ID = COURSE.ID AND SCORE IS NOT NULL AND COURSE.ID=? AND STUDENT.ID = STUDENT_ID AND PAUSE_DATE IS NULL");
             getNoStudentsOnCourseStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.COURSE, FP18120.STUDENT WHERE COURSE_ID = COURSE.ID AND COURSE.ID=? AND PAUSE_DATE IS NULL");
+
+            usernameExistsStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.LOGIN WHERE USERNAME = ?");
+            jmbgExistsStmt = conn.prepareStatement("SELECT COUNT(*) FROM FP18120.PERSON WHERE JMBG = ?");
+            advanceYearStmt = conn.prepareStatement("UPDATE FP18120.GRADE SET POINTS = 10 WHERE SCORE IS NULL AND GRADE_DATE IS NULL AND PROFESSOR_ID IS NULL");
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa konektovanjem na bazu: " + error.getMessage(), Alert.AlertType.ERROR);
         }
@@ -870,5 +875,26 @@ public class BazaDAO {
         while (resultSet.next())
             currval = resultSet.getInt(1);
         return currval;
+    }
+
+    public boolean usernameExists(String username) throws SQLException {
+        return exists(username, usernameExistsStmt);
+    }
+
+    public boolean jmbgExists(String jmbg) throws SQLException {
+        return exists(jmbg, jmbgExistsStmt);
+    }
+
+    private boolean exists(String value, PreparedStatement jmbgExistsStmt) throws SQLException {
+        jmbgExistsStmt.setString(1, value);
+        int exists = 0;
+        var resultSet = jmbgExistsStmt.executeQuery();
+        while (resultSet.next())
+            exists = resultSet.getInt(1);
+        return exists > 0;
+    }
+
+    public void advanceYear() throws SQLException {
+        advanceYearStmt.executeUpdate();
     }
 }

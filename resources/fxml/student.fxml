@@ -241,7 +241,7 @@
                             </HBox.margin>
                         </Label>
                         <Label fx:id="avgGradeField" layoutX="10.0" layoutY="10.0" prefHeight="19.0" prefWidth="50.0"
-                               text="0">
+                               text="0.0">
                             <font>
                                 <Font size="13.0"/>
                             </font>
@@ -289,6 +289,8 @@
             <menus>
                 <Menu text="_File">
                     <items>
+                        <MenuItem onAction="#saveClick" text="_Save as..."/>
+                        <MenuItem onAction="#printClick" text="_Print..."/>
                         <MenuItem onAction="#logOutClick" text="_Log out..."/>
                         <MenuItem onAction="#closeClick" text="_Close"/>
                     </items>

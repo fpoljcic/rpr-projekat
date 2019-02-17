@@ -1,7 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -21,11 +21,15 @@ public class AddSubjectController {
     private BazaDAO dataBase;
     private Subject subject;
     private boolean okClicked;
+    private ObservableList<Professor> professors;
+    private ObservableList<Subject> subjects;
 
-    public AddSubjectController(Subject subject) {
+    public AddSubjectController(Subject subject, ObservableList<Professor> professors, ObservableList<Subject> subjects) {
         validField = new boolean[2];
         dataBase = BazaDAO.getInstance();
         this.subject = subject;
+        this.professors = professors;
+        this.subjects = subjects;
     }
 
     private void addColor(TextField textField, boolean valid) {
@@ -44,33 +48,25 @@ public class AddSubjectController {
     @FXML
     public void initialize() {
         Thread thread = new Thread(() -> {
-            try {
-                var professors = FXCollections.observableArrayList(dataBase.professors());
-                var subjects = FXCollections.observableArrayList(dataBase.subjects());
+            Platform.runLater(() -> {
+                professorChoiceBox.setItems(professors);
+                if (this.subject == null)
+                    professorChoiceBox.getSelectionModel().select(0);
+                else
+                    professorChoiceBox.getSelectionModel().select(this.subject.getProfessor());
+            });
+            Platform.runLater(() -> {
                 Subject subject = new Subject();
                 subject.setName("Bez uslovnog predmeta");
-                subjects.add(0, subject);
-                Platform.runLater(() -> {
-                    professorChoiceBox.setItems(professors);
-                    if (this.subject == null)
-                        professorChoiceBox.getSelectionModel().select(0);
-                    else
-                        professorChoiceBox.getSelectionModel().select(this.subject.getProfessor());
-                });
-                Platform.runLater(() -> {
-                    if (this.subject != null)
-                        subjects.remove(this.subject);
-                    reqSubjectChoiceBox.setItems(subjects);
-                    if (this.subject == null)
-                        reqSubjectChoiceBox.getSelectionModel().select(0);
-                    else if (this.subject.getReqSubject() == null)
-                        reqSubjectChoiceBox.getSelectionModel().select(0);
-                    else
-                        reqSubjectChoiceBox.getSelectionModel().select(this.subject.getReqSubject());
-                });
-            } catch (SQLException error) {
-                showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
-            }
+                reqSubjectChoiceBox.getItems().add(subject);
+                reqSubjectChoiceBox.getItems().addAll(subjects);
+                if (this.subject == null)
+                    reqSubjectChoiceBox.getSelectionModel().select(0);
+                else if (this.subject.getReqSubject() == null)
+                    reqSubjectChoiceBox.getSelectionModel().select(0);
+                else
+                    reqSubjectChoiceBox.getSelectionModel().select(this.subject.getReqSubject());
+            });
         });
         thread.start();
         ectsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1, 1));
@@ -145,6 +141,10 @@ public class AddSubjectController {
     public void okClick(ActionEvent actionEvent) {
         if (!validField[0] || !validField[1])
             return;
+        if (nameField.getText().equals(reqSubjectChoiceBox.getValue().getName())) {
+            showAlert("Greška", "Ne možete postaviti dati uslovni predmet", Alert.AlertType.ERROR);
+            return;
+        }
         if (this.subject == null) {
             try {
                 addSubject();
@@ -165,7 +165,7 @@ public class AddSubjectController {
         currentStage.close();
     }
 
-    public boolean isOkClicked () {
+    public boolean isOkClicked() {
         return okClicked;
     }
 

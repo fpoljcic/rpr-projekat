@@ -32,7 +32,6 @@
                                 <TableView fx:id="subjectTable" prefHeight="200.0" prefWidth="200.0"
                                            BorderPane.alignment="CENTER">
                                     <columns>
-                                        <TableColumn fx:id="subjectIdCol" prefWidth="101.00001525878906" text="Id"/>
                                         <TableColumn fx:id="subjectNameCol" prefWidth="161.0" text="Naziv"/>
                                         <TableColumn fx:id="subjectCodeCol" minWidth="0.0" prefWidth="105.0"
                                                      text="Šifra"/>
@@ -140,7 +139,6 @@
                                 <TableView fx:id="professorTable" prefHeight="200.0" prefWidth="200.0"
                                            BorderPane.alignment="CENTER">
                                     <columns>
-                                        <TableColumn fx:id="professorIdCol" prefWidth="62.0" text="Id"/>
                                         <TableColumn fx:id="professorFirstNameCol" prefWidth="44.0" text="Ime"/>
                                         <TableColumn fx:id="professorLastNameCol" minWidth="0.0" prefWidth="82.0"
                                                      text="Prezime"/>
@@ -246,7 +244,6 @@
                                 <TableView fx:id="studentTable" prefHeight="200.0" prefWidth="200.0"
                                            BorderPane.alignment="CENTER">
                                     <columns>
-                                        <TableColumn fx:id="studentIdCol" prefWidth="62.0" text="Id"/>
                                         <TableColumn fx:id="studentFirstNameCol" prefWidth="44.0" text="Ime"/>
                                         <TableColumn fx:id="studentLastNameCol" minWidth="0.0" prefWidth="64.0"
                                                      text="Prezime"/>
@@ -367,7 +364,6 @@
                                 <TableView fx:id="courseTable" prefHeight="200.0" prefWidth="200.0"
                                            BorderPane.alignment="CENTER">
                                     <columns>
-                                        <TableColumn fx:id="courseIdCol" prefWidth="62.0" text="Id"/>
                                         <TableColumn fx:id="courseNameCol" prefWidth="188.0" text="Naziv"/>
                                     </columns>
                                     <columnResizePolicy>
@@ -487,7 +483,6 @@
                                 <TableView fx:id="adminTable" prefHeight="200.0" prefWidth="200.0"
                                            BorderPane.alignment="CENTER">
                                     <columns>
-                                        <TableColumn fx:id="adminIdCol" prefWidth="62.0" text="Id"/>
                                         <TableColumn fx:id="adminFirstNameCol" prefWidth="44.0" text="Ime"/>
                                         <TableColumn fx:id="adminLastNameCol" minWidth="0.0" prefWidth="82.0"
                                                      text="Prezime"/>
@@ -535,6 +530,7 @@
             <menus>
                 <Menu text="_File">
                     <items>
+                        <MenuItem onAction="#nextYearClick" text="_Next year"/>
                         <MenuItem onAction="#logOutClick" text="_Log out..."/>
                         <MenuItem onAction="#closeClick" text="_Close"/>
                     </items>

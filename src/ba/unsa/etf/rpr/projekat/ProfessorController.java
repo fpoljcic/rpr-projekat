@@ -115,6 +115,8 @@ public class ProfessorController {
             fillStudentsOnSubject();
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+            logOutClick(null);
+            return;
         }
         addListeners();
         loginLabel.setText(login.getUsername() + " (" + professor.getFirstName() + " " + professor.getLastName() + ")");
@@ -128,7 +130,7 @@ public class ProfessorController {
     public void updateInfoClick(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(professor, "Profesor"));
+            loader.setController(new AddPersonController(professor, "Profesor", null, null));
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             secondaryStage.setTitle("Ažuriraj profesora");
@@ -192,7 +194,7 @@ public class ProfessorController {
                 Platform.runLater(() -> studentsOnSubjectTable.setItems(FXCollections.observableArrayList(students)));
                 Platform.runLater(() -> studentsOnSubjectTable.refresh());
             } catch (SQLException error) {
-                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+                Platform.runLater(() -> showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR));
             }
         });
         thread.start();
@@ -201,6 +203,10 @@ public class ProfessorController {
     public void updateStudentClick(ActionEvent actionEvent) {
         if (selectedStudent == null) {
             showAlert("Greška", "Prvo odaberite studenta", Alert.AlertType.ERROR);
+            return;
+        }
+        if (selectedStudent.getPauseDate() != null) {
+            showAlert("Greška", "Dati student je zaledio godinu", Alert.AlertType.ERROR);
             return;
         }
         try {
@@ -220,7 +226,6 @@ public class ProfessorController {
                 refreshStudentTable();
             }
         } catch (IOException error) {
-            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
     }

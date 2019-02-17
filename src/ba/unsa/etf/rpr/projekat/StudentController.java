@@ -2,6 +2,7 @@ package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,6 +67,9 @@ public class StudentController {
     private BazaDAO dataBase;
     private Student student;
     private LocalDate pauseDate;
+    private ObservableList<Course> courses;
+    private ObservableList<Semester> semesters;
+
 
     public StudentController(Login login) {
         this.login = login;
@@ -77,6 +81,17 @@ public class StudentController {
         error.setTitle(title);
         error.setHeaderText(headerText);
         error.show();
+    }
+
+    private void setRequiredData() {
+        Platform.runLater(() -> {
+            try {
+                courses = FXCollections.observableArrayList(dataBase.courses());
+                semesters = FXCollections.observableArrayList(dataBase.semesters());
+            } catch (SQLException error) {
+                Platform.runLater(() -> showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR));
+            }
+        });
     }
 
     private void fillSubjects() throws SQLException {
@@ -123,7 +138,7 @@ public class StudentController {
                 try {
                     fillArchiveSubjects();
                 } catch (SQLException error) {
-                    showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+                    showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
                 }
             }
         });
@@ -134,6 +149,7 @@ public class StudentController {
         student = dataBase.getStudent(login);
         pauseDate = student.getPauseDate();
         setViewListener();
+        setRequiredData();
         try {
             DataInputStream input = new DataInputStream(new FileInputStream("resources/config.dat"));
             boolean tabConfig = input.readBoolean();
@@ -149,9 +165,11 @@ public class StudentController {
             setStudentStats();
         } catch (SQLException error) {
             showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
+            logOutClick(null);
             return;
         } catch (IOException error) {
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            logOutClick(null);
             return;
         }
         loginLabel.setText(login.getUsername() + " (" + student.getFirstName() + " " + student.getLastName() + ")");
@@ -186,7 +204,7 @@ public class StudentController {
                     noNotGradedField.setText(noStudentNotGraded);
                 });
             } catch (SQLException error) {
-                Platform.runLater(() -> showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR));
+                Platform.runLater(() -> showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR));
             }
         });
         thread.start();
@@ -239,7 +257,7 @@ public class StudentController {
     public void updateInfoClick(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addPerson.fxml"));
-            loader.setController(new AddPersonController(student, "Student"));
+            loader.setController(new AddPersonController(student, "Student", semesters, courses));
             Parent root = loader.load();
             Stage secondaryStage = new Stage();
             secondaryStage.setTitle("Ažuriraj studenta");
@@ -271,7 +289,7 @@ public class StudentController {
             dataBase.updateStudent(student);
         } catch (SQLException error) {
             student.setPauseDate(pauseDate);
-            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
         if (pauseDate == null)
@@ -333,7 +351,6 @@ public class StudentController {
         try {
             report.showStudentReport(dataBase.getConn(), student);
         } catch (JRException error) {
-            error.printStackTrace();
             showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
         }
     }

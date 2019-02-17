@@ -15,9 +15,8 @@ import javafx.stage.Stage;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.sql.SQLException;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -72,7 +71,6 @@ public class PassRecoveryController {
     }
 
     private boolean validEmail() {
-        // Prepisano sa StackOverflow
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(getEmail());
@@ -100,7 +98,7 @@ public class PassRecoveryController {
                 showAlert("Greška", "Ne postoji korisnik sa datim podacima", Alert.AlertType.ERROR);
                 return;
             }
-            generateCode();
+            generateCode(6);
             email.setSubject("Zahtjev za resetovanje šifre");
             setEmailBody(email);
             email.addRecipient(getEmail());
@@ -113,7 +111,7 @@ public class PassRecoveryController {
             });
             thread.start();
         } catch (SQLException error) {
-            showAlert("Greška", "Problem: " + error.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
             return;
         }
         try {
@@ -174,11 +172,9 @@ public class PassRecoveryController {
         currentStage.close();
     }
 
-    private void generateCode() {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] token = new byte[6];
-        secureRandom.nextBytes(token);
-        code = new BigInteger(1, token).toString(32).substring(0, 6); //hex encoding
+    private void generateCode(int length) {
+        int randomNum = ThreadLocalRandom.current().nextInt((int) Math.pow(10, length - 1), (int) (Math.pow(10, length) - 1));
+        code = String.valueOf(randomNum);
     }
 
     private void showAlert(String title, String headerText, Alert.AlertType type) {

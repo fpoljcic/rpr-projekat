@@ -61,6 +61,7 @@ CREATE TABLE professor (
 CREATE TABLE administrator (
     id   INTEGER PRIMARY KEY
         REFERENCES person ( id )
+            ON DELETE CASCADE
 );
 
 CREATE TABLE subject (

@@ -1,7 +1,7 @@
 package ba.unsa.etf.rpr.projekat;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -20,11 +20,17 @@ public class AddCurriculumController {
     private Curriculum curriculum;
     private BazaDAO dataBase;
     private boolean okClicked;
+    private ObservableList<Subject> subjects;
+    private ObservableList<Semester> semesters;
+    private ObservableList<Course> courses;
 
-    public AddCurriculumController(Curriculum curriculum) {
+    public AddCurriculumController(Curriculum curriculum, ObservableList<Subject> subjects, ObservableList<Semester> semesters, ObservableList<Course> courses) {
         this.curriculum = curriculum;
         dataBase = BazaDAO.getInstance();
         reqSubject = "Ne";
+        this.subjects = subjects;
+        this.semesters = semesters;
+        this.courses = courses;
     }
 
     @FXML
@@ -36,34 +42,27 @@ public class AddCurriculumController {
                 reqSubject = "Ne";
         });
         Thread thread = new Thread(() -> {
-            try {
-                var courses = FXCollections.observableArrayList(dataBase.courses());
-                var semesters = FXCollections.observableArrayList(dataBase.semesters());
-                var subjects = FXCollections.observableArrayList(dataBase.subjects());
-                Platform.runLater(() -> {
-                    courseChoiceBox.setItems(courses);
-                    if (curriculum != null)
-                        courseChoiceBox.setValue(curriculum.getCourse());
-                    else
-                        courseChoiceBox.getSelectionModel().select(0);
-                });
-                Platform.runLater(() -> {
-                    semesterChoiceBox.setItems(semesters);
-                    if (curriculum != null)
-                        semesterChoiceBox.setValue(curriculum.getSemester());
-                    else
-                        semesterChoiceBox.getSelectionModel().select(0);
-                });
-                Platform.runLater(() -> {
-                    subjectChoiceBox.setItems(subjects);
-                    if (curriculum != null)
-                        subjectChoiceBox.setValue(curriculum.getSubject());
-                    else
-                        subjectChoiceBox.getSelectionModel().select(0);
-                });
-            } catch (SQLException error) {
-                showAlert("Greška", "Problem sa bazom: " + error.getMessage(), Alert.AlertType.ERROR);
-            }
+            Platform.runLater(() -> {
+                courseChoiceBox.setItems(courses);
+                if (curriculum != null)
+                    courseChoiceBox.setValue(curriculum.getCourse());
+                else
+                    courseChoiceBox.getSelectionModel().select(0);
+            });
+            Platform.runLater(() -> {
+                semesterChoiceBox.setItems(semesters);
+                if (curriculum != null)
+                    semesterChoiceBox.setValue(curriculum.getSemester());
+                else
+                    semesterChoiceBox.getSelectionModel().select(0);
+            });
+            Platform.runLater(() -> {
+                subjectChoiceBox.setItems(subjects);
+                if (curriculum != null)
+                    subjectChoiceBox.setValue(curriculum.getSubject());
+                else
+                    subjectChoiceBox.getSelectionModel().select(0);
+            });
         });
         thread.start();
         if (curriculum != null && curriculum.getRequiredSubject().equals("Da"))
