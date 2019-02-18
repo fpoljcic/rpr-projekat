@@ -54,7 +54,11 @@
 }
 
 .radio-button .radio:hover {
-    -fx-effect: dropshadow(three-pass-box, #0093ff, 4, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #0093ff, 5, 0, 0, 0);
+}
+
+.check-box .box:hover {
+    -fx-effect: dropshadow(three-pass-box, #0093ff, 5, 0, 0, 0);
 }
 
 .table-view {

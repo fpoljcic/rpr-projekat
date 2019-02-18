@@ -40,6 +40,7 @@ public class LoginController {
         dataBase = BazaDAO.getInstance();
         username = new SimpleStringProperty();
         password = new SimpleStringProperty();
+        toggleGroup = new ToggleGroup();
         errorCount = new SimpleIntegerProperty(0);
     }
 
@@ -54,7 +55,6 @@ public class LoginController {
     @FXML
     public void initialize() {
         passForgotButton.setVisible(false);
-        toggleGroup = new ToggleGroup();
         studentRadioBtn.setToggleGroup(toggleGroup);
         professorRadioBtn.setToggleGroup(toggleGroup);
         adminRadioBtn.setToggleGroup(toggleGroup);
@@ -246,9 +246,8 @@ public class LoginController {
             md.update(pass.getBytes());
             byte[] bytes = md.digest();
             StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
+            for (byte aByte : bytes)
                 sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-            }
             generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException ignored) {
             return null;

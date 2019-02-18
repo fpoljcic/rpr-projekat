@@ -363,7 +363,7 @@ public class StudentController {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter1 = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
         FileChooser.ExtensionFilter extFilter2 = new FileChooser.ExtensionFilter("DOCX files (*.docx)", "*.docx");
-        FileChooser.ExtensionFilter extFilter3 = new FileChooser.ExtensionFilter("XSLX files (*.xslx)", "*.xslx");
+        FileChooser.ExtensionFilter extFilter3 = new FileChooser.ExtensionFilter("XLSX files (*.xlsx)", "*.xlsx");
         fileChooser.getExtensionFilters().addAll(extFilter1, extFilter2, extFilter3);
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         Stage stage = (Stage) saveButton.getScene().getWindow();

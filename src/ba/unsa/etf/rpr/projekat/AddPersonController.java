@@ -270,7 +270,6 @@ public class AddPersonController {
 
 
     private boolean validEmail() {
-        // Prepisano sa StackOverflow
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(getEmailString());
@@ -339,7 +338,7 @@ public class AddPersonController {
     }
 
     private boolean validStudentInfo() {
-        if (birthDatePicker.isDisabled())
+        if (!userType.equals("Student"))
             return true;
         LocalDate birthDateValue = birthDatePicker.getValue();
         if (birthDateValue == null || birthDateValue.isAfter(LocalDate.now())) {
@@ -356,7 +355,7 @@ public class AddPersonController {
     }
 
     private boolean validProfessorInfo() {
-        if (titleField.isDisabled())
+        if (!userType.equals("Profesor"))
             return true;
         if (titleField.getText().isEmpty() || !titleField.getText().matches("[a-zA-Z]+") || titleField.getText().length() < 2 || titleField.getText().length() > 60) {
             addColor(titleField, false);

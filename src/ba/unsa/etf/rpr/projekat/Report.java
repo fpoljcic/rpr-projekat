@@ -77,7 +77,7 @@ public class Report extends JFrame {
             exporter.setExporterInput(new SimpleExporterInput(print));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
             exporter.exportReport();
-        } else if (path.contains(".xslx")) {
+        } else if (path.contains(".xlsx")) {
             JRXlsxExporter exporter = new JRXlsxExporter();
             exporter.setExporterInput(new SimpleExporterInput(print));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
